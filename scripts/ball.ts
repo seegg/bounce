@@ -1,8 +1,7 @@
-let initialId = 1;
+let initialBallId = 1;
 class Ball {
   readonly id: number;
-  x: number;
-  y: number;
+  position: { x: number, y: number }
   radius: number;
   rotation: number;
   velocity: { vX: number, vY: number };
@@ -11,10 +10,9 @@ class Ball {
   img: string;
 
   constructor(x: number, y: number, r: number, imgSrc: string, selected: boolean = false) {
-    this.id = initialId;
-    initialId++;
-    this.x = x;
-    this.y = y;
+    this.id = initialBallId;
+    initialBallId++;
+    this.position = { x, y }
     this.radius = r;
     this.img = imgSrc;
     this.selected = selected;
