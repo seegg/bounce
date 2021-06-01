@@ -6,8 +6,10 @@ class Ball {
   rotation: number;
   velocity: { vX: number, vY: number };
   selected: boolean;
+  collided: number[];
   // The img associated with an instance of Ball
   img: string;
+
 
   constructor(x: number, y: number, r: number, imgSrc: string, selected: boolean = false) {
     this.id = initialBallId;
@@ -16,6 +18,7 @@ class Ball {
     this.radius = r;
     this.img = imgSrc;
     this.selected = selected;
+    this.collided = [this.id];
   }
 
   // Update the position of the ball after every frame
@@ -25,6 +28,10 @@ class Ball {
 
   reverseDirection(distance: number) {
 
+  }
+
+  resetCollided(): void {
+    this.collided = [this.id]
   }
 
 }

@@ -1,5 +1,14 @@
 {
   "include": [
     "scripts/*"
-  ]
+  ],
+  "compilerOptions": {
+    "lib": [
+      "es2016",
+      "DOM"
+    ],
+    "target": "ES2016",
+    "outFile": "scripts/main.js",
+    "removeComments": true
+  }
 }
