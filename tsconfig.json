@@ -1,6 +1,8 @@
 {
   "include": [
-    "scripts/*"
+    "scripts/ball.ts",
+    "scripts/utility.ts",
+    "app.ts"
   ],
   "compilerOptions": {
     "lib": [
