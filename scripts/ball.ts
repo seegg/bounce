@@ -26,7 +26,7 @@ class Ball {
 
   }
 
-  reverseDirection(distance: number) {
+  reverseDistance(distance: number) {
 
   }
 

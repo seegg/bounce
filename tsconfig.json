@@ -2,7 +2,7 @@
   "include": [
     "scripts/ball.ts",
     "scripts/utility.ts",
-    "app.ts"
+    "scripts/app.ts"
   ],
   "compilerOptions": {
     "lib": [
