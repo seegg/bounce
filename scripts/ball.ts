@@ -10,7 +10,6 @@ class Ball {
   // The img associated with an instance of Ball
   img: string;
 
-
   constructor(x: number, y: number, r: number, imgSrc: string, selected: boolean = false) {
     this.id = initialBallId;
     initialBallId++;
@@ -28,7 +27,7 @@ class Ball {
 
   }
 
-  reverseDistance(distance: number) {
+  reverseDistance(distance: number): void {
 
   }
 
