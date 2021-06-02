@@ -28,5 +28,47 @@ function calculateCollisionVelocity(x1: number, y1: number, x2: number, y2: numb
 
   const newVx = vx1 - (sc * distX);
   const newVy = vy1 - (sc * distY);
-  return [newVx, newVy]
+  return [newVx, newVy];
+}
+
+
+/**
+ * Create a cicular image bitmap from a given src
+ * crop image to circle with globalCompositeOperation = 'destination-in'
+ * returns a promise that resolves to the image bitmap
+ * @param imgScr image src
+ * @param radius radius of the circle
+ * @param outlineColour the outline colour of the circle
+ */
+function createCircleImg(imgScr: string, radius: number, outlineColour: string = 'white', outlineSize: number = 3): Promise<ImageBitmap> {
+  return new Promise((resolve, reject) => {
+    const tempCanvas = document.createElement('canvas');
+    const diameter = radius * 2;
+    tempCanvas.width = diameter;
+    tempCanvas.height = diameter;
+    const image = new Image();
+    image.src = imgScr;
+    image.onload = () => {
+      //Calculate width and height of image in proportion to canvas size 
+      //so the new image doesn't look distorted.
+      const wRatio = image.width / diameter;
+      const hRatio = image.height / diameter;
+
+      wRatio >= hRatio ? tempCanvas.width = Math.floor(image.width / hRatio) : tempCanvas.height = Math.floor(image.height / wRatio);
+      const ctx = tempCanvas.getContext('2d');
+      if (ctx === null) throw new Error('context2D is null');
+      ctx.drawImage(image, 0, 0, tempCanvas.width, tempCanvas.height);
+      ctx.beginPath();
+      ctx.arc(tempCanvas.width / 2, tempCanvas.height / 2, radius, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.lineWidth = outlineSize;
+      ctx.strokeStyle = outlineColour;
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.arc(tempCanvas.width / 2, tempCanvas.height / 2, radius, 0, Math.PI * 2);
+      ctx.fill();
+      resolve(createImageBitmap(tempCanvas, tempCanvas.width / 2 - radius, tempCanvas.height / 2 - radius, diameter, diameter));
+    }
+    image.onerror = reject
+  })
 }

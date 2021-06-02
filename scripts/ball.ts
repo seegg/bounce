@@ -16,6 +16,8 @@ class Ball {
     initialBallId++;
     this.position = { x, y }
     this.radius = r;
+    this.rotation = 0;
+    this.velocity = { vX: 0, vY: 0 }
     this.img = imgSrc;
     this.selected = selected;
     this.collided = [this.id];

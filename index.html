@@ -6,37 +6,33 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script defer src="./scripts/main.js"></script>
+  <link rel="stylesheet" href="./style/main.css">
   <title>Bounce</title>
 </head>
 
 <body>
-  <div id="app">
-    <div id="app-controls-container">
-      <div id="ball-select">
-        <div id="ball-select-navigation">
-
+  <div id="app" class="flex flex-col items-center">
+    <div id="app-controls" class="w-full px-10 my-1 flex justify-between items-center">
+      <div id="ball-select" class="flex rounded bg-red-300 shadow">
+        <div id="ball-scroll-controls" class="flex flex-col justify-between">
+          <button id="img-up">&#9650;</button>
+          <button id="img-down">&#9660;</button>
         </div>
-        <div id="ball-img-container">
+        <div id="img-container">
 
         </div>
 
       </div>
 
       <div id="button-controls">
-
-        <div id="img-form-btn">
-
-        </div>
-        <div id="party-btn">
-
-        </div>
-
+        <button id="add-image-btn" class="h-10 w-10 px-1 rounded bg-gray-500 hover:bg-gray-400">&plus;</button>
+        <button id="party-btn" class="h-10 w-10 px-1 rounded bg-gray-500 hover:bg-gray-400"> &#127881;</button>
       </div>
 
     </div>
 
     <div id="canvas-container">
-      <canvas id="canvas">
+      <canvas id="canvas" class="bg-yellow-600 rounded flex-shrink-0">
 
       </canvas>
     </div>
