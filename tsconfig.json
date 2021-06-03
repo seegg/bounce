@@ -2,14 +2,15 @@
   "include": [
     "scripts/ball.ts",
     "scripts/utility.ts",
-    "scripts/app.ts"
+    "scripts/imageList.ts",
+    "scripts/app.ts",
   ],
   "compilerOptions": {
     "lib": [
       "es2016",
       "DOM"
     ],
-    "target": "ES2016",
+    "target": "ES5",
     "outFile": "scripts/main.js",
     "removeComments": true,
     "strict": true

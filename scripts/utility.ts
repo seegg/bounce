@@ -1,5 +1,7 @@
 const util = {
-  calculateCollisionVelocity
+  calculateCollisionVelocity,
+  createCircleImg,
+  convertBmpToBlob
 };
 
 /**
@@ -70,5 +72,30 @@ function createCircleImg(imgScr: string, radius: number, outlineColour: string =
       resolve(createImageBitmap(tempCanvas, tempCanvas.width / 2 - radius, tempCanvas.height / 2 - radius, diameter, diameter));
     }
     image.onerror = reject
+  })
+}
+
+
+/**
+ * Use HTMLCanvasElement.toBlob to convert a bitmap to a blob with a different mime type.
+ * @param image the input bitmap
+ * @param mimeType the mimeType for the blob, default image/png
+ * @returns 
+ */
+function convertBmpToBlob(image: ImageBitmap, mimeType: string = 'image/png'): Promise<Blob | null> {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const ctx = canvas.getContext('bitmaprenderer');
+    if (ctx) {
+      ctx.transferFromImageBitmap(image);
+    } else {
+      canvas.getContext('2d')?.drawImage(image, 0, 0);
+    }
+    canvas.toBlob(function blobCallback(blob) {
+      if (blob === null) reject('Blob is null');
+      resolve(blob);
+    })
   })
 }
