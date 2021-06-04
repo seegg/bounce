@@ -48,7 +48,7 @@ function createCircleImg(imgScr: string, radius: number, outlineColour: string =
     const diameter = radius * 2;
     tempCanvas.width = diameter;
     tempCanvas.height = diameter;
-    const image = new Image();
+    const image = document.createElement('img');
     image.src = imgScr;
     image.onload = () => {
       //Calculate width and height of image in proportion to canvas size 
@@ -78,9 +78,9 @@ function createCircleImg(imgScr: string, radius: number, outlineColour: string =
 
 /**
  * Use HTMLCanvasElement.toBlob to convert a bitmap to a blob with a different mime type.
+ * Cors problems from tainted canvas.
  * @param image the input bitmap
  * @param mimeType the mimeType for the blob, default image/png
- * @returns 
  */
 function convertBmpToBlob(image: ImageBitmap, mimeType: string = 'image/png'): Promise<Blob | null> {
   return new Promise((resolve, reject) => {

@@ -10,7 +10,7 @@
       "es2016",
       "DOM"
     ],
-    "target": "ES5",
+    "target": "ES6",
     "outFile": "scripts/main.js",
     "removeComments": true,
     "strict": true
