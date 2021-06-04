@@ -1,7 +1,7 @@
+const imageFiles = <string[]>["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
+const imageUrls = <string[]>[];
+
 function getImageList(): string[] {
   const path = "images/";
-  const imageList = [
-    "me.jpeg"
-  ];
-  return imageList.map(img => path + img);
+  return imageFiles.map(img => path + img).concat(imageUrls);
 }
