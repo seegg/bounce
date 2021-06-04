@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 let initialBallId = 1;
 class Ball {
     constructor(x, y, r, imgSrc, selected = false) {
@@ -110,20 +101,22 @@ const appProps = {
 };
 init();
 function init() {
-    const imageLink = 'images/me.jpeg';
+    const imageLink = 'https://raw.githubusercontent.com/kahikatea-2021/bouncing-heads/main/images/handsome.jpg?token=ACS3DBQGDTQW67JLC73E2OLAYK5IS';
+    const imageLink2 = 'images/me.jpeg';
     addImage(imageLink, appProps.imageCache, appProps.radiusSizes.l, () => { console.log('hello world'); });
+    addImage(imageLink2, appProps.imageCache, appProps.radiusSizes.l, () => { console.log('hello world'); });
 }
 function loadInitialImages(imgSrcs) {
 }
 function addImage(imgSrc, imgArr, radius, callback) {
-    const classList = ['img-thumb', 'h-12', 'w-12', 'rounded-full', 'filter', 'grayscale'];
+    const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12'];
     const imgContainer = document.getElementById('img-container');
     const loadingPlaceholder = document.createElement('img');
     loadingPlaceholder.src = 'images/spinner.gif';
     imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.appendChild(loadingPlaceholder);
     return createAndCacheBitmap(imgSrc, imgArr, radius)
         .then(([img, imgIdx]) => {
-        return createImageEleFromBmp(img, imgIdx, classList, callback);
+        return createImgEleWithIndex(imgSrc, imgIdx, classList, callback);
     })
         .then(imgEle => {
         if (imgContainer === null)
@@ -140,21 +133,30 @@ function appendImageElemToContainer(imgEle, imgContainer, loadingImg) {
     }
 }
 function createImageEleFromBmp(bmpImg, imgArrIndex, classList, callback) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return util.convertBmpToBlob(bmpImg)
-            .then(blob => {
-            const url = URL.createObjectURL(blob);
-            const imgEle = document.createElement('img');
-            imgEle.classList.add(...classList);
-            imgEle.onclick = callback ? callback : null;
-            imgEle.setAttribute('data-index', imgArrIndex + '');
-            imgEle.onload = () => {
-                URL.revokeObjectURL(url);
-            };
-            imgEle.src = url;
-            return imgEle;
-        });
+    return util.convertBmpToBlob(bmpImg)
+        .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const imgEle = document.createElement('img');
+        imgEle.classList.add(...classList);
+        imgEle.onclick = callback ? callback : null;
+        imgEle.setAttribute('data-index', imgArrIndex + '');
+        imgEle.onload = () => {
+            URL.revokeObjectURL(url);
+        };
+        imgEle.src = url;
+        return imgEle;
     });
+}
+function createImgEleWithIndex(src, imgIndex, classList, callback) {
+    const imgEle = document.createElement('img');
+    imgEle.classList.add(...classList);
+    imgEle.onclick = callback ? callback : null;
+    imgEle.setAttribute('data-index', imgIndex + '');
+    imgEle.onload = () => {
+        URL.revokeObjectURL(src);
+    };
+    imgEle.src = src;
+    return imgEle;
 }
 function createAndCacheBitmap(imgSrc, imgArr, radius) {
     return util.createCircleImg(imgSrc, radius)

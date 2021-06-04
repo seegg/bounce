@@ -78,7 +78,7 @@ function createCircleImg(imgScr: string, radius: number, outlineColour: string =
 
 /**
  * Use HTMLCanvasElement.toBlob to convert a bitmap to a blob with a different mime type.
- * Cors problems from tainted canvas.
+ * Cors problems.
  * @param image the input bitmap
  * @param mimeType the mimeType for the blob, default image/png
  */
