@@ -99,19 +99,15 @@ const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50 },
     imageCache: [],
 };
-init();
-function init() {
-    const imageLink = 'https://raw.githubusercontent.com/kahikatea-2021/bouncing-heads/main/images/handsome.jpg?token=ACS3DBQGDTQW67JLC73E2OLAYK5IS';
-    const imageLink2 = 'images/me.jpeg';
-    addImage(imageLink, appProps.imageCache, appProps.radiusSizes.l, () => { console.log('hello world'); });
-    addImage(imageLink2, appProps.imageCache, appProps.radiusSizes.l, () => { console.log('hello world'); });
-}
-function loadInitialImages(imgSrcs) {
+start();
+function start() {
+    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, appProps.radiusSizes.l, () => { console.log('hello world!'); })));
 }
 function addImage(imgSrc, imgArr, radius, callback) {
     const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12'];
     const imgContainer = document.getElementById('img-container');
     const loadingPlaceholder = document.createElement('img');
+    loadingPlaceholder.classList.add('h-12', 'w-12');
     loadingPlaceholder.src = 'images/spinner.gif';
     imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.appendChild(loadingPlaceholder);
     return createAndCacheBitmap(imgSrc, imgArr, radius)
@@ -122,6 +118,10 @@ function addImage(imgSrc, imgArr, radius, callback) {
         if (imgContainer === null)
             throw new Error('image container is null');
         appendImageElemToContainer(imgEle, imgContainer, loadingPlaceholder);
+        console.log(imgArr);
+    })
+        .catch(err => {
+        console.log(err);
     });
 }
 function appendImageElemToContainer(imgEle, imgContainer, loadingImg) {
@@ -131,21 +131,6 @@ function appendImageElemToContainer(imgEle, imgContainer, loadingImg) {
     else {
         imgContainer.append(imgEle);
     }
-}
-function createImageEleFromBmp(bmpImg, imgArrIndex, classList, callback) {
-    return util.convertBmpToBlob(bmpImg)
-        .then(blob => {
-        const url = URL.createObjectURL(blob);
-        const imgEle = document.createElement('img');
-        imgEle.classList.add(...classList);
-        imgEle.onclick = callback ? callback : null;
-        imgEle.setAttribute('data-index', imgArrIndex + '');
-        imgEle.onload = () => {
-            URL.revokeObjectURL(url);
-        };
-        imgEle.src = url;
-        return imgEle;
-    });
 }
 function createImgEleWithIndex(src, imgIndex, classList, callback) {
     const imgEle = document.createElement('img');
