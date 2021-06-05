@@ -8,16 +8,16 @@ class Ball {
   selected: boolean;
   collided: number[];
   // The img associated with an instance of Ball
-  img: string;
+  img: ImageBitmap;
 
-  constructor(x: number, y: number, r: number, imgSrc: string, selected: boolean = false) {
+  constructor(x: number, y: number, r: number, img: ImageBitmap, selected: boolean = false) {
     this.id = initialBallId;
     initialBallId++;
     this.position = { x, y }
     this.radius = r;
     this.rotation = 0;
     this.velocity = { vX: 0, vY: 0 }
-    this.img = imgSrc;
+    this.img = img;
     this.selected = selected;
     this.collided = [this.id];
   }

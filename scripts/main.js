@@ -1,14 +1,14 @@
 "use strict";
 let initialBallId = 1;
 class Ball {
-    constructor(x, y, r, imgSrc, selected = false) {
+    constructor(x, y, r, img, selected = false) {
         this.id = initialBallId;
         initialBallId++;
         this.position = { x, y };
         this.radius = r;
         this.rotation = 0;
         this.velocity = { vX: 0, vY: 0 };
-        this.img = imgSrc;
+        this.img = img;
         this.selected = selected;
         this.collided = [this.id];
     }
@@ -178,6 +178,7 @@ function handleWindowResize() {
         }
         appProps.canvas.width = width - appProps.canvasHorizontalGap;
         appProps.canvas.height = height - appProps.canvasTopOffset - 20;
+        appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
     }
     catch (err) {
         console.log(err);

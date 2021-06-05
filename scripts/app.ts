@@ -17,6 +17,7 @@ function start(): void {
   Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') })));
 }
 
+
 /**
  * Add an image base on a input url. create a bitmap and HTMLImageElement base on this image.
  * store the bitmap to an array and append the img element to the img container.
@@ -102,6 +103,8 @@ function handleWindowResize() {
 
     appProps.canvas.width = width - appProps.canvasHorizontalGap;
     appProps.canvas.height = height - appProps.canvasTopOffset - 20;
+
+    appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
   } catch (err) {
     console.log(err);
   }
