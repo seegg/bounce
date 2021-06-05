@@ -1,14 +1,20 @@
 const appProps = {
-  radiusSizes: { s: 20, m: 35, l: 50 },
+  radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
+  screenBreakPoints: { l: 1280, m: 768 },
   imageCache: <ImageBitmap[]>[],
+  balls: <Ball[]>[],
+  canvas: <HTMLCanvasElement>document.getElementById('canvas'),
+  canvasHorizontalGap: 5 * 2,
+  canvasTopOffset: 60
 }
 
 start();
 
-type mouseClickCallback = (e: MouseEvent) => any;
+type mouseClickCallback = (e: MouseEvent) => any | void;
 
 function start(): void {
-  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, appProps.radiusSizes.l, () => { console.log('hello world!') })));
+  addEventListeners();
+  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') })));
 }
 
 /**
@@ -19,7 +25,7 @@ function start(): void {
  * @param radius The radius of the bitmap 
  * @param callback event handler for click event on the img element
  */
-function addImage(imgSrc: string, imgArr: ImageBitmap[], radius: number, callback?: mouseClickCallback) {
+function addImage(imgSrc: string, imgArr: ImageBitmap[], callback: mouseClickCallback | null = null, radius: number = appProps.radiusSizes.current) {
   const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12'];
   const imgContainer = document.getElementById('img-container');
   const loadingPlaceholder = document.createElement('img');
@@ -52,7 +58,7 @@ function appendImageElemToContainer(imgEle: HTMLImageElement, imgContainer: HTML
 //create a new img element with a given src and a list of classes.
 //assign an index number from the bitmap image array associated with 
 //the src.
-function createImgEleWithIndex(src: string, imgIndex: number, classList: string[], callback?: mouseClickCallback): HTMLImageElement {
+function createImgEleWithIndex(src: string, imgIndex: number, classList: string[], callback?: mouseClickCallback | null): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
   imgEle.onclick = callback ? callback : null;
@@ -72,4 +78,31 @@ function createAndCacheBitmap(imgSrc: string, imgArr: ImageBitmap[], radius: num
       imgArr.push(image);
       return [image, imgArr.length - 1];
     })
+}
+
+function addEventListeners() {
+  window.onresize = () => {
+    handleWindowResize();
+  }
+}
+
+function handleWindowResize() {
+  try {
+    if (appProps.canvas === null) throw new Error('canvas is null');
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    if (width < appProps.screenBreakPoints.m) {
+      appProps.radiusSizes.current = appProps.radiusSizes.s;
+    } else if (width < appProps.screenBreakPoints.l) {
+      appProps.radiusSizes.current = appProps.radiusSizes.m;
+    } else {
+      appProps.radiusSizes.current = appProps.radiusSizes.l;
+    }
+
+    appProps.canvas.width = width - appProps.canvasHorizontalGap;
+    appProps.canvas.height = height - appProps.canvasTopOffset - 20;
+  } catch (err) {
+    console.log(err);
+  }
 }

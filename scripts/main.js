@@ -95,14 +95,20 @@ function getImageList() {
     return imageFiles.map(img => path + img).concat(imageUrls);
 }
 const appProps = {
-    radiusSizes: { s: 20, m: 35, l: 50 },
+    radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
+    screenBreakPoints: { l: 1280, m: 768 },
     imageCache: [],
+    balls: [],
+    canvas: document.getElementById('canvas'),
+    canvasHorizontalGap: 5 * 2,
+    canvasTopOffset: 60
 };
 start();
 function start() {
-    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, appProps.radiusSizes.l, () => { console.log('hello world!'); })));
+    addEventListeners();
+    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!'); })));
 }
-function addImage(imgSrc, imgArr, radius, callback) {
+function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes.current) {
     const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12'];
     const imgContainer = document.getElementById('img-container');
     const loadingPlaceholder = document.createElement('img');
@@ -149,4 +155,31 @@ function createAndCacheBitmap(imgSrc, imgArr, radius) {
         imgArr.push(image);
         return [image, imgArr.length - 1];
     });
+}
+function addEventListeners() {
+    window.onresize = () => {
+        handleWindowResize();
+    };
+}
+function handleWindowResize() {
+    try {
+        if (appProps.canvas === null)
+            throw new Error('canvas is null');
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        if (width < appProps.screenBreakPoints.m) {
+            appProps.radiusSizes.current = appProps.radiusSizes.s;
+        }
+        else if (width < appProps.screenBreakPoints.l) {
+            appProps.radiusSizes.current = appProps.radiusSizes.m;
+        }
+        else {
+            appProps.radiusSizes.current = appProps.radiusSizes.l;
+        }
+        appProps.canvas.width = width - appProps.canvasHorizontalGap;
+        appProps.canvas.height = height - appProps.canvasTopOffset - 20;
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
