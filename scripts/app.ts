@@ -12,11 +12,12 @@ function start(): void {
 }
 
 /**
- * 
+ * Add an image base on a input url. create a bitmap and HTMLImageElement base on this image.
+ * store the bitmap to an array and append the img element to the img container.
  * @param imgSrc URL for the image
- * @param imgArr Array to store the bmp created base on the image url.
+ * @param imgArr Array to store the bmp created base on the image url
  * @param radius The radius of the bitmap 
- * @param callback 
+ * @param callback event handler for click event on the img element
  */
 function addImage(imgSrc: string, imgArr: ImageBitmap[], radius: number, callback?: mouseClickCallback) {
   const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12'];
@@ -39,10 +40,7 @@ function addImage(imgSrc: string, imgArr: ImageBitmap[], radius: number, callbac
     })
 }
 
-/**
- * append a HTMLImageElement to the image container.
- * @param src image src
- */
+//append an img element to the img container.
 function appendImageElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLElement, loadingImg?: HTMLImageElement): void {
   if (loadingImg) {
     imgContainer.replaceChild(imgEle, loadingImg);
@@ -51,7 +49,10 @@ function appendImageElemToContainer(imgEle: HTMLImageElement, imgContainer: HTML
   }
 }
 
-function createImgEleWithIndex(src: string, imgIndex: number, classList: string[], callback?: mouseClickCallback) {
+//create a new img element with a given src and a list of classes.
+//assign an index number from the bitmap image array associated with 
+//the src.
+function createImgEleWithIndex(src: string, imgIndex: number, classList: string[], callback?: mouseClickCallback): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
   imgEle.onclick = callback ? callback : null;
@@ -63,6 +64,7 @@ function createImgEleWithIndex(src: string, imgIndex: number, classList: string[
   return imgEle;
 }
 
+//create an bitmap image, add it to the image array
 function createAndCacheBitmap(imgSrc: string, imgArr: ImageBitmap[], radius: number): Promise<[ImageBitmap, number]> {
   return util.createCircleImg(imgSrc, radius)
     .then(image => {
