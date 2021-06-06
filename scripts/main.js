@@ -1,7 +1,7 @@
 "use strict";
 let initialBallId = 1;
 class Ball {
-    constructor(x, y, r, img, selected = false) {
+    constructor(img, x, y, r, selected = false) {
         this.id = initialBallId;
         initialBallId++;
         this.position = { x, y };
@@ -123,10 +123,9 @@ function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes
         if (imgContainer === null)
             throw new Error('image container is null');
         appendImageElemToContainer(imgEle, imgContainer, loadingPlaceholder);
-        console.log(imgArr);
     })
         .catch(err => {
-        console.log(err);
+        console.error(err);
     });
 }
 function appendImageElemToContainer(imgEle, imgContainer, loadingImg) {
@@ -151,7 +150,6 @@ function createImgEleWithIndex(src, imgIndex, classList, callback) {
 function createAndCacheBitmap(imgSrc, imgArr, radius) {
     return util.createCircleImg(imgSrc, radius)
         .then(image => {
-        console.log(image);
         imgArr.push(image);
         return [image, imgArr.length - 1];
     });
@@ -160,6 +158,7 @@ function addEventListeners() {
     window.onresize = () => {
         handleWindowResize();
     };
+    appProps.canvas.addEventListener('pointerdown', onMouseDown);
 }
 function handleWindowResize() {
     try {
@@ -181,6 +180,41 @@ function handleWindowResize() {
         appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
     }
     catch (err) {
-        console.log(err);
+        console.error(err);
     }
+}
+function removeBall(ballToDelete) {
+    try {
+        const index = appProps.balls.findIndex(ball => ball.id === ballToDelete.id);
+        if (index === -1) {
+            throw new Error(`ball of id:${ballToDelete.id} could not be found.`);
+        }
+        else {
+            appProps.balls.splice(index, 1);
+        }
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+function drawBalls(ctx, props = appProps) {
+}
+function getRelativeMousePos(evt) {
+    try {
+        const boundingRect = evt.target.getBoundingClientRect();
+        return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+function onMouseDown(evt) {
+    evt.preventDefault();
+    console.log(evt.button);
+}
+function onMouseUp(evt) {
+}
+function onMouseMove(evt) {
+}
+function onMouseLeave(evt) {
 }

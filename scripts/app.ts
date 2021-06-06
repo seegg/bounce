@@ -10,13 +10,12 @@ const appProps = {
 
 start();
 
-type mouseClickCallback = (e: MouseEvent) => any | void;
+type mouseClickCallback = (e: MouseEvent) => any;
 
 function start(): void {
   addEventListeners();
   Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') })));
 }
-
 
 /**
  * Add an image base on a input url. create a bitmap and HTMLImageElement base on this image.
@@ -40,14 +39,16 @@ function addImage(imgSrc: string, imgArr: ImageBitmap[], callback: mouseClickCal
     .then(imgEle => {
       if (imgContainer === null) throw new Error('image container is null');
       appendImageElemToContainer(imgEle, imgContainer, loadingPlaceholder);
-      console.log(imgArr);
     })
     .catch(err => {
-      console.log(err);
+      console.error(err);
     })
 }
 
-//append an img element to the img container.
+/**
+ * Append a HTMLImageELement to a parent container
+ * optional loading placeholder.
+ */
 function appendImageElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLElement, loadingImg?: HTMLImageElement): void {
   if (loadingImg) {
     imgContainer.replaceChild(imgEle, loadingImg);
@@ -56,9 +57,11 @@ function appendImageElemToContainer(imgEle: HTMLImageElement, imgContainer: HTML
   }
 }
 
-//create a new img element with a given src and a list of classes.
-//assign an index number from the bitmap image array associated with 
-//the src.
+/**
+ *create a new img element with a given src and a list of classes.
+ *assign an index number from the bitmap image array associated with 
+ *the src.
+ */
 function createImgEleWithIndex(src: string, imgIndex: number, classList: string[], callback?: mouseClickCallback | null): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
@@ -71,23 +74,29 @@ function createImgEleWithIndex(src: string, imgIndex: number, classList: string[
   return imgEle;
 }
 
-//create an bitmap image, add it to the image array
+/** 
+ * Create a bitmap image from a URL and add it to the bitmap array.
+ */
 function createAndCacheBitmap(imgSrc: string, imgArr: ImageBitmap[], radius: number): Promise<[ImageBitmap, number]> {
   return util.createCircleImg(imgSrc, radius)
     .then(image => {
-      console.log(image);
       imgArr.push(image);
       return [image, imgArr.length - 1];
     })
 }
 
-function addEventListeners() {
+function addEventListeners(): void {
   window.onresize = () => {
     handleWindowResize();
-  }
+  };
+  appProps.canvas.addEventListener('pointerdown', onMouseDown)
 }
 
-function handleWindowResize() {
+/**
+ * Change the canvas dimensions and the ball radius sizes
+ * everytime the browser is resized.
+ */
+function handleWindowResize(): void {
   try {
     if (appProps.canvas === null) throw new Error('canvas is null');
     const width = window.innerWidth;
@@ -106,6 +115,57 @@ function handleWindowResize() {
 
     appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
+}
+
+/**
+ * Remove the selected ball from the ball array
+ */
+function removeBall(ballToDelete: Ball) {
+  try {
+    const index = appProps.balls.findIndex(ball => ball.id === ballToDelete.id);
+    if (index === -1) {
+      throw new Error(`ball of id:${ballToDelete.id} could not be found.`);
+    } else {
+      appProps.balls.splice(index, 1);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function drawBalls(ctx: CanvasRenderingContext2D, props = appProps) {
+
+}
+
+/**
+ * Get the position of the mouse click 
+ * relative to the event target 
+ */
+function getRelativeMousePos(evt: MouseEvent): [number, number] | undefined {
+  try {
+    const boundingRect = (<HTMLElement>evt.target).getBoundingClientRect();
+    return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+//
+// Mouse Controls
+//
+
+function onMouseDown(evt: MouseEvent) {
+  evt.preventDefault();
+  console.log(evt.button);
+}
+
+function onMouseUp(evt: MouseEvent) {
+}
+
+function onMouseMove(evt: MouseEvent) {
+}
+
+function onMouseLeave(evt: MouseEvent) {
 }

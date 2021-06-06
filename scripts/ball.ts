@@ -10,7 +10,7 @@ class Ball {
   // The img associated with an instance of Ball
   img: ImageBitmap;
 
-  constructor(x: number, y: number, r: number, img: ImageBitmap, selected: boolean = false) {
+  constructor(img: ImageBitmap, x: number, y: number, r: number, selected: boolean = false) {
     this.id = initialBallId;
     initialBallId++;
     this.position = { x, y }
