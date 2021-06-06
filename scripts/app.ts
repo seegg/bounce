@@ -5,7 +5,8 @@ const appProps = {
   balls: <Ball[]>[],
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
-  canvasTopOffset: 60
+  canvasTopOffset: 70,
+  currentPos: { x: 0, y: 0 }
 }
 
 start();
@@ -14,6 +15,8 @@ type mouseClickCallback = (e: MouseEvent) => any;
 
 function start(): void {
   addEventListeners();
+  appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
+  appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') })));
 }
 
@@ -111,7 +114,7 @@ function handleWindowResize(): void {
     }
 
     appProps.canvas.width = width - appProps.canvasHorizontalGap;
-    appProps.canvas.height = height - appProps.canvasTopOffset - 20;
+    appProps.canvas.height = height - appProps.canvasTopOffset;
 
     appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
   } catch (err) {

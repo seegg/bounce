@@ -101,11 +101,14 @@ const appProps = {
     balls: [],
     canvas: document.getElementById('canvas'),
     canvasHorizontalGap: 5 * 2,
-    canvasTopOffset: 60
+    canvasTopOffset: 70,
+    currentPos: { x: 0, y: 0 }
 };
 start();
 function start() {
     addEventListeners();
+    appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
+    appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!'); })));
 }
 function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes.current) {
@@ -176,7 +179,7 @@ function handleWindowResize() {
             appProps.radiusSizes.current = appProps.radiusSizes.l;
         }
         appProps.canvas.width = width - appProps.canvasHorizontalGap;
-        appProps.canvas.height = height - appProps.canvasTopOffset - 20;
+        appProps.canvas.height = height - appProps.canvasTopOffset;
         appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
     }
     catch (err) {
