@@ -1,9 +1,7 @@
 "use strict";
-let initialBallId = 1;
 class Ball {
     constructor(img, x, y, r, selected = false) {
-        this.id = initialBallId;
-        initialBallId++;
+        this.id = Ball.baseId;
         this.position = { x, y };
         this.radius = r;
         this.rotation = 0;
@@ -11,6 +9,7 @@ class Ball {
         this.img = img;
         this.selected = selected;
         this.collided = [this.id];
+        Ball.baseId++;
     }
     updatePosition(gravity, deceleration) {
     }
@@ -20,6 +19,7 @@ class Ball {
         this.collided = [this.id];
     }
 }
+Ball.baseId = 1;
 const util = {
     calculateCollisionVelocity,
     createCircleImg,

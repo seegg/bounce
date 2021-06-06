@@ -1,6 +1,6 @@
-let initialBallId = 1;
 class Ball {
   readonly id: number;
+  private static baseId = 1;
   position: { x: number, y: number }
   radius: number;
   rotation: number;
@@ -11,8 +11,7 @@ class Ball {
   img: ImageBitmap;
 
   constructor(img: ImageBitmap, x: number, y: number, r: number, selected: boolean = false) {
-    this.id = initialBallId;
-    initialBallId++;
+    this.id = Ball.baseId;
     this.position = { x, y }
     this.radius = r;
     this.rotation = 0;
@@ -20,6 +19,7 @@ class Ball {
     this.img = img;
     this.selected = selected;
     this.collided = [this.id];
+    Ball.baseId++;
   }
 
   // Update the position of the ball after every frame
