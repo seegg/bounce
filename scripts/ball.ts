@@ -22,13 +22,15 @@ class Ball {
     Ball.baseId++;
   }
 
-  // Update the position of the ball after every frame
+  // Update the position and state of the ball after every frame
   updatePosition(gravity: number, deceleration: number, ellapsedTime: number): void {
 
   }
 
   reverseDistance(distance: number): void {
-
+    const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
+    this.position.x += this.velocity.vX * velocityRatio;
+    this.position.y += this.velocity.vY * velocityRatio;
   }
 
   getTotalVelocity(): number {
@@ -46,6 +48,7 @@ class Ball {
   ballBounce(ball2: Ball): void {
     if ((this.velocity.vX === 0 && ball2.velocity.vY === 0) ||
       this.collided.includes(ball2.id)) return;
+
     const centerToCenterDist = Math.sqrt(
       Math.pow(this.position.x - ball2.position.x, 2) +
       Math.pow(this.position.y - ball2.position.y, 2));
@@ -58,6 +61,7 @@ class Ball {
       const [vX2, vY2] = util.getBallCollisionVelocity(ball2, this);
       this.velocity = { vX, vY };
       ball2.velocity = { vX: vX2, vY: vY2 };
+      this.collided.push(ball2.id);
     }
   }
 

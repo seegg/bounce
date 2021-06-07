@@ -14,6 +14,9 @@ class Ball {
     updatePosition(gravity, deceleration, ellapsedTime) {
     }
     reverseDistance(distance) {
+        const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
+        this.position.x += this.velocity.vX * velocityRatio;
+        this.position.y += this.velocity.vY * velocityRatio;
     }
     getTotalVelocity() {
         return Math.sqrt(Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2));
@@ -37,6 +40,7 @@ class Ball {
             const [vX2, vY2] = util.getBallCollisionVelocity(ball2, this);
             this.velocity = { vX, vY };
             ball2.velocity = { vX: vX2, vY: vY2 };
+            this.collided.push(ball2.id);
         }
     }
 }
@@ -134,7 +138,9 @@ function start() {
     addEventListeners();
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!'); })));
+    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!'); })))
+        .then(_ => {
+    });
 }
 function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes.current) {
     const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12'];
@@ -226,8 +232,6 @@ function removeBall(ballToDelete) {
     }
 }
 function drawBalls(ctx, props = appProps) {
-}
-function wallBounce() {
 }
 function getRelativeMousePos(evt) {
     try {

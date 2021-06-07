@@ -19,7 +19,9 @@ function start(): void {
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   //Load all the images in the image list
-  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') })));
+  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') })))
+    .then(_ => {
+    });
 }
 
 /**
@@ -141,10 +143,6 @@ function removeBall(ballToDelete: Ball) {
 }
 
 function drawBalls(ctx: CanvasRenderingContext2D, props = appProps) {
-
-}
-
-function wallBounce() {
 
 }
 
