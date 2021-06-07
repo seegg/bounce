@@ -11,21 +11,43 @@ class Ball {
         this.collided = [this.id];
         Ball.baseId++;
     }
-    updatePosition(gravity, deceleration) {
+    updatePosition(gravity, deceleration, ellapsedTime) {
     }
     reverseDistance(distance) {
     }
+    getTotalVelocity() {
+        return Math.sqrt(Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2));
+    }
     resetCollided() {
         this.collided = [this.id];
+    }
+    wallBounce() {
+    }
+    ballBounce(ball2) {
+        if ((this.velocity.vX === 0 && ball2.velocity.vY === 0) ||
+            this.collided.includes(ball2.id))
+            return;
+        const centerToCenterDist = Math.sqrt(Math.pow(this.position.x - ball2.position.x, 2) +
+            Math.pow(this.position.y - ball2.position.y, 2));
+        const totalRadius = this.radius + ball2.radius;
+        if (centerToCenterDist < totalRadius) {
+            const overlap = centerToCenterDist - totalRadius;
+            this.reverseDistance(overlap);
+            const [vX, vY] = util.getBallCollisionVelocity(this, ball2);
+            const [vX2, vY2] = util.getBallCollisionVelocity(ball2, this);
+            this.velocity = { vX, vY };
+            ball2.velocity = { vX: vX2, vY: vY2 };
+        }
     }
 }
 Ball.baseId = 1;
 const util = {
     calculateCollisionVelocity,
     createCircleImg,
-    convertBmpToBlob
+    convertBmpToBlob,
+    getBallCollisionVelocity
 };
-function calculateCollisionVelocity(x1, y1, x2, y2, vx1, vy1, vx2, vy2, mass1, mass2) {
+function calculateCollisionVelocity(x1, y1, vx1, vy1, x2, y2, vx2, vy2, mass1, mass2) {
     const mass = mass1 && mass2 ? (2 * mass2) / (mass1 + mass2) : 1;
     const distX = x1 - x2;
     const distY = y1 - y2;
@@ -37,6 +59,9 @@ function calculateCollisionVelocity(x1, y1, x2, y2, vx1, vy1, vx2, vy2, mass1, m
     const newVx = vx1 - (sc * distX);
     const newVy = vy1 - (sc * distY);
     return [newVx, newVy];
+}
+function getBallCollisionVelocity(ball1, ball2) {
+    return calculateCollisionVelocity(ball1.position.x, ball1.position.y, ball1.velocity.vX, ball1.velocity.vY, ball2.position.x, ball2.position.y, ball2.velocity.vX, ball2.velocity.vY);
 }
 function createCircleImg(imgScr, radius, outlineColour = 'white', outlineSize = 3) {
     return new Promise((resolve, reject) => {
@@ -202,6 +227,8 @@ function removeBall(ballToDelete) {
 }
 function drawBalls(ctx, props = appProps) {
 }
+function wallBounce() {
+}
 function getRelativeMousePos(evt) {
     try {
         const boundingRect = evt.target.getBoundingClientRect();
@@ -212,8 +239,6 @@ function getRelativeMousePos(evt) {
     }
 }
 function onMouseDown(evt) {
-    evt.preventDefault();
-    console.log(evt.button);
 }
 function onMouseUp(evt) {
 }

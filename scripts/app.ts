@@ -15,8 +15,10 @@ type mouseClickCallback = (e: MouseEvent) => any;
 
 function start(): void {
   addEventListeners();
+  //set initial canvas dimensions
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
+  //Load all the images in the image list
   Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') })));
 }
 
@@ -142,6 +144,10 @@ function drawBalls(ctx: CanvasRenderingContext2D, props = appProps) {
 
 }
 
+function wallBounce() {
+
+}
+
 /**
  * Get the position of the mouse click 
  * relative to the event target 
@@ -160,8 +166,6 @@ function getRelativeMousePos(evt: MouseEvent): [number, number] | undefined {
 //
 
 function onMouseDown(evt: MouseEvent) {
-  evt.preventDefault();
-  console.log(evt.button);
 }
 
 function onMouseUp(evt: MouseEvent) {

@@ -1,7 +1,8 @@
 const util = {
   calculateCollisionVelocity,
   createCircleImg,
-  convertBmpToBlob
+  convertBmpToBlob,
+  getBallCollisionVelocity
 };
 
 /**
@@ -9,16 +10,16 @@ const util = {
  * https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional_collision_with_two_moving_objects
  * @param x1 x center object1
  * @param y1 y center object1
- * @param x2 x center object2
- * @param y2 y center object2
  * @param vx1 x velocity object1
  * @param vy1 y velocity object1
+ * @param x2 x center object2
+ * @param y2 y center object2
  * @param vx2 x velocity object2
  * @param vy2 y veloicity object2
  * @param mass1 mass object1
  * @param mass2 mass object2
  */
-function calculateCollisionVelocity(x1: number, y1: number, x2: number, y2: number, vx1: number, vy1: number, vx2: number, vy2: number, mass1?: number, mass2?: number): [number, number] {
+function calculateCollisionVelocity(x1: number, y1: number, vx1: number, vy1: number, x2: number, y2: number, vx2: number, vy2: number, mass1?: number, mass2?: number): [number, number] {
   const mass = mass1 && mass2 ? (2 * mass2) / (mass1 + mass2) : 1;
   const distX = x1 - x2;
   const distY = y1 - y2;
@@ -33,11 +34,19 @@ function calculateCollisionVelocity(x1: number, y1: number, x2: number, y2: numb
   return [newVx, newVy];
 }
 
+/**
+ * Get the velocity of ball1 after colliding with ball2.
+ */
+function getBallCollisionVelocity(ball1: Ball, ball2: Ball) {
+  return calculateCollisionVelocity(ball1.position.x, ball1.position.y, ball1.velocity.vX, ball1.velocity.vY,
+    ball2.position.x, ball2.position.y, ball2.velocity.vX, ball2.velocity.vY);
+}
+
 
 /**
- * Create a cicular image bitmap from a given src
+ * Draw an image to a temp HTMLCanvas element
  * crop image to circle with globalCompositeOperation = 'destination-in'
- * returns a promise that resolves to the image bitmap
+ * returns a promise that resolves to an bitmap of the canvas picture.
  * @param imgScr image src
  * @param radius radius of the circle
  * @param outlineColour the outline colour of the circle
