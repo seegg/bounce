@@ -27,6 +27,10 @@ class Ball {
 
   }
 
+  /**
+   * Reverse the position of the ball base on 
+   * the distance of the intersection.
+   */
   reverseDistance(distance: number): void {
     const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
     this.position.x += this.velocity.vX * velocityRatio;
@@ -41,8 +45,21 @@ class Ball {
     this.collided = [this.id]
   }
 
-  wallBounce() {
-
+  wallBounce(side: 'left' | 'right' | 'top' | 'bottom') {
+    switch (side) {
+      case 'left':
+        this.velocity.vX *= -1;
+        break;
+      case 'right':
+        this.velocity.vX *= -1;
+        break;
+      case 'top':
+        this.velocity.vY *= -1;
+        break;
+      case 'bottom':
+        this.velocity.vY *= -1;
+        break;
+    }
   }
 
   ballBounce(ball2: Ball): void {

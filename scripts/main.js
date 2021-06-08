@@ -24,7 +24,21 @@ class Ball {
     resetCollided() {
         this.collided = [this.id];
     }
-    wallBounce() {
+    wallBounce(side) {
+        switch (side) {
+            case 'left':
+                this.velocity.vX *= -1;
+                break;
+            case 'right':
+                this.velocity.vX *= -1;
+                break;
+            case 'top':
+                this.velocity.vY *= -1;
+                break;
+            case 'bottom':
+                this.velocity.vY *= -1;
+                break;
+        }
     }
     ballBounce(ball2) {
         if ((this.velocity.vX === 0 && ball2.velocity.vY === 0) ||
@@ -79,10 +93,11 @@ function createCircleImg(imgScr, radius, outlineColour = 'white', outlineSize = 
             const wRatio = image.width / diameter;
             const hRatio = image.height / diameter;
             wRatio >= hRatio ? tempCanvas.width = Math.floor(image.width / hRatio) : tempCanvas.height = Math.floor(image.height / wRatio);
+            const adjustedImage = stepDownImage(image, { w: diameter, h: diameter });
             const ctx = tempCanvas.getContext('2d');
             if (ctx === null)
                 throw new Error('context2D is null');
-            ctx.drawImage(image, 0, 0, tempCanvas.width, tempCanvas.height);
+            ctx.drawImage(adjustedImage, 0, 0, tempCanvas.width, tempCanvas.height);
             ctx.beginPath();
             ctx.arc(tempCanvas.width / 2, tempCanvas.height / 2, radius, 0, Math.PI * 2);
             ctx.closePath();
@@ -96,6 +111,29 @@ function createCircleImg(imgScr, radius, outlineColour = 'white', outlineSize = 
         };
         image.onerror = reject;
     });
+}
+function stepDownImage(image, targetSize) {
+    const wRatio = image.width / targetSize.w;
+    const hRatio = image.height / targetSize.h;
+    const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2));
+    const canvas = document.createElement('canvas');
+    canvas.height = image.height;
+    canvas.width = image.width;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    if (steps > 1) {
+        const canvas2 = document.createElement('canvas');
+        const ctx2 = canvas2.getContext('2d');
+        for (let i = 1; i < steps; i++) {
+            canvas2.width = canvas.width / 2;
+            canvas2.height = canvas.height / 2;
+            ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+            canvas.width = canvas2.width;
+            canvas.height = canvas2.height;
+            ctx.drawImage(canvas2, 0, 0);
+        }
+    }
+    return canvas;
 }
 function convertBmpToBlob(image, mimeType = 'image/png') {
     return new Promise((resolve, reject) => {
@@ -131,15 +169,19 @@ const appProps = {
     canvas: document.getElementById('canvas'),
     canvasHorizontalGap: 5 * 2,
     canvasTopOffset: 70,
-    currentPos: { x: 0, y: 0 }
+    currentPos: { x: 0, y: 0 },
+    party: { active: false, start: 0, duration: 10, colour: '' },
+    rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
 start();
 function start() {
     addEventListeners();
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!'); })))
+    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!'); }, 50)))
         .then(_ => {
+        appProps.balls.push(new Ball(appProps.imageCache[2], 500, 500, 50, false));
+        draw(appProps.canvas.getContext('2d'));
     });
 }
 function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes.current) {
@@ -231,7 +273,16 @@ function removeBall(ballToDelete) {
         console.error(err);
     }
 }
-function drawBalls(ctx, props = appProps) {
+function draw(ctx) {
+    drawBall(ctx, appProps.balls[0]);
+}
+function drawBall(ctx, ball) {
+    const { position, radius, selected, rotation, img } = ball;
+    ctx.save();
+    ctx.translate(position.x, position.y);
+    ctx.rotate(Math.PI / 180 * rotation);
+    ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
+    ctx.restore();
 }
 function getRelativeMousePos(evt) {
     try {

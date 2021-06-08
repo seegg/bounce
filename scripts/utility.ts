@@ -64,11 +64,13 @@ function createCircleImg(imgScr: string, radius: number, outlineColour: string =
       //so the new image doesn't look distorted.
       const wRatio = image.width / diameter;
       const hRatio = image.height / diameter;
-
       wRatio >= hRatio ? tempCanvas.width = Math.floor(image.width / hRatio) : tempCanvas.height = Math.floor(image.height / wRatio);
+
+      const adjustedImage = stepDownImage(image, { w: diameter, h: diameter });
+
       const ctx = tempCanvas.getContext('2d');
       if (ctx === null) throw new Error('context2D is null');
-      ctx.drawImage(image, 0, 0, tempCanvas.width, tempCanvas.height);
+      ctx.drawImage(adjustedImage, 0, 0, tempCanvas.width, tempCanvas.height);
       ctx.beginPath();
       ctx.arc(tempCanvas.width / 2, tempCanvas.height / 2, radius, 0, Math.PI * 2);
       ctx.closePath();
@@ -84,6 +86,36 @@ function createCircleImg(imgScr: string, radius: number, outlineColour: string =
   })
 }
 
+/**
+ * Downscale an image in incremental steps using 2 HTMLcanvas by halving
+ * the size of the image each time for better results.
+ */
+function stepDownImage(image: HTMLImageElement, targetSize: { w: number, h: number }): HTMLCanvasElement {
+  const wRatio = image.width / targetSize.w;
+  const hRatio = image.height / targetSize.h;
+  const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2))
+
+  const canvas = document.createElement('canvas');
+  canvas.height = image.height;
+  canvas.width = image.width;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  if (steps > 1) {
+    const canvas2 = document.createElement('canvas');
+    const ctx2 = canvas2.getContext('2d')!;
+    for (let i = 1; i < steps; i++) {
+      canvas2.width = canvas.width / 2;
+      canvas2.height = canvas.height / 2;
+      ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+      canvas.width = canvas2.width;
+      canvas.height = canvas2.height;
+      ctx.drawImage(canvas2, 0, 0);
+    }
+  }
+
+  return canvas;
+}
 
 /**
  * Use HTMLCanvasElement.toBlob to convert a bitmap to a blob with a different mime type.

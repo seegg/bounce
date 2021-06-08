@@ -6,7 +6,9 @@ const appProps = {
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
-  currentPos: { x: 0, y: 0 }
+  currentPos: { x: 0, y: 0 },
+  party: { active: false, start: 0, duration: 10, colour: '' },
+  rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 }
 
 start();
@@ -19,8 +21,11 @@ function start(): void {
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   //Load all the images in the image list
-  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') })))
+  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') }, 50)))
     .then(_ => {
+      appProps.balls.push(new Ball(appProps.imageCache[2], 500, 500, 50, false));
+      // appProps.balls[0].rotation = 90;
+      draw(appProps.canvas.getContext('2d')!);
     });
 }
 
@@ -142,8 +147,26 @@ function removeBall(ballToDelete: Ball) {
   }
 }
 
-function drawBalls(ctx: CanvasRenderingContext2D, props = appProps) {
+/**
+ * Draw each frame
+ */
+function draw(ctx: CanvasRenderingContext2D) {
+  // ctx.drawImage(appProps.balls[0].img, appProps.balls[0].position.x, appProps.balls[0].position.y, 100, 100);
+  drawBall(ctx, appProps.balls[0]);
+}
 
+/**
+ * Draw an individual ball.
+ */
+function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
+  const { position, radius, selected, rotation, img } = ball;
+  ctx.save();
+  ctx.translate(position.x, position.y);
+  ctx.rotate(Math.PI / 180 * rotation);
+  ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
+
+  // ctx.translate(-position.x, -position.y);
+  ctx.restore();
 }
 
 /**
