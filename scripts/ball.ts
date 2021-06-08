@@ -70,9 +70,9 @@ class Ball {
       Math.pow(this.position.x - ball2.position.x, 2) +
       Math.pow(this.position.y - ball2.position.y, 2));
 
-    const totalRadius = this.radius + ball2.radius;
-    if (centerToCenterDist < totalRadius) {
-      const overlap = centerToCenterDist - totalRadius;
+    const radiusTotal = this.radius + ball2.radius;
+    if (centerToCenterDist < radiusTotal) {
+      const overlap = centerToCenterDist - radiusTotal;
       this.reverseDistance(overlap);
       const [vX, vY] = util.getBallCollisionVelocity(this, ball2);
       const [vX2, vY2] = util.getBallCollisionVelocity(ball2, this);

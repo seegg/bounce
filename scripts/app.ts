@@ -3,6 +3,10 @@ const appProps = {
   screenBreakPoints: { l: 1280, m: 768 },
   imageCache: <ImageBitmap[]>[],
   balls: <Ball[]>[],
+  selectedImgEle: <HTMLImageElement | null>null,
+  selectedBalls: <Ball[]>[],
+  previousTime: 0,
+  deceleration: 1.05,
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
@@ -23,7 +27,7 @@ function start(): void {
   //Load all the images in the image list
   Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') }, 50)))
     .then(_ => {
-      appProps.balls.push(new Ball(appProps.imageCache[2], 500, 500, 50, false));
+      appProps.balls.push(new Ball(appProps.imageCache[1], 500, 500, 50, false));
       // appProps.balls[0].rotation = 90;
       draw(appProps.canvas.getContext('2d')!);
     });
@@ -38,7 +42,7 @@ function start(): void {
  * @param callback event handler for click event on the img element
  */
 function addImage(imgSrc: string, imgArr: ImageBitmap[], callback: mouseClickCallback | null = null, radius: number = appProps.radiusSizes.current) {
-  const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12'];
+  const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
   const imgContainer = document.getElementById('img-container');
   const loadingPlaceholder = document.createElement('img');
   loadingPlaceholder.classList.add('h-12', 'w-12');
@@ -50,7 +54,7 @@ function addImage(imgSrc: string, imgArr: ImageBitmap[], callback: mouseClickCal
     })
     .then(imgEle => {
       if (imgContainer === null) throw new Error('image container is null');
-      appendImageElemToContainer(imgEle, imgContainer, loadingPlaceholder);
+      appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
     })
     .catch(err => {
       console.error(err);
@@ -61,7 +65,7 @@ function addImage(imgSrc: string, imgArr: ImageBitmap[], callback: mouseClickCal
  * Append a HTMLImageELement to a parent container
  * optional loading placeholder.
  */
-function appendImageElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLElement, loadingImg?: HTMLImageElement): void {
+function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLElement, loadingImg?: HTMLImageElement): void {
   if (loadingImg) {
     imgContainer.replaceChild(imgEle, loadingImg);
   } else {
@@ -77,7 +81,10 @@ function appendImageElemToContainer(imgEle: HTMLImageElement, imgContainer: HTML
 function createImgEleWithIndex(src: string, imgIndex: number, classList: string[], callback?: mouseClickCallback | null): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
-  imgEle.onclick = callback ? callback : null;
+  imgEle.onclick = (evt) => {
+    const imgEle = evt.target as HTMLImageElement;
+    toggleImgElement(imgEle);
+  }
   imgEle.setAttribute('data-index', imgIndex + '');
   imgEle.onload = () => {
     URL.revokeObjectURL(src);
@@ -182,11 +189,39 @@ function getRelativeMousePos(evt: MouseEvent): [number, number] | undefined {
   }
 }
 
+/**
+ * Toggle/Select the img elements 
+ * in the img container
+ */
+function toggleImgElement(imgEle: HTMLImageElement) {
+  const grayscale = 'grayscale';
+  appProps.selectedImgEle?.classList.toggle(grayscale);
+  if (imgEle === appProps.selectedImgEle) {
+    appProps.selectedImgEle = null;
+  } else {
+    imgEle.classList.toggle(grayscale);
+    appProps.selectedImgEle = imgEle;
+  }
+  scrollToImgElement(imgEle);
+}
+
+/**
+ * Scroll to the selected img element in the container.
+ */
+function scrollToImgElement(imgEle: HTMLImageElement) {
+  const container = document.getElementById('img-container')!;
+  const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+  container.scroll(0, scrollDistance);
+}
+
 //
-// Mouse Controls
+// Mouse Controls for canvas
 //
 
 function onMouseDown(evt: MouseEvent) {
+  if (evt.button === 0) {
+    console.log('hello world!');
+  }
 }
 
 function onMouseUp(evt: MouseEvent) {

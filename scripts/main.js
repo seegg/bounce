@@ -46,9 +46,9 @@ class Ball {
             return;
         const centerToCenterDist = Math.sqrt(Math.pow(this.position.x - ball2.position.x, 2) +
             Math.pow(this.position.y - ball2.position.y, 2));
-        const totalRadius = this.radius + ball2.radius;
-        if (centerToCenterDist < totalRadius) {
-            const overlap = centerToCenterDist - totalRadius;
+        const radiusTotal = this.radius + ball2.radius;
+        if (centerToCenterDist < radiusTotal) {
+            const overlap = centerToCenterDist - radiusTotal;
             this.reverseDistance(overlap);
             const [vX, vY] = util.getBallCollisionVelocity(this, ball2);
             const [vX2, vY2] = util.getBallCollisionVelocity(ball2, this);
@@ -166,6 +166,10 @@ const appProps = {
     screenBreakPoints: { l: 1280, m: 768 },
     imageCache: [],
     balls: [],
+    selectedImgEle: null,
+    selectedBalls: [],
+    previousTime: 0,
+    deceleration: 1.05,
     canvas: document.getElementById('canvas'),
     canvasHorizontalGap: 5 * 2,
     canvasTopOffset: 70,
@@ -180,12 +184,12 @@ function start() {
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!'); }, 50)))
         .then(_ => {
-        appProps.balls.push(new Ball(appProps.imageCache[2], 500, 500, 50, false));
+        appProps.balls.push(new Ball(appProps.imageCache[1], 500, 500, 50, false));
         draw(appProps.canvas.getContext('2d'));
     });
 }
 function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes.current) {
-    const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12'];
+    const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
     const imgContainer = document.getElementById('img-container');
     const loadingPlaceholder = document.createElement('img');
     loadingPlaceholder.classList.add('h-12', 'w-12');
@@ -198,13 +202,13 @@ function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes
         .then(imgEle => {
         if (imgContainer === null)
             throw new Error('image container is null');
-        appendImageElemToContainer(imgEle, imgContainer, loadingPlaceholder);
+        appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
     })
         .catch(err => {
         console.error(err);
     });
 }
-function appendImageElemToContainer(imgEle, imgContainer, loadingImg) {
+function appendImgElemToContainer(imgEle, imgContainer, loadingImg) {
     if (loadingImg) {
         imgContainer.replaceChild(imgEle, loadingImg);
     }
@@ -215,7 +219,10 @@ function appendImageElemToContainer(imgEle, imgContainer, loadingImg) {
 function createImgEleWithIndex(src, imgIndex, classList, callback) {
     const imgEle = document.createElement('img');
     imgEle.classList.add(...classList);
-    imgEle.onclick = callback ? callback : null;
+    imgEle.onclick = (evt) => {
+        const imgEle = evt.target;
+        toggleImgElement(imgEle);
+    };
     imgEle.setAttribute('data-index', imgIndex + '');
     imgEle.onload = () => {
         URL.revokeObjectURL(src);
@@ -293,7 +300,28 @@ function getRelativeMousePos(evt) {
         console.error(err);
     }
 }
+function toggleImgElement(imgEle) {
+    var _a;
+    const grayscale = 'grayscale';
+    (_a = appProps.selectedImgEle) === null || _a === void 0 ? void 0 : _a.classList.toggle(grayscale);
+    if (imgEle === appProps.selectedImgEle) {
+        appProps.selectedImgEle = null;
+    }
+    else {
+        imgEle.classList.toggle(grayscale);
+        appProps.selectedImgEle = imgEle;
+    }
+    scrollToImgElement(imgEle);
+}
+function scrollToImgElement(imgEle) {
+    const container = document.getElementById('img-container');
+    const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+    container.scroll(0, scrollDistance);
+}
 function onMouseDown(evt) {
+    if (evt.button === 0) {
+        console.log('hello world!');
+    }
 }
 function onMouseUp(evt) {
 }
