@@ -21,6 +21,9 @@ class Ball {
     getTotalVelocity() {
         return Math.sqrt(Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2));
     }
+    containsPoint(x, y) {
+        return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= this.radius;
+    }
     resetCollided() {
         this.collided = [this.id];
     }

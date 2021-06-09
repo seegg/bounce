@@ -41,6 +41,10 @@ class Ball {
     return Math.sqrt(Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2));
   }
 
+  containsPoint(x: number, y: number): boolean {
+    return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= this.radius;
+  }
+
   resetCollided(): void {
     this.collided = [this.id]
   }

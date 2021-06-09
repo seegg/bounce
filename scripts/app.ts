@@ -213,7 +213,7 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
 //
 
 function onMouseDown(evt: MouseEvent) {
-  if (evt.button !== 0) return;
+  if (evt.button !== 0) return; //right click
   const [x, y] = getRelativeMousePos(evt);
   if (appProps.selectedImgEle) {
     try {
