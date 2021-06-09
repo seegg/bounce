@@ -119,7 +119,7 @@ function stepDownImage(image: HTMLImageElement, targetSize: { w: number, h: numb
 
 /**
  * Use HTMLCanvasElement.toBlob to convert a bitmap to a blob with a different mime type.
- * Cors problems.
+ * CORS problems from canvas if using images from different domain.
  * @param image the input bitmap
  * @param mimeType the mimeType for the blob, default image/png
  */

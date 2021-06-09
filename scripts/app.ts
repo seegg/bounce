@@ -25,10 +25,8 @@ function start(): void {
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   //Load all the images in the image list
-  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, () => { console.log('hello world!') }, 50)))
+  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleImgElement(evt.target as HTMLImageElement) }, 50)))
     .then(_ => {
-      appProps.balls.push(new Ball(appProps.imageCache[1], 500, 500, 50, false));
-      // appProps.balls[0].rotation = 90;
       draw(appProps.canvas.getContext('2d')!);
     });
 }
@@ -81,10 +79,7 @@ function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLEl
 function createImgEleWithIndex(src: string, imgIndex: number, classList: string[], callback?: mouseClickCallback | null): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
-  imgEle.onclick = (evt) => {
-    const imgEle = evt.target as HTMLImageElement;
-    toggleImgElement(imgEle);
-  }
+  imgEle.onclick = callback ? callback : null;
   imgEle.setAttribute('data-index', imgIndex + '');
   imgEle.onload = () => {
     URL.revokeObjectURL(src);
@@ -159,7 +154,10 @@ function removeBall(ballToDelete: Ball) {
  */
 function draw(ctx: CanvasRenderingContext2D) {
   // ctx.drawImage(appProps.balls[0].img, appProps.balls[0].position.x, appProps.balls[0].position.y, 100, 100);
-  drawBall(ctx, appProps.balls[0]);
+  appProps.balls.forEach(ball => {
+    drawBall(ctx, ball);
+  })
+  window.requestAnimationFrame(() => { draw(ctx) });
 }
 
 /**
@@ -180,13 +178,9 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
  * Get the position of the mouse click 
  * relative to the event target 
  */
-function getRelativeMousePos(evt: MouseEvent): [number, number] | undefined {
-  try {
-    const boundingRect = (<HTMLElement>evt.target).getBoundingClientRect();
-    return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];
-  } catch (err) {
-    console.error(err);
-  }
+function getRelativeMousePos(evt: MouseEvent): [number, number] {
+  const boundingRect = (<HTMLElement>evt.target).getBoundingClientRect();
+  return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];
 }
 
 /**
@@ -219,8 +213,18 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
 //
 
 function onMouseDown(evt: MouseEvent) {
-  if (evt.button === 0) {
-    console.log('hello world!');
+  if (evt.button !== 0) return;
+  const [x, y] = getRelativeMousePos(evt);
+  if (appProps.selectedImgEle) {
+    try {
+      const imgIndex = Number(appProps.selectedImgEle.dataset['index']);
+      const ball = new Ball(appProps.imageCache[imgIndex], x, y, appProps.radiusSizes.current, false);
+      appProps.balls.push(ball);
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+
   }
 }
 
