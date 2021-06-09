@@ -170,7 +170,6 @@ const appProps = {
     imageCache: [],
     balls: [],
     selectedImgEle: null,
-    selectedBalls: [],
     previousTime: 0,
     deceleration: 1.05,
     canvas: document.getElementById('canvas'),
@@ -279,6 +278,12 @@ function removeBall(ballToDelete) {
         console.error(err);
     }
 }
+function createAndCacheBall(imgEle, x, y, radius = appProps.radiusSizes.current, selected = false) {
+    const imgIndex = Number(imgEle.dataset['index']);
+    const ball = new Ball(appProps.imageCache[imgIndex], x, y, radius, selected);
+    appProps.balls.push(ball);
+    return ball;
+}
 function draw(ctx) {
     appProps.balls.forEach(ball => {
         drawBall(ctx, ball);
@@ -321,15 +326,18 @@ function onMouseDown(evt) {
     const [x, y] = getRelativeMousePos(evt);
     if (appProps.selectedImgEle) {
         try {
-            const imgIndex = Number(appProps.selectedImgEle.dataset['index']);
-            const ball = new Ball(appProps.imageCache[imgIndex], x, y, appProps.radiusSizes.current, false);
-            appProps.balls.push(ball);
+            createAndCacheBall(appProps.selectedImgEle, x, y);
         }
         catch (err) {
             console.log(err);
         }
     }
     else {
+        const ball = appProps.balls.find(ball => ball.containsPoint(x, y));
+        if (!ball)
+            return;
+        ball.selected = true;
+        appProps.currentPos = { x, y };
     }
 }
 function onMouseUp(evt) {
