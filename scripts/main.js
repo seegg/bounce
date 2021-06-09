@@ -170,12 +170,14 @@ const appProps = {
     imageCache: [],
     balls: [],
     selectedImgEle: null,
-    previousTime: 0,
+    selectedBall: null,
+    selectedPositions: { prev: { x: 0, y: 0 }, current: { x: 0, y: 0 } },
+    currentTime: 0,
+    selectedTime: 0,
     deceleration: 1.05,
     canvas: document.getElementById('canvas'),
     canvasHorizontalGap: 5 * 2,
     canvasTopOffset: 70,
-    currentPos: { x: 0, y: 0 },
     party: { active: false, start: 0, duration: 10, colour: '' },
     rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
@@ -279,10 +281,15 @@ function removeBall(ballToDelete) {
     }
 }
 function createAndCacheBall(imgEle, x, y, radius = appProps.radiusSizes.current, selected = false) {
-    const imgIndex = Number(imgEle.dataset['index']);
-    const ball = new Ball(appProps.imageCache[imgIndex], x, y, radius, selected);
-    appProps.balls.push(ball);
-    return ball;
+    try {
+        const imgIndex = Number(imgEle.dataset['index']);
+        const ball = new Ball(appProps.imageCache[imgIndex], x, y, radius, selected);
+        appProps.balls.push(ball);
+        return ball;
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
 function draw(ctx) {
     appProps.balls.forEach(ball => {
@@ -325,24 +332,30 @@ function onMouseDown(evt) {
         return;
     const [x, y] = getRelativeMousePos(evt);
     if (appProps.selectedImgEle) {
-        try {
-            createAndCacheBall(appProps.selectedImgEle, x, y);
-        }
-        catch (err) {
-            console.log(err);
-        }
+        appProps.selectedBall = createAndCacheBall(appProps.selectedImgEle, x, y) || null;
     }
     else {
-        const ball = appProps.balls.find(ball => ball.containsPoint(x, y));
-        if (!ball)
-            return;
-        ball.selected = true;
-        appProps.currentPos = { x, y };
+        appProps.selectedBall = appProps.balls.find(ball => ball.containsPoint(x, y)) || null;
+    }
+    if (appProps.selectedBall) {
+        appProps.selectedTime = new Date().getTime();
+        appProps.selectedPositions.current = { x, y };
+        appProps.selectedPositions.prev = { x, y };
+    }
+}
+function onMouseMove(evt) {
+    if (appProps.selectedBall) {
+        const [x, y] = getRelativeMousePos(evt);
+        appProps.selectedBall.position.x -= appProps.selectedPositions.current.x - x;
+        appProps.selectedBall.position.y -= appProps.selectedPositions.current.y - y;
     }
 }
 function onMouseUp(evt) {
 }
-function onMouseMove(evt) {
-}
 function onMouseLeave(evt) {
+    if (appProps.selectedBall) {
+        appProps.selectedBall.selected = false;
+        appProps.selectedBall.velocity = { vX: 0, vY: 0 };
+        appProps.selectedBall = null;
+    }
 }
