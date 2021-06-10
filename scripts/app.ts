@@ -26,7 +26,7 @@ function start(): void {
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   //Load all the images in the image list
-  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleImgElement(evt.target as HTMLImageElement) }, 50)))
+  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)))
     .then(_ => {
       draw(appProps.canvas.getContext('2d')!);
     });
@@ -198,7 +198,7 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
 
 /**
  * Get the position of the mouse click 
- * relative to the event target 
+ * relative to the canvas
  */
 function getRelativeMousePos(evt: MouseEvent): [number, number] {
   const boundingRect = (<HTMLElement>evt.target).getBoundingClientRect();
@@ -209,7 +209,7 @@ function getRelativeMousePos(evt: MouseEvent): [number, number] {
  * Toggle/Select the img elements 
  * in the img container
  */
-function toggleImgElement(imgEle: HTMLImageElement) {
+function toggleSelectedImgElement(imgEle: HTMLImageElement) {
   const grayscale = 'grayscale';
   appProps.selectedImgEle?.classList.toggle(grayscale);
   if (imgEle === appProps.selectedImgEle) {
@@ -221,9 +221,6 @@ function toggleImgElement(imgEle: HTMLImageElement) {
   scrollToImgElement(imgEle);
 }
 
-/**
- * Scroll to the selected img element in the container.
- */
 function scrollToImgElement(imgEle: HTMLImageElement) {
   const container = document.getElementById('img-container')!;
   const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
