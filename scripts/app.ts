@@ -6,6 +6,7 @@ const appProps = {
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
   selectedPositions: { prev: { x: 0, y: 0 }, current: { x: 0, y: 0 } },
+  mouseMoveDistThreshold: 3,
   currentTime: 0,
   selectedTime: 0,
   deceleration: 1.05,
@@ -16,11 +17,9 @@ const appProps = {
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 }
 
-start();
-
 type mouseClickCallback = (e: MouseEvent) => any;
 
-function start(): void {
+(function start(): void {
   addEventListeners();
   //set initial canvas dimensions
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
@@ -30,7 +29,7 @@ function start(): void {
     .then(_ => {
       draw(appProps.canvas.getContext('2d')!);
     });
-}
+})();
 
 /**
  * Add an image base on a input url. create a bitmap and HTMLImageElement base on this image.
@@ -252,15 +251,19 @@ function onMouseDown(evt: MouseEvent) {
 function onMouseMove(evt: MouseEvent) {
   if (appProps.selectedBall) {
     const [x, y] = getRelativeMousePos(evt);
-    const distX = appProps.selectedPositions.prev.x - x;
-    const distY = appProps.selectedPositions.prev.y - y;
+    const [moveX, moveY] = util.xyDiffBetweenTwoPoints(appProps.selectedPositions.current, { x, y });
+    appProps.selectedBall.position.x -= moveX;
+    appProps.selectedBall.position.y -= moveY;
 
-    appProps.selectedBall.position.x -= appProps.selectedPositions.current.x - x;
-    appProps.selectedBall.position.y -= appProps.selectedPositions.current.y - y;
+    const [distX, distY] = util.xyDiffBetweenTwoPoints(appProps.selectedPositions.prev, { x, y });
 
-    appProps.selectedPositions.current = { x, y };
+    if (distX > appProps.mouseMoveDistThreshold) {
 
+    }
 
+    if (distY > appProps.mouseMoveDistThreshold) {
+
+    }
 
   }
 }

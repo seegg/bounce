@@ -68,7 +68,8 @@ const util = {
     calculateCollisionVelocity,
     createCircleImg,
     convertBmpToBlob,
-    getBallCollisionVelocity
+    getBallCollisionVelocity,
+    xyDiffBetweenTwoPoints
 };
 function calculateCollisionVelocity(x1, y1, vx1, vy1, x2, y2, vx2, vy2, mass1, mass2) {
     const mass = mass1 && mass2 ? (2 * mass2) / (mass1 + mass2) : 1;
@@ -85,6 +86,9 @@ function calculateCollisionVelocity(x1, y1, vx1, vy1, x2, y2, vx2, vy2, mass1, m
 }
 function getBallCollisionVelocity(ball1, ball2) {
     return calculateCollisionVelocity(ball1.position.x, ball1.position.y, ball1.velocity.vX, ball1.velocity.vY, ball2.position.x, ball2.position.y, ball2.velocity.vX, ball2.velocity.vY);
+}
+function xyDiffBetweenTwoPoints(origin, destination) {
+    return [origin.x - destination.x, origin.y - destination.y];
 }
 function createCircleImg(imgScr, radius, outlineColour = 'white', outlineSize = 3) {
     return new Promise((resolve, reject) => {
@@ -174,6 +178,7 @@ const appProps = {
     selectedImgEle: null,
     selectedBall: null,
     selectedPositions: { prev: { x: 0, y: 0 }, current: { x: 0, y: 0 } },
+    mouseMoveDistThreshold: 3,
     currentTime: 0,
     selectedTime: 0,
     deceleration: 1.05,
@@ -183,16 +188,15 @@ const appProps = {
     party: { active: false, start: 0, duration: 10, colour: '' },
     rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
-start();
-function start() {
+(function start() {
     addEventListeners();
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleImgElement(evt.target); }, 50)))
+    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50)))
         .then(_ => {
         draw(appProps.canvas.getContext('2d'));
     });
-}
+})();
 function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes.current) {
     const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
     const imgContainer = document.getElementById('img-container');
@@ -321,7 +325,7 @@ function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();
     return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];
 }
-function toggleImgElement(imgEle) {
+function toggleSelectedImgElement(imgEle) {
     var _a;
     const grayscale = 'grayscale';
     (_a = appProps.selectedImgEle) === null || _a === void 0 ? void 0 : _a.classList.toggle(grayscale);
@@ -359,11 +363,14 @@ function onMouseDown(evt) {
 function onMouseMove(evt) {
     if (appProps.selectedBall) {
         const [x, y] = getRelativeMousePos(evt);
-        const distX = appProps.selectedPositions.prev.x - x;
-        const distY = appProps.selectedPositions.prev.y - y;
-        appProps.selectedBall.position.x -= appProps.selectedPositions.current.x - x;
-        appProps.selectedBall.position.y -= appProps.selectedPositions.current.y - y;
-        appProps.selectedPositions.current = { x, y };
+        const [moveX, moveY] = util.xyDiffBetweenTwoPoints(appProps.selectedPositions.current, { x, y });
+        appProps.selectedBall.position.x -= moveX;
+        appProps.selectedBall.position.y -= moveY;
+        const [distX, distY] = util.xyDiffBetweenTwoPoints(appProps.selectedPositions.prev, { x, y });
+        if (distX > appProps.mouseMoveDistThreshold) {
+        }
+        if (distY > appProps.mouseMoveDistThreshold) {
+        }
     }
 }
 function onMouseUp(evt) {

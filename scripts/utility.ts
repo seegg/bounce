@@ -2,8 +2,11 @@ const util = {
   calculateCollisionVelocity,
   createCircleImg,
   convertBmpToBlob,
-  getBallCollisionVelocity
+  getBallCollisionVelocity,
+  xyDiffBetweenTwoPoints
 };
+
+type Point = { x: number, y: number };
 
 /**
  * returns the new velocity of object1 after collision with object2
@@ -35,13 +38,19 @@ function calculateCollisionVelocity(x1: number, y1: number, vx1: number, vy1: nu
 }
 
 /**
- * Get the velocity of ball1 after colliding with ball2.
+ * returns the velocity of ball1 after colliding with ball2.
  */
 function getBallCollisionVelocity(ball1: Ball, ball2: Ball) {
   return calculateCollisionVelocity(ball1.position.x, ball1.position.y, ball1.velocity.vX, ball1.velocity.vY,
     ball2.position.x, ball2.position.y, ball2.velocity.vX, ball2.velocity.vY);
 }
-
+/**
+ * returns the difference between x and y axis of two points
+ * from origin to destination
+ */
+function xyDiffBetweenTwoPoints(origin: Point, destination: Point): [number, number] {
+  return [origin.x - destination.x, origin.y - destination.y];
+}
 
 /**
  * Draw an image to a temp HTMLCanvas element
