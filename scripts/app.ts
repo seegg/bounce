@@ -104,7 +104,9 @@ function addEventListeners(): void {
   window.onresize = () => {
     handleWindowResize();
   };
-  appProps.canvas.addEventListener('pointerdown', onMouseDown)
+  appProps.canvas.addEventListener('pointerdown', onMouseDown);
+  appProps.canvas.addEventListener('pointermove', onMouseMove);
+  appProps.canvas.addEventListener('pointerup', onMouseUp);
 }
 
 /**
@@ -165,7 +167,8 @@ function createAndCacheBall(imgEle: HTMLImageElement, x: number, y: number, radi
  * Draw each frame
  */
 function draw(ctx: CanvasRenderingContext2D) {
-  // ctx.drawImage(appProps.balls[0].img, appProps.balls[0].position.x, appProps.balls[0].position.y, 100, 100);
+
+  ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
   appProps.balls.forEach(ball => {
     drawBall(ctx, ball);
   })
@@ -182,6 +185,13 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
   ctx.rotate(Math.PI / 180 * rotation);
   ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
 
+  if (ball.selected) {
+    ctx.lineWidth = 4
+    ctx.strokeStyle = 'cyan'
+    ctx.beginPath()
+    ctx.arc(0, 0, radius, 0, Math.PI * 2)
+    ctx.stroke()
+  }
   // ctx.translate(-position.x, -position.y);
   ctx.restore();
 }
@@ -236,6 +246,7 @@ function onMouseDown(evt: MouseEvent) {
   if (appProps.selectedBall) {
     //set the properties use to calcuate the velocity of the selected ball.
     appProps.selectedTime = new Date().getTime();
+    appProps.selectedBall.selected = true;
     appProps.selectedPositions.current = { x, y };
     appProps.selectedPositions.prev = { x, y };
   }
@@ -244,13 +255,24 @@ function onMouseDown(evt: MouseEvent) {
 function onMouseMove(evt: MouseEvent) {
   if (appProps.selectedBall) {
     const [x, y] = getRelativeMousePos(evt);
+    const distX = appProps.selectedPositions.prev.x - x;
+    const distY = appProps.selectedPositions.prev.y - y;
+
     appProps.selectedBall.position.x -= appProps.selectedPositions.current.x - x;
     appProps.selectedBall.position.y -= appProps.selectedPositions.current.y - y;
+
+    appProps.selectedPositions.current = { x, y };
+
+
+
   }
 }
 
 function onMouseUp(evt: MouseEvent) {
-
+  if (appProps.selectedBall) {
+    appProps.selectedBall.selected = false;
+    appProps.selectedBall = null;
+  }
 }
 
 function onMouseLeave(evt: MouseEvent) {

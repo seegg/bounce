@@ -12,6 +12,8 @@ class Ball {
         Ball.baseId++;
     }
     updatePosition(gravity, deceleration, ellapsedTime) {
+        if (this.selected)
+            return;
     }
     reverseDistance(distance) {
         const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
@@ -22,7 +24,7 @@ class Ball {
         return Math.sqrt(Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2));
     }
     containsPoint(x, y) {
-        return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= this.radius;
+        return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.radius, 2);
     }
     resetCollided() {
         this.collided = [this.id];
@@ -242,6 +244,8 @@ function addEventListeners() {
         handleWindowResize();
     };
     appProps.canvas.addEventListener('pointerdown', onMouseDown);
+    appProps.canvas.addEventListener('pointermove', onMouseMove);
+    appProps.canvas.addEventListener('pointerup', onMouseUp);
 }
 function handleWindowResize() {
     try {
@@ -292,6 +296,7 @@ function createAndCacheBall(imgEle, x, y, radius = appProps.radiusSizes.current,
     }
 }
 function draw(ctx) {
+    ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
     appProps.balls.forEach(ball => {
         drawBall(ctx, ball);
     });
@@ -303,6 +308,13 @@ function drawBall(ctx, ball) {
     ctx.translate(position.x, position.y);
     ctx.rotate(Math.PI / 180 * rotation);
     ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
+    if (ball.selected) {
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'cyan';
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.stroke();
+    }
     ctx.restore();
 }
 function getRelativeMousePos(evt) {
@@ -339,6 +351,7 @@ function onMouseDown(evt) {
     }
     if (appProps.selectedBall) {
         appProps.selectedTime = new Date().getTime();
+        appProps.selectedBall.selected = true;
         appProps.selectedPositions.current = { x, y };
         appProps.selectedPositions.prev = { x, y };
     }
@@ -346,11 +359,18 @@ function onMouseDown(evt) {
 function onMouseMove(evt) {
     if (appProps.selectedBall) {
         const [x, y] = getRelativeMousePos(evt);
+        const distX = appProps.selectedPositions.prev.x - x;
+        const distY = appProps.selectedPositions.prev.y - y;
         appProps.selectedBall.position.x -= appProps.selectedPositions.current.x - x;
         appProps.selectedBall.position.y -= appProps.selectedPositions.current.y - y;
+        appProps.selectedPositions.current = { x, y };
     }
 }
 function onMouseUp(evt) {
+    if (appProps.selectedBall) {
+        appProps.selectedBall.selected = false;
+        appProps.selectedBall = null;
+    }
 }
 function onMouseLeave(evt) {
     if (appProps.selectedBall) {

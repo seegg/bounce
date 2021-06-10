@@ -24,7 +24,7 @@ class Ball {
 
   // Update the position and state of the ball after every frame
   updatePosition(gravity: number, deceleration: number, ellapsedTime: number): void {
-
+    if (this.selected) return;
   }
 
   /**
@@ -42,7 +42,7 @@ class Ball {
   }
 
   containsPoint(x: number, y: number): boolean {
-    return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= this.radius;
+    return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.radius, 2);
   }
 
   resetCollided(): void {
