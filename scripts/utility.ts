@@ -3,7 +3,7 @@ const util = {
   createCircleImg,
   convertBmpToBlob,
   getBallCollisionVelocity,
-  xyDiffBetweenTwoPoints
+  xyDiffBetweenPoints
 };
 
 type Point = { x: number, y: number };
@@ -48,7 +48,7 @@ function getBallCollisionVelocity(ball1: Ball, ball2: Ball) {
  * returns the difference between x and y axis of two points
  * from origin to destination
  */
-function xyDiffBetweenTwoPoints(origin: Point, destination: Point): [number, number] {
+function xyDiffBetweenPoints(origin: Point, destination: Point): [number, number] {
   return [origin.x - destination.x, origin.y - destination.y];
 }
 

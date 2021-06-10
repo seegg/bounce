@@ -15,6 +15,10 @@ class Ball {
         if (this.selected)
             return;
     }
+    move(x, y) {
+        this.position.x += x;
+        this.position.y += y;
+    }
     reverseDistance(distance) {
         const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
         this.position.x += this.velocity.vX * velocityRatio;
@@ -69,7 +73,7 @@ const util = {
     createCircleImg,
     convertBmpToBlob,
     getBallCollisionVelocity,
-    xyDiffBetweenTwoPoints
+    xyDiffBetweenPoints
 };
 function calculateCollisionVelocity(x1, y1, vx1, vy1, x2, y2, vx2, vy2, mass1, mass2) {
     const mass = mass1 && mass2 ? (2 * mass2) / (mass1 + mass2) : 1;
@@ -87,7 +91,7 @@ function calculateCollisionVelocity(x1, y1, vx1, vy1, x2, y2, vx2, vy2, mass1, m
 function getBallCollisionVelocity(ball1, ball2) {
     return calculateCollisionVelocity(ball1.position.x, ball1.position.y, ball1.velocity.vX, ball1.velocity.vY, ball2.position.x, ball2.position.y, ball2.velocity.vX, ball2.velocity.vY);
 }
-function xyDiffBetweenTwoPoints(origin, destination) {
+function xyDiffBetweenPoints(origin, destination) {
     return [origin.x - destination.x, origin.y - destination.y];
 }
 function createCircleImg(imgScr, radius, outlineColour = 'white', outlineSize = 3) {
@@ -343,6 +347,11 @@ function scrollToImgElement(imgEle) {
     const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scroll(0, scrollDistance);
 }
+function getUpdateVelocity(current, distance) {
+    if (Math.sign(current) === Math.sign(distance))
+        return current + distance;
+    return distance;
+}
 function onMouseDown(evt) {
     if (evt.button !== 0)
         return;
@@ -363,13 +372,15 @@ function onMouseDown(evt) {
 function onMouseMove(evt) {
     if (appProps.selectedBall) {
         const [x, y] = getRelativeMousePos(evt);
-        const [moveX, moveY] = util.xyDiffBetweenTwoPoints(appProps.selectedPositions.current, { x, y });
+        const [moveX, moveY] = util.xyDiffBetweenPoints(appProps.selectedPositions.current, { x, y });
         appProps.selectedBall.position.x -= moveX;
         appProps.selectedBall.position.y -= moveY;
-        const [distX, distY] = util.xyDiffBetweenTwoPoints(appProps.selectedPositions.prev, { x, y });
+        const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.prev, { x, y });
         if (distX > appProps.mouseMoveDistThreshold) {
+            appProps.selectedBall.velocity.vX = getUpdateVelocity(appProps.selectedBall.velocity.vX, distX);
         }
         if (distY > appProps.mouseMoveDistThreshold) {
+            appProps.selectedBall.velocity.vY = getUpdateVelocity(appProps.selectedBall.velocity.vY, distX);
         }
     }
 }

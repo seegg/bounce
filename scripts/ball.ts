@@ -27,6 +27,11 @@ class Ball {
     if (this.selected) return;
   }
 
+  move(x: number, y: number): void {
+    this.position.x += x;
+    this.position.y += y;
+  }
+
   /**
    * Reverse the position of the ball base on 
    * the distance of the intersection.

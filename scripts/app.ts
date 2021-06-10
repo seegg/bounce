@@ -39,7 +39,12 @@ type mouseClickCallback = (e: MouseEvent) => any;
  * @param radius The radius of the bitmap 
  * @param callback event handler for click event on the img element
  */
-function addImage(imgSrc: string, imgArr: ImageBitmap[], callback: mouseClickCallback | null = null, radius: number = appProps.radiusSizes.current) {
+function addImage(
+  imgSrc: string,
+  imgArr: ImageBitmap[],
+  callback: mouseClickCallback | null = null,
+  radius: number = appProps.radiusSizes.current
+) {
   const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
   const imgContainer = document.getElementById('img-container');
   const loadingPlaceholder = document.createElement('img');
@@ -76,7 +81,12 @@ function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLEl
  *assign an index number from the bitmap image array associated with 
  *the src.
  */
-function createImgEleWithIndex(src: string, imgIndex: number, classList: string[], callback?: mouseClickCallback | null): HTMLImageElement {
+function createImgEleWithIndex(
+  src: string,
+  imgIndex: number,
+  classList: string[],
+  callback?: mouseClickCallback | null
+): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
   imgEle.onclick = callback ? callback : null;
@@ -151,7 +161,13 @@ function removeBall(ballToDelete: Ball) {
   }
 }
 
-function createAndCacheBall(imgEle: HTMLImageElement, x: number, y: number, radius = appProps.radiusSizes.current, selected = false): Ball | undefined {
+function createAndCacheBall(
+  imgEle: HTMLImageElement,
+  x: number,
+  y: number,
+  radius = appProps.radiusSizes.current,
+  selected = false
+): Ball | undefined {
   try {
     const imgIndex = Number(imgEle.dataset['index']);
     const ball = new Ball(appProps.imageCache[imgIndex], x, y, radius, selected);
@@ -226,6 +242,15 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
   container.scroll(0, scrollDistance);
 }
 
+/**
+ * @param current X or Y component of velocity for a ball
+ * @param distance distance moved
+ */
+function getUpdateVelocity(current: number, distance: number): number {
+  if (Math.sign(current) === Math.sign(distance)) return current + distance;
+  return distance;
+}
+
 //
 // Mouse Controls for canvas
 //
@@ -251,18 +276,18 @@ function onMouseDown(evt: MouseEvent) {
 function onMouseMove(evt: MouseEvent) {
   if (appProps.selectedBall) {
     const [x, y] = getRelativeMousePos(evt);
-    const [moveX, moveY] = util.xyDiffBetweenTwoPoints(appProps.selectedPositions.current, { x, y });
+    const [moveX, moveY] = util.xyDiffBetweenPoints(appProps.selectedPositions.current, { x, y });
     appProps.selectedBall.position.x -= moveX;
     appProps.selectedBall.position.y -= moveY;
 
-    const [distX, distY] = util.xyDiffBetweenTwoPoints(appProps.selectedPositions.prev, { x, y });
+    const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.prev, { x, y });
 
     if (distX > appProps.mouseMoveDistThreshold) {
-
+      appProps.selectedBall.velocity.vX = getUpdateVelocity(appProps.selectedBall.velocity.vX, distX);
     }
 
     if (distY > appProps.mouseMoveDistThreshold) {
-
+      appProps.selectedBall.velocity.vY = getUpdateVelocity(appProps.selectedBall.velocity.vY, distX);
     }
 
   }
