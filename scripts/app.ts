@@ -246,7 +246,7 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
  * @param current X or Y component of velocity for a ball
  * @param distance distance moved
  */
-function getUpdateVelocity(current: number, distance: number): number {
+function calUpdateVelocity(current: number, distance: number): number {
   if (Math.sign(current) === Math.sign(distance)) return current + distance;
   return distance;
 }
@@ -276,20 +276,20 @@ function onMouseDown(evt: MouseEvent) {
 function onMouseMove(evt: MouseEvent) {
   if (appProps.selectedBall) {
     const [x, y] = getRelativeMousePos(evt);
-    const [moveX, moveY] = util.xyDiffBetweenPoints(appProps.selectedPositions.current, { x, y });
-    appProps.selectedBall.position.x -= moveX;
-    appProps.selectedBall.position.y -= moveY;
+    const [moveX, moveY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.current);
+    appProps.selectedBall.move(moveX, moveY);
 
     const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.prev, { x, y });
 
     if (distX > appProps.mouseMoveDistThreshold) {
-      appProps.selectedBall.velocity.vX = getUpdateVelocity(appProps.selectedBall.velocity.vX, distX);
+      appProps.selectedBall.velocity.vX = calUpdateVelocity(appProps.selectedBall.velocity.vX, distX);
     }
 
     if (distY > appProps.mouseMoveDistThreshold) {
-      appProps.selectedBall.velocity.vY = getUpdateVelocity(appProps.selectedBall.velocity.vY, distX);
+      appProps.selectedBall.velocity.vY = calUpdateVelocity(appProps.selectedBall.velocity.vY, distX);
     }
 
+    appProps.selectedPositions.current = { x, y };
   }
 }
 

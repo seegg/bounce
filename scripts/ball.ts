@@ -27,6 +27,9 @@ class Ball {
     if (this.selected) return;
   }
 
+  /**
+   * move the ball by x and y amount.
+   */
   move(x: number, y: number): void {
     this.position.x += x;
     this.position.y += y;
