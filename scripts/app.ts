@@ -243,12 +243,33 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
 }
 
 /**
+ * Calculate the updated velocity for the selected ball in
+ * mousemove events.
  * @param current X or Y component of velocity for a ball
  * @param distance distance moved
  */
-function calUpdateVelocity(current: number, distance: number): number {
-  if (Math.sign(current) === Math.sign(distance)) return current + distance;
-  return distance;
+function calVelocityComponent(current: number, distance: number): [number, boolean] {
+  let reset = false;
+  let velocity = distance;
+  if (Math.sign(current) === Math.sign(distance)) {
+    velocity += current;
+  } else if (current !== 0) {
+    reset = true;
+  }
+  return [velocity, reset];
+}
+
+function calUpdateVelocity(
+  ball: Ball,
+  distanceX: number,
+  distanceY: number
+): [number, number, boolean] {
+  const [vX, resetX] = distanceX > appProps.mouseMoveDistThreshold ?
+    calVelocityComponent(ball.velocity.vX, distanceX) : [ball.velocity.vX, false];
+  const [vY, resetY] = distanceY > appProps.mouseMoveDistThreshold ?
+    calVelocityComponent(ball.velocity.vY, distanceY) : [ball.velocity.vY, false];
+  const reset = resetX || resetY;
+  return [vX, vY, reset];
 }
 
 //
@@ -280,14 +301,9 @@ function onMouseMove(evt: MouseEvent) {
     appProps.selectedBall.move(moveX, moveY);
 
     const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.prev, { x, y });
-
-    if (distX > appProps.mouseMoveDistThreshold) {
-      appProps.selectedBall.velocity.vX = calUpdateVelocity(appProps.selectedBall.velocity.vX, distX);
-    }
-
-    if (distY > appProps.mouseMoveDistThreshold) {
-      appProps.selectedBall.velocity.vY = calUpdateVelocity(appProps.selectedBall.velocity.vY, distX);
-    }
+    const [vX, vY, resetSelectTime] = calUpdateVelocity(appProps.selectedBall, distX, distY);
+    appProps.selectedBall.velocity = { vX, vY };
+    if (resetSelectTime) appProps.selectedTime = new Date().getTime();
 
     appProps.selectedPositions.current = { x, y };
   }
