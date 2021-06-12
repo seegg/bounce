@@ -251,6 +251,7 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
 function calVelocityComponent(current: number, distance: number): [number, boolean] {
   let reset = false;
   let velocity = distance;
+  if (Math.abs(distance) <= appProps.mouseMoveDistThreshold) return [velocity, reset];
   if (Math.sign(current) === Math.sign(distance)) {
     velocity += current;
   } else if (current !== 0) {
@@ -264,10 +265,8 @@ function calUpdateVelocity(
   distanceX: number,
   distanceY: number
 ): [number, number, boolean] {
-  const [vX, resetX] = distanceX > appProps.mouseMoveDistThreshold ?
-    calVelocityComponent(ball.velocity.vX, distanceX) : [ball.velocity.vX, false];
-  const [vY, resetY] = distanceY > appProps.mouseMoveDistThreshold ?
-    calVelocityComponent(ball.velocity.vY, distanceY) : [ball.velocity.vY, false];
+  const [vX, resetX] = calVelocityComponent(ball.velocity.vX, distanceX);
+  const [vY, resetY] = calVelocityComponent(ball.velocity.vY, distanceY);
   const reset = resetX || resetY;
   return [vX, vY, reset];
 }
@@ -311,6 +310,10 @@ function onMouseMove(evt: MouseEvent) {
 
 function onMouseUp(evt: MouseEvent) {
   if (appProps.selectedBall) {
+    console.log(
+      'v', appProps.selectedBall.velocity,
+      't', new Date().getTime() - appProps.selectedTime
+    );
     appProps.selectedBall.selected = false;
     appProps.selectedBall = null;
   }
