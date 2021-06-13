@@ -182,7 +182,7 @@ const appProps = {
     selectedImgEle: null,
     selectedBall: null,
     selectedPositions: { prev: { x: 0, y: 0 }, current: { x: 0, y: 0 } },
-    mouseMoveDistThreshold: 3,
+    mouseMoveDistThreshold: 5,
     currentTime: 0,
     selectedTime: 0,
     deceleration: 1.05,
@@ -353,7 +353,7 @@ function calVelocityComponent(current, distance) {
     if (Math.abs(distance) <= appProps.mouseMoveDistThreshold)
         return [velocity, reset];
     if (Math.sign(current) === Math.sign(distance)) {
-        velocity += current;
+        velocity -= current;
     }
     else if (current !== 0) {
         reset = true;
@@ -388,11 +388,15 @@ function onMouseMove(evt) {
         const [x, y] = getRelativeMousePos(evt);
         const [moveX, moveY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.current);
         appProps.selectedBall.move(moveX, moveY);
-        const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.prev, { x, y });
+        const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
+        console.log('dist', distX, distY);
         const [vX, vY, resetSelectTime] = calUpdateVelocity(appProps.selectedBall, distX, distY);
-        appProps.selectedBall.velocity = { vX, vY };
         if (resetSelectTime)
             appProps.selectedTime = new Date().getTime();
+        if (vX !== appProps.selectedBall.velocity.vX || vY !== appProps.selectedBall.velocity.vY) {
+            appProps.selectedBall.velocity = { vX, vY };
+            appProps.selectedPositions.prev = { x, y };
+        }
         appProps.selectedPositions.current = { x, y };
     }
 }
