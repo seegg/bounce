@@ -207,7 +207,6 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
     ctx.arc(0, 0, radius, 0, Math.PI * 2)
     ctx.stroke()
   }
-  // ctx.translate(-position.x, -position.y);
   ctx.restore();
 }
 
