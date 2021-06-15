@@ -14,6 +14,8 @@ class Ball {
     updatePosition(gravity, deceleration, ellapsedTime) {
         if (this.selected)
             return;
+        this.position.x += this.velocity.vX * ellapsedTime;
+        this.position.y += this.velocity.vY * ellapsedTime;
     }
     move(x, y) {
         this.position.x += x;
@@ -182,7 +184,7 @@ const appProps = {
     selectedImgEle: null,
     selectedBall: null,
     selectedPositions: { prev: { x: 0, y: 0 }, current: { x: 0, y: 0 } },
-    mouseMoveDistThreshold: 5,
+    mouseMoveDistThreshold: 2,
     currentTime: 0,
     selectedTime: 0,
     deceleration: 1.05,
@@ -198,6 +200,7 @@ const appProps = {
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50)))
         .then(_ => {
+        appProps.currentTime = new Date().getTime();
         draw(appProps.canvas.getContext('2d'));
     });
 })();
@@ -304,9 +307,12 @@ function createAndCacheBall(imgEle, x, y, radius = appProps.radiusSizes.current,
     }
 }
 function draw(ctx) {
+    const ellapsedTime = new Date().getTime() - appProps.currentTime;
+    appProps.currentTime = new Date().getTime();
     ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
     appProps.balls.forEach(ball => {
         drawBall(ctx, ball);
+        ball.updatePosition(1, 1, ellapsedTime);
     });
     window.requestAnimationFrame(() => { draw(ctx); });
 }
@@ -403,8 +409,11 @@ function onMouseMove(evt) {
 function onMouseUp(evt) {
     if (appProps.selectedBall) {
         const ellapsedTime = new Date().getTime() - appProps.selectedTime;
+        const [x, y] = getRelativeMousePos(evt);
+        console.log(appProps.selectedBall.velocity);
         appProps.selectedBall.velocity.vX /= ellapsedTime;
         appProps.selectedBall.velocity.vY /= ellapsedTime;
+        console.log(appProps.selectedBall.velocity);
         appProps.selectedBall.selected = false;
         appProps.selectedBall = null;
     }

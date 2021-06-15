@@ -6,7 +6,7 @@ const appProps = {
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
   selectedPositions: { prev: { x: 0, y: 0 }, current: { x: 0, y: 0 } },
-  mouseMoveDistThreshold: 5,
+  mouseMoveDistThreshold: 2,
   currentTime: 0,
   selectedTime: 0,
   deceleration: 1.05,
@@ -27,6 +27,7 @@ type mouseClickCallback = (e: MouseEvent) => any;
   //Load all the images in the image list
   Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)))
     .then(_ => {
+      appProps.currentTime = new Date().getTime();
       draw(appProps.canvas.getContext('2d')!);
     });
 })();
@@ -183,9 +184,12 @@ function createAndCacheBall(
  */
 function draw(ctx: CanvasRenderingContext2D) {
 
+  const ellapsedTime = new Date().getTime() - appProps.currentTime;
+  appProps.currentTime = new Date().getTime();
   ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
   appProps.balls.forEach(ball => {
     drawBall(ctx, ball);
+    ball.updatePosition(1, 1, ellapsedTime);
   })
   window.requestAnimationFrame(() => { draw(ctx) });
 }
@@ -318,8 +322,11 @@ function onMouseMove(evt: MouseEvent) {
 function onMouseUp(evt: MouseEvent) {
   if (appProps.selectedBall) {
     const ellapsedTime = new Date().getTime() - appProps.selectedTime;
+    const [x, y] = getRelativeMousePos(evt);
+    console.log(appProps.selectedBall.velocity);
     appProps.selectedBall.velocity.vX /= ellapsedTime;
     appProps.selectedBall.velocity.vY /= ellapsedTime;
+    console.log(appProps.selectedBall.velocity);
     appProps.selectedBall.selected = false;
     appProps.selectedBall = null;
   }

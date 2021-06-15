@@ -25,6 +25,8 @@ class Ball {
   // Update the position and state of the ball after every frame
   updatePosition(gravity: number, deceleration: number, ellapsedTime: number): void {
     if (this.selected) return;
+    this.position.x += this.velocity.vX * ellapsedTime;
+    this.position.y += this.velocity.vY * ellapsedTime;
   }
 
   /**
