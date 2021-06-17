@@ -303,20 +303,15 @@ function onMouseMove(evt: MouseEvent) {
     const [moveX, moveY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.current);
     appProps.selectedBall.move(moveX, moveY);
 
-    const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
-    const [vX, vY, resetSelectTime] = calUpdateVelocity(appProps.selectedBall, distX, distY);
-    if (resetSelectTime) appProps.selectedTime = new Date().getTime();
-    if (vX !== appProps.selectedBall.velocity.vX || vY !== appProps.selectedBall.velocity.vY) {
-      appProps.selectedBall.velocity = { vX, vY };
-      appProps.selectedPositions.prev = { x, y };
-    }
+
+
 
     appProps.selectedPositions.current = { x, y };
   }
 }
 
 /**
- * Calculate ellapsed time use it to 
+ * Calculate ellapsed time and use it to 
  * adjust the velocity for the selected ball
  */
 function onMouseUp(evt: MouseEvent) {

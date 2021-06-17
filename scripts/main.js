@@ -395,14 +395,6 @@ function onMouseMove(evt) {
         const [x, y] = getRelativeMousePos(evt);
         const [moveX, moveY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.current);
         appProps.selectedBall.move(moveX, moveY);
-        const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
-        const [vX, vY, resetSelectTime] = calUpdateVelocity(appProps.selectedBall, distX, distY);
-        if (resetSelectTime)
-            appProps.selectedTime = new Date().getTime();
-        if (vX !== appProps.selectedBall.velocity.vX || vY !== appProps.selectedBall.velocity.vY) {
-            appProps.selectedBall.velocity = { vX, vY };
-            appProps.selectedPositions.prev = { x, y };
-        }
         appProps.selectedPositions.current = { x, y };
     }
 }
