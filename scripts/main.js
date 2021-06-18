@@ -401,7 +401,7 @@ function onMouseMove(evt) {
 function onMouseUp(evt) {
     if (appProps.selectedBall) {
         const [x, y] = getRelativeMousePos(evt);
-        const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
+        const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.prev, { x, y });
         appProps.selectedBall.velocity.vX -= distX;
         appProps.selectedBall.velocity.vY -= distY;
         const ellapsedTime = new Date().getTime() - appProps.selectedTime;

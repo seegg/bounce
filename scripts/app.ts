@@ -303,9 +303,6 @@ function onMouseMove(evt: MouseEvent) {
     const [moveX, moveY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.current);
     appProps.selectedBall.move(moveX, moveY);
 
-
-
-
     appProps.selectedPositions.current = { x, y };
   }
 }
@@ -318,7 +315,7 @@ function onMouseUp(evt: MouseEvent) {
   if (appProps.selectedBall) {
 
     const [x, y] = getRelativeMousePos(evt);
-    const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
+    const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.prev, { x, y });
     appProps.selectedBall.velocity.vX -= distX;
     appProps.selectedBall.velocity.vY -= distY;
 
