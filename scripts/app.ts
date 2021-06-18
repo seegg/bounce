@@ -251,7 +251,7 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
  * @param current X or Y component of velocity for a ball
  * @param distance distance moved
  */
-function calVelocityComponent(current: number, distance: number): [number, boolean] {
+function calcVelocityComponent(current: number, distance: number): [number, boolean] {
   let reset = false;
   let velocity = distance;
   if (Math.abs(distance) <= appProps.mouseMoveDistThreshold) return [velocity, reset];
@@ -268,8 +268,8 @@ function calUpdateVelocity(
   distanceX: number,
   distanceY: number
 ): [number, number, boolean] {
-  const [vX, resetX] = calVelocityComponent(ball.velocity.vX, distanceX);
-  const [vY, resetY] = calVelocityComponent(ball.velocity.vY, distanceY);
+  const [vX, resetX] = calcVelocityComponent(ball.velocity.vX, distanceX);
+  const [vY, resetY] = calcVelocityComponent(ball.velocity.vY, distanceY);
   const reset = resetX || resetY;
   return [vX, vY, reset];
 }

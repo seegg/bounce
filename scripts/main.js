@@ -353,7 +353,7 @@ function scrollToImgElement(imgEle) {
     const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scroll(0, scrollDistance);
 }
-function calVelocityComponent(current, distance) {
+function calcVelocityComponent(current, distance) {
     let reset = false;
     let velocity = distance;
     if (Math.abs(distance) <= appProps.mouseMoveDistThreshold)
@@ -367,8 +367,8 @@ function calVelocityComponent(current, distance) {
     return [velocity, reset];
 }
 function calUpdateVelocity(ball, distanceX, distanceY) {
-    const [vX, resetX] = calVelocityComponent(ball.velocity.vX, distanceX);
-    const [vY, resetY] = calVelocityComponent(ball.velocity.vY, distanceY);
+    const [vX, resetX] = calcVelocityComponent(ball.velocity.vX, distanceX);
+    const [vY, resetY] = calcVelocityComponent(ball.velocity.vY, distanceY);
     const reset = resetX || resetY;
     return [vX, vY, reset];
 }
