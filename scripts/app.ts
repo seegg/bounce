@@ -10,7 +10,7 @@ const appProps = {
     current: { x: 0, y: 0 },
     reference: { x: 0, y: 0 }
   },
-  mouseMoveDistThreshold: 2,
+  mouseMoveDistThreshold: 0,
   currentTime: 0,
   selectedTime: 0,
   deceleration: 1.05,
@@ -260,7 +260,7 @@ function calcVelocityComponent(current: number, distance: number): [number, bool
   let velocity = distance;
   if (Math.abs(distance) <= appProps.mouseMoveDistThreshold) return [velocity, reset];
   if (Math.sign(current) === Math.sign(distance)) {
-    velocity -= current;
+    velocity = current;
   } else if (current !== 0) {
     reset = true;
   }
@@ -310,26 +310,30 @@ function onMouseMove(evt: MouseEvent) {
     appProps.selectedPositions.current = { x, y };
 
     const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
-    // console.log(distX, distY);
-    const [vX, vY, resetReferences] = calcUpdateVelocity(appProps.selectedBall.velocity, distX, distY);
-    appProps.selectedBall.velocity = { vX, vY };
-    if (resetReferences) {
+    if (distX > appProps.mouseMoveDistThreshold || distY > appProps.mouseMoveDistThreshold) {
+      const [vX, vY, reset] = calcUpdateVelocity(appProps.selectedBall.velocity, distX, distY);
+      appProps.selectedBall.velocity = { vX, vY };
       appProps.selectedPositions.prev = { x, y };
-      appProps.selectedTime = new Date().getTime();
-      console.log('reset')
+      if (reset) {
+        appProps.selectedPositions.reference = { x, y };
+        appProps.selectedTime = new Date().getTime();
+        console.log('reset');
+      }
     }
+
+
   }
 }
 
 /**
- * Calculate ellapsed time and use it to 
+ * Calculate ellapsed time and final mouse position and use it to 
  * adjust the velocity for the selected ball
  */
 function onMouseUp(evt: MouseEvent) {
   if (appProps.selectedBall) {
 
     const [x, y] = getRelativeMousePos(evt);
-    const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
+    const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.reference);
 
     const ellapsedTime = new Date().getTime() - appProps.selectedTime;
 

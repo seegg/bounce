@@ -70,106 +70,115 @@ class Ball {
     }
 }
 Ball.baseId = 1;
-const util = {
-    calculateCollisionVelocity,
-    createCircleImg,
-    convertBmpToBlob,
-    getBallCollisionVelocity,
-    xyDiffBetweenPoints
-};
-function calculateCollisionVelocity(x1, y1, vx1, vy1, x2, y2, vx2, vy2, mass1, mass2) {
-    const mass = mass1 && mass2 ? (2 * mass2) / (mass1 + mass2) : 1;
-    const distX = x1 - x2;
-    const distY = y1 - y2;
-    const vxDelta = vx1 - vx2;
-    const vyDelta = vy1 - vy2;
-    const dotProduct = (distX * vxDelta) + (distY * vyDelta);
-    const magnitude = Math.pow(distX, 2) + Math.pow(distY, 2);
-    const sc = dotProduct / magnitude * mass;
-    const newVx = vx1 - (sc * distX);
-    const newVy = vy1 - (sc * distY);
-    return [newVx, newVy];
-}
-function getBallCollisionVelocity(ball1, ball2) {
-    return calculateCollisionVelocity(ball1.position.x, ball1.position.y, ball1.velocity.vX, ball1.velocity.vY, ball2.position.x, ball2.position.y, ball2.velocity.vX, ball2.velocity.vY);
-}
-function xyDiffBetweenPoints(origin, destination) {
-    return [origin.x - destination.x, origin.y - destination.y];
-}
-function createCircleImg(imgScr, radius, outlineColour = 'white', outlineSize = 3) {
-    return new Promise((resolve, reject) => {
-        const tempCanvas = document.createElement('canvas');
-        const diameter = radius * 2;
-        tempCanvas.width = diameter;
-        tempCanvas.height = diameter;
-        const image = document.createElement('img');
-        image.src = imgScr;
-        image.onload = () => {
-            const wRatio = image.width / diameter;
-            const hRatio = image.height / diameter;
-            wRatio >= hRatio ? tempCanvas.width = Math.floor(image.width / hRatio) : tempCanvas.height = Math.floor(image.height / wRatio);
-            const adjustedImage = stepDownImage(image, { w: diameter, h: diameter });
-            const ctx = tempCanvas.getContext('2d');
-            if (ctx === null)
-                throw new Error('context2D is null');
-            ctx.drawImage(adjustedImage, 0, 0, tempCanvas.width, tempCanvas.height);
-            ctx.beginPath();
-            ctx.arc(tempCanvas.width / 2, tempCanvas.height / 2, radius, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.lineWidth = outlineSize;
-            ctx.strokeStyle = outlineColour;
-            ctx.stroke();
-            ctx.globalCompositeOperation = 'destination-in';
-            ctx.arc(tempCanvas.width / 2, tempCanvas.height / 2, radius, 0, Math.PI * 2);
-            ctx.fill();
-            resolve(createImageBitmap(tempCanvas, tempCanvas.width / 2 - radius, tempCanvas.height / 2 - radius, diameter, diameter));
-        };
-        image.onerror = reject;
-    });
-}
-function stepDownImage(image, targetSize) {
-    const wRatio = image.width / targetSize.w;
-    const hRatio = image.height / targetSize.h;
-    const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2));
-    const canvas = document.createElement('canvas');
-    canvas.height = image.height;
-    canvas.width = image.width;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-    if (steps > 1) {
-        const canvas2 = document.createElement('canvas');
-        const ctx2 = canvas2.getContext('2d');
-        for (let i = 1; i < steps; i++) {
-            canvas2.width = canvas.width / 2;
-            canvas2.height = canvas.height / 2;
-            ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
-            canvas.width = canvas2.width;
-            canvas.height = canvas2.height;
-            ctx.drawImage(canvas2, 0, 0);
-        }
+const util = (function utilityFunctions() {
+    function calculateCollisionVelocity(x1, y1, vx1, vy1, x2, y2, vx2, vy2, mass1, mass2) {
+        const mass = mass1 && mass2 ? (2 * mass2) / (mass1 + mass2) : 1;
+        const distX = x1 - x2;
+        const distY = y1 - y2;
+        const vxDelta = vx1 - vx2;
+        const vyDelta = vy1 - vy2;
+        const dotProduct = (distX * vxDelta) + (distY * vyDelta);
+        const magnitude = Math.pow(distX, 2) + Math.pow(distY, 2);
+        const sc = dotProduct / magnitude * mass;
+        const newVx = vx1 - (sc * distX);
+        const newVy = vy1 - (sc * distY);
+        return [newVx, newVy];
     }
-    return canvas;
-}
-function convertBmpToBlob(image, mimeType = 'image/png') {
-    return new Promise((resolve, reject) => {
-        var _a;
-        const canvas = document.createElement('canvas');
-        canvas.width = image.width;
-        canvas.height = image.height;
-        const ctx = canvas.getContext('bitmaprenderer');
-        if (ctx) {
-            ctx.transferFromImageBitmap(image);
-        }
-        else {
-            (_a = canvas.getContext('2d')) === null || _a === void 0 ? void 0 : _a.drawImage(image, 0, 0);
-        }
-        canvas.toBlob(function blobCallback(blob) {
-            if (blob === null)
-                reject('Blob is null');
-            resolve(blob);
+    function getBallCollisionVelocity(ball1, ball2) {
+        return calculateCollisionVelocity(ball1.position.x, ball1.position.y, ball1.velocity.vX, ball1.velocity.vY, ball2.position.x, ball2.position.y, ball2.velocity.vX, ball2.velocity.vY);
+    }
+    function xyDiffBetweenPoints(origin, destination) {
+        return [origin.x - destination.x, origin.y - destination.y];
+    }
+    function createCircleImg(imgScr, radius, outlineColour = 'white', outlineSize = 3) {
+        return new Promise((resolve, reject) => {
+            const tempCanvas = document.createElement('canvas');
+            const diameter = radius * 2;
+            tempCanvas.width = diameter;
+            tempCanvas.height = diameter;
+            const image = document.createElement('img');
+            image.src = imgScr;
+            image.onload = () => {
+                const wRatio = image.width / diameter;
+                const hRatio = image.height / diameter;
+                wRatio >= hRatio ? tempCanvas.width = Math.floor(image.width / hRatio) : tempCanvas.height = Math.floor(image.height / wRatio);
+                const adjustedImage = stepDownImage(image, { w: diameter, h: diameter });
+                const ctx = tempCanvas.getContext('2d');
+                if (ctx === null)
+                    throw new Error('context2D is null');
+                ctx.drawImage(adjustedImage, 0, 0, tempCanvas.width, tempCanvas.height);
+                ctx.beginPath();
+                ctx.arc(tempCanvas.width / 2, tempCanvas.height / 2, radius, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.lineWidth = outlineSize;
+                ctx.strokeStyle = outlineColour;
+                ctx.stroke();
+                ctx.globalCompositeOperation = 'destination-in';
+                ctx.arc(tempCanvas.width / 2, tempCanvas.height / 2, radius, 0, Math.PI * 2);
+                ctx.fill();
+                resolve(createImageBitmap(tempCanvas, tempCanvas.width / 2 - radius, tempCanvas.height / 2 - radius, diameter, diameter));
+            };
+            image.onerror = reject;
         });
-    });
-}
+    }
+    function stepDownImage(image, targetSize) {
+        const wRatio = image.width / targetSize.w;
+        const hRatio = image.height / targetSize.h;
+        const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2));
+        const canvas = document.createElement('canvas');
+        canvas.height = image.height;
+        canvas.width = image.width;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        if (steps > 1) {
+            const canvas2 = document.createElement('canvas');
+            const ctx2 = canvas2.getContext('2d');
+            for (let i = 1; i < steps; i++) {
+                canvas2.width = canvas.width / 2;
+                canvas2.height = canvas.height / 2;
+                ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+                canvas.width = canvas2.width;
+                canvas.height = canvas2.height;
+                ctx.drawImage(canvas2, 0, 0);
+            }
+        }
+        return canvas;
+    }
+    function convertBmpToBlob(image, mimeType = 'image/png') {
+        return new Promise((resolve, reject) => {
+            var _a;
+            const canvas = document.createElement('canvas');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            const ctx = canvas.getContext('bitmaprenderer');
+            if (ctx) {
+                ctx.transferFromImageBitmap(image);
+            }
+            else {
+                (_a = canvas.getContext('2d')) === null || _a === void 0 ? void 0 : _a.drawImage(image, 0, 0);
+            }
+            canvas.toBlob(function blobCallback(blob) {
+                if (blob === null)
+                    reject('Blob is null');
+                resolve(blob);
+            });
+        });
+    }
+    function angleBetween2DVector(vx1, vy1, vx2, vy2) {
+        const dotProduct = (vx1 * vx2) + (vy1 * vy2);
+        const magnitude1 = Math.sqrt(Math.pow(vx1, 2) + Math.pow(vy1, 2));
+        const magnitude2 = Math.sqrt(Math.pow(vx2, 2) + Math.pow(vy2, 2));
+        return Math.acos(dotProduct / (magnitude1 * magnitude2));
+    }
+    return {
+        calculateCollisionVelocity,
+        createCircleImg,
+        convertBmpToBlob,
+        getBallCollisionVelocity,
+        xyDiffBetweenPoints,
+        angleBetween2DVector
+    };
+})();
 const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
 const imageUrls = [];
 function getImageList() {
@@ -188,7 +197,7 @@ const appProps = {
         current: { x: 0, y: 0 },
         reference: { x: 0, y: 0 }
     },
-    mouseMoveDistThreshold: 2,
+    mouseMoveDistThreshold: 0,
     currentTime: 0,
     selectedTime: 0,
     deceleration: 1.05,
@@ -363,7 +372,7 @@ function calcVelocityComponent(current, distance) {
     if (Math.abs(distance) <= appProps.mouseMoveDistThreshold)
         return [velocity, reset];
     if (Math.sign(current) === Math.sign(distance)) {
-        velocity -= current;
+        velocity = current;
     }
     else if (current !== 0) {
         reset = true;
@@ -402,19 +411,22 @@ function onMouseMove(evt) {
         appProps.selectedBall.move(moveX, moveY);
         appProps.selectedPositions.current = { x, y };
         const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
-        const [vX, vY, resetReferences] = calcUpdateVelocity(appProps.selectedBall.velocity, distX, distY);
-        appProps.selectedBall.velocity = { vX, vY };
-        if (resetReferences) {
+        if (distX > appProps.mouseMoveDistThreshold || distY > appProps.mouseMoveDistThreshold) {
+            const [vX, vY, reset] = calcUpdateVelocity(appProps.selectedBall.velocity, distX, distY);
+            appProps.selectedBall.velocity = { vX, vY };
             appProps.selectedPositions.prev = { x, y };
-            appProps.selectedTime = new Date().getTime();
-            console.log('reset');
+            if (reset) {
+                appProps.selectedPositions.reference = { x, y };
+                appProps.selectedTime = new Date().getTime();
+                console.log('reset');
+            }
         }
     }
 }
 function onMouseUp(evt) {
     if (appProps.selectedBall) {
         const [x, y] = getRelativeMousePos(evt);
-        const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
+        const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.reference);
         const ellapsedTime = new Date().getTime() - appProps.selectedTime;
         appProps.selectedBall.velocity.vX = distX / ellapsedTime;
         appProps.selectedBall.velocity.vY = distY / ellapsedTime;
