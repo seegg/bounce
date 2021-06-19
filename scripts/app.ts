@@ -5,7 +5,11 @@ const appProps = {
   balls: <Ball[]>[],
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
-  selectedPositions: { prev: { x: 0, y: 0 }, current: { x: 0, y: 0 } },
+  selectedPositions: {
+    prev: { x: 0, y: 0 },
+    current: { x: 0, y: 0 },
+    reference: { x: 0, y: 0 }
+  },
   mouseMoveDistThreshold: 2,
   currentTime: 0,
   selectedTime: 0,
@@ -263,13 +267,13 @@ function calcVelocityComponent(current: number, distance: number): [number, bool
   return [velocity, reset];
 }
 
-function calUpdateVelocity(
-  ball: Ball,
+function calcUpdateVelocity(
+  velocity: { vX: number, vY: number },
   distanceX: number,
   distanceY: number
 ): [number, number, boolean] {
-  const [vX, resetX] = calcVelocityComponent(ball.velocity.vX, distanceX);
-  const [vY, resetY] = calcVelocityComponent(ball.velocity.vY, distanceY);
+  const [vX, resetX] = calcVelocityComponent(velocity.vX, distanceX);
+  const [vY, resetY] = calcVelocityComponent(velocity.vY, distanceY);
   const reset = resetX || resetY;
   return [vX, vY, reset];
 }
@@ -294,6 +298,7 @@ function onMouseDown(evt: MouseEvent) {
     appProps.selectedBall.velocity = { vX: 0, vY: 0 };
     appProps.selectedPositions.current = { x, y };
     appProps.selectedPositions.prev = { x, y };
+    appProps.selectedPositions.reference = { x, y };
   }
 }
 
@@ -302,8 +307,17 @@ function onMouseMove(evt: MouseEvent) {
     const [x, y] = getRelativeMousePos(evt);
     const [moveX, moveY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.current);
     appProps.selectedBall.move(moveX, moveY);
-
     appProps.selectedPositions.current = { x, y };
+
+    const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
+    // console.log(distX, distY);
+    const [vX, vY, resetReferences] = calcUpdateVelocity(appProps.selectedBall.velocity, distX, distY);
+    appProps.selectedBall.velocity = { vX, vY };
+    if (resetReferences) {
+      appProps.selectedPositions.prev = { x, y };
+      appProps.selectedTime = new Date().getTime();
+      console.log('reset')
+    }
   }
 }
 
@@ -315,16 +329,13 @@ function onMouseUp(evt: MouseEvent) {
   if (appProps.selectedBall) {
 
     const [x, y] = getRelativeMousePos(evt);
-    const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.prev, { x, y });
-    appProps.selectedBall.velocity.vX -= distX;
-    appProps.selectedBall.velocity.vY -= distY;
+    const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
 
     const ellapsedTime = new Date().getTime() - appProps.selectedTime;
 
-    console.log(appProps.selectedBall.velocity);
-    appProps.selectedBall.velocity.vX /= ellapsedTime;
-    appProps.selectedBall.velocity.vY /= ellapsedTime;
-    console.log(appProps.selectedBall.velocity);
+    appProps.selectedBall.velocity.vX = distX / ellapsedTime;
+    appProps.selectedBall.velocity.vY = distY / ellapsedTime;
+
     appProps.selectedBall.selected = false;
     appProps.selectedBall = null;
   }
