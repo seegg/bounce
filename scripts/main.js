@@ -339,6 +339,7 @@ function draw() {
             drawBall(ctx, ball);
         }
         ball.updatePosition(1, 1, ellapsedTime);
+        checkWallCollission(ball);
     });
     drawBall(ctx, appProps.selectedBall);
     window.requestAnimationFrame(() => { draw(); });
@@ -361,7 +362,20 @@ function drawBall(ctx, ball) {
     ctx.restore();
 }
 function checkWallCollission(ball) {
-    return '';
+    const { position, radius, velocity } = ball;
+    const { width, height } = appProps.canvas;
+    if (position.x + radius >= width) {
+        velocity.vX < 0 || ball.wallBounce('right');
+    }
+    if (position.x - radius <= 0) {
+        velocity.vX > 0 || ball.wallBounce('left');
+    }
+    if (position.y + radius >= height) {
+        velocity.vY < 0 || ball.wallBounce('bottom');
+    }
+    if (position.y - radius <= 0) {
+        velocity.vY > 0 || ball.wallBounce('top');
+    }
 }
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();
