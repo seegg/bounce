@@ -335,12 +335,17 @@ function draw() {
     appProps.currentTime = new Date().getTime();
     ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
     appProps.balls.forEach(ball => {
-        drawBall(ctx, ball);
+        if (!ball.selected) {
+            drawBall(ctx, ball);
+        }
         ball.updatePosition(1, 1, ellapsedTime);
     });
+    drawBall(ctx, appProps.selectedBall);
     window.requestAnimationFrame(() => { draw(); });
 }
 function drawBall(ctx, ball) {
+    if (ball === null)
+        return;
     const { position, radius, selected, rotation, img } = ball;
     ctx.save();
     ctx.translate(position.x, position.y);
@@ -356,6 +361,7 @@ function drawBall(ctx, ball) {
     ctx.restore();
 }
 function checkWallCollission(ball) {
+    return '';
 }
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();

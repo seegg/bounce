@@ -192,17 +192,26 @@ function draw() {
   const ellapsedTime = new Date().getTime() - appProps.currentTime;
   appProps.currentTime = new Date().getTime();
   ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
+
+  //draw each of the balls and then update its position.
   appProps.balls.forEach(ball => {
-    drawBall(ctx, ball);
+    if (!ball.selected) {
+      drawBall(ctx, ball);
+    }
     ball.updatePosition(1, 1, ellapsedTime);
   })
+
+  //draw selected ball last so it shows on top.
+  drawBall(ctx, appProps.selectedBall);
+
   window.requestAnimationFrame(() => { draw() });
 }
 
 /**
  * Draw an individual ball.
  */
-function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
+function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
+  if (ball === null) return;
   const { position, radius, selected, rotation, img } = ball;
   ctx.save();
   ctx.translate(position.x, position.y);
@@ -219,8 +228,8 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
   ctx.restore();
 }
 
-function checkWallCollission(ball: Ball) {
-
+function checkWallCollission(ball: Ball): Wall | '' {
+  return '';
 }
 
 /**
