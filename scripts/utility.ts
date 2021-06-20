@@ -144,12 +144,17 @@ const util = (function utilityFunctions() {
     })
   }
 
+  function distanceBetween2Points(point1: Point, point2: Point): number {
+    const [diffX, diffY] = xyDiffBetweenPoints(point1, point2);
+    return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+  }
+
   function angleBetween2DVector(vx1: number, vy1: number, vx2: number, vy2: number): number {
 
     const dotProduct = (vx1 * vx2) + (vy1 * vy2);
     const magnitude1 = Math.sqrt(Math.pow(vx1, 2) + Math.pow(vy1, 2));
     const magnitude2 = Math.sqrt(Math.pow(vx2, 2) + Math.pow(vy2, 2));
-    return Math.acos(dotProduct / (magnitude1 * magnitude2));
+    return Math.acos(dotProduct / (magnitude1 * magnitude2)) * (180 / Math.PI);
   }
 
   function angleBetween3Points(start: Point, mid: Point, end: Point): number {
@@ -163,6 +168,7 @@ const util = (function utilityFunctions() {
     getBallCollisionVelocity,
     xyDiffBetweenPoints,
     angleBetween2DVector,
-    angleBetween3Points
+    angleBetween3Points,
+    distanceBetween2Points
   };
 })();

@@ -10,7 +10,8 @@ const appProps = {
     current: { x: 0, y: 0 },
     reference: { x: 0, y: 0 }
   },
-  mouseMoveDistThreshold: 0,
+  selectedAngleThreshold: 10,
+  mouseMoveDistThreshold: 10,
   currentTime: 0,
   selectedTime: 0,
   deceleration: 1.05,
@@ -249,36 +250,6 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
   container.scroll(0, scrollDistance);
 }
 
-/**
- * Calculate the updated velocity for the selected ball in
- * mousemove events.
- * @param current X or Y component of velocity for a ball
- * @param distance distance moved
- */
-function calcVelocityComponent(current: number, distance: number): [number, boolean] {
-  let reset = false;
-  let velocity = distance;
-  if (Math.abs(distance) <= appProps.mouseMoveDistThreshold) return [velocity, reset];
-  if (Math.sign(current) === Math.sign(distance)) {
-    velocity = current;
-  } else if (current !== 0) {
-    reset = true;
-  }
-  return [velocity, reset];
-}
-
-function calcUpdateVelocity(
-  velocity: { vX: number, vY: number },
-  distanceX: number,
-  distanceY: number
-): [number, number, boolean] {
-  const [vX, resetX] = calcVelocityComponent(velocity.vX, distanceX);
-  const [vY, resetY] = calcVelocityComponent(velocity.vY, distanceY);
-  const reset = resetX || resetY;
-  return [vX, vY, reset];
-}
-
-
 //
 // Mouse Controls for canvas
 //
@@ -310,10 +281,18 @@ function onMouseMove(evt: MouseEvent) {
     appProps.selectedBall.move(moveX, moveY);
     appProps.selectedPositions.current = { x, y };
 
-    const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
-    if (distX > appProps.mouseMoveDistThreshold || distY > appProps.mouseMoveDistThreshold) {
+    const distance = util.distanceBetween2Points({ x, y }, appProps.selectedPositions.prev);
 
+    if (distance > appProps.mouseMoveDistThreshold) {
+      const { reference, prev, current } = appProps.selectedPositions;
+      const angle = util.angleBetween3Points(reference, prev, current) || 0;
+      if (angle > appProps.selectedAngleThreshold) {
+        appProps.selectedPositions.reference = { x, y };
+        appProps.selectedTime = new Date().getTime();
+      }
+      appProps.selectedPositions.prev = { x, y };
     }
+
 
 
   }
