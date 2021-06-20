@@ -170,13 +170,17 @@ const util = (function utilityFunctions() {
         const magnitude2 = Math.sqrt(Math.pow(vx2, 2) + Math.pow(vy2, 2));
         return Math.acos(dotProduct / (magnitude1 * magnitude2));
     }
+    function angleBetween3Points(start, mid, end) {
+        return angleBetween2DVector(mid.x - start.x, mid.y - start.y, end.x - mid.x, end.y - mid.y);
+    }
     return {
         calculateCollisionVelocity,
         createCircleImg,
         convertBmpToBlob,
         getBallCollisionVelocity,
         xyDiffBetweenPoints,
-        angleBetween2DVector
+        angleBetween2DVector,
+        angleBetween3Points
     };
 })();
 const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
@@ -412,14 +416,6 @@ function onMouseMove(evt) {
         appProps.selectedPositions.current = { x, y };
         const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
         if (distX > appProps.mouseMoveDistThreshold || distY > appProps.mouseMoveDistThreshold) {
-            const [vX, vY, reset] = calcUpdateVelocity(appProps.selectedBall.velocity, distX, distY);
-            appProps.selectedBall.velocity = { vX, vY };
-            appProps.selectedPositions.prev = { x, y };
-            if (reset) {
-                appProps.selectedPositions.reference = { x, y };
-                appProps.selectedTime = new Date().getTime();
-                console.log('reset');
-            }
         }
     }
 }

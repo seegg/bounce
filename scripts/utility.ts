@@ -151,12 +151,18 @@ const util = (function utilityFunctions() {
     const magnitude2 = Math.sqrt(Math.pow(vx2, 2) + Math.pow(vy2, 2));
     return Math.acos(dotProduct / (magnitude1 * magnitude2));
   }
+
+  function angleBetween3Points(start: Point, mid: Point, end: Point): number {
+    return angleBetween2DVector(mid.x - start.x, mid.y - start.y, end.x - mid.x, end.y - mid.y);
+  }
+
   return {
     calculateCollisionVelocity,
     createCircleImg,
     convertBmpToBlob,
     getBallCollisionVelocity,
     xyDiffBetweenPoints,
-    angleBetween2DVector
+    angleBetween2DVector,
+    angleBetween3Points
   };
 })();

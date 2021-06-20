@@ -278,6 +278,7 @@ function calcUpdateVelocity(
   return [vX, vY, reset];
 }
 
+
 //
 // Mouse Controls for canvas
 //
@@ -311,14 +312,7 @@ function onMouseMove(evt: MouseEvent) {
 
     const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.prev);
     if (distX > appProps.mouseMoveDistThreshold || distY > appProps.mouseMoveDistThreshold) {
-      const [vX, vY, reset] = calcUpdateVelocity(appProps.selectedBall.velocity, distX, distY);
-      appProps.selectedBall.velocity = { vX, vY };
-      appProps.selectedPositions.prev = { x, y };
-      if (reset) {
-        appProps.selectedPositions.reference = { x, y };
-        appProps.selectedTime = new Date().getTime();
-        console.log('reset');
-      }
+
     }
 
 
