@@ -20,20 +20,20 @@ const appProps = {
   canvasTopOffset: 70,
   party: { active: false, start: 0, duration: 10, colour: '' },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
-}
+};
 
-type mouseClickCallback = (e: MouseEvent) => any;
 
-(function start(): void {
+
+(function init(): void {
   addEventListeners();
   //set initial canvas dimensions
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   //Load all the images in the image list
-  Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)))
+  Promise.all(imageList.map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)))
     .then(_ => {
       appProps.currentTime = new Date().getTime();
-      draw(appProps.canvas.getContext('2d')!);
+      draw();
     });
 })();
 
@@ -48,7 +48,7 @@ type mouseClickCallback = (e: MouseEvent) => any;
 function addImage(
   imgSrc: string,
   imgArr: ImageBitmap[],
-  callback: mouseClickCallback | null = null,
+  callback: MouseClickCallback | null = null,
   radius: number = appProps.radiusSizes.current
 ) {
   const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
@@ -91,7 +91,7 @@ function createImgEleWithIndex(
   src: string,
   imgIndex: number,
   classList: string[],
-  callback?: mouseClickCallback | null
+  callback?: MouseClickCallback | null
 ): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
@@ -187,8 +187,8 @@ function createAndCacheBall(
 /**
  * Draw each frame
  */
-function draw(ctx: CanvasRenderingContext2D) {
-
+function draw() {
+  const ctx = appProps.canvas.getContext('2d')!;
   const ellapsedTime = new Date().getTime() - appProps.currentTime;
   appProps.currentTime = new Date().getTime();
   ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
@@ -196,7 +196,7 @@ function draw(ctx: CanvasRenderingContext2D) {
     drawBall(ctx, ball);
     ball.updatePosition(1, 1, ellapsedTime);
   })
-  window.requestAnimationFrame(() => { draw(ctx) });
+  window.requestAnimationFrame(() => { draw() });
 }
 
 /**
@@ -217,6 +217,10 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
     ctx.stroke()
   }
   ctx.restore();
+}
+
+function checkWallCollission(ball: Ball) {
+
 }
 
 /**
@@ -264,7 +268,8 @@ function onMouseDown(evt: MouseEvent) {
   }
 
   if (appProps.selectedBall) {
-    //set the properties use to calcuate the velocity of the selected ball.
+    //set the initial values for properties use to calcuate the 
+    //velocity of the selected ball at release.
     appProps.selectedTime = new Date().getTime();
     appProps.selectedBall.selected = true;
     appProps.selectedBall.velocity = { vX: 0, vY: 0 };
@@ -283,6 +288,8 @@ function onMouseMove(evt: MouseEvent) {
 
     const distance = util.distanceBetween2Points({ x, y }, appProps.selectedPositions.prev);
 
+    //if the angle between the 3 points is greater than a certain amount
+    //assign the current position as the new reference point for velocity.
     if (distance > appProps.mouseMoveDistThreshold) {
       const { reference, prev, current } = appProps.selectedPositions;
       const angle = util.angleBetween3Points(reference, prev, current) || 0;
@@ -292,9 +299,6 @@ function onMouseMove(evt: MouseEvent) {
       }
       appProps.selectedPositions.prev = { x, y };
     }
-
-
-
   }
 }
 

@@ -35,8 +35,8 @@ class Ball {
     resetCollided() {
         this.collided = [this.id];
     }
-    wallBounce(side) {
-        switch (side) {
+    wallBounce(wall) {
+        switch (wall) {
             case 'left':
                 this.velocity.vX *= -1;
                 break;
@@ -188,12 +188,12 @@ const util = (function utilityFunctions() {
         distanceBetween2Points
     };
 })();
-const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
-const imageUrls = [];
-function getImageList() {
+const imageList = (function () {
+    const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
+    const imageUrls = [];
     const path = "images/";
     return imageFiles.map(img => path + img).concat(imageUrls);
-}
+})();
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
@@ -217,14 +217,14 @@ const appProps = {
     party: { active: false, start: 0, duration: 10, colour: '' },
     rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
-(function start() {
+(function init() {
     addEventListeners();
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-    Promise.all(getImageList().map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50)))
+    Promise.all(imageList.map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50)))
         .then(_ => {
         appProps.currentTime = new Date().getTime();
-        draw(appProps.canvas.getContext('2d'));
+        draw();
     });
 })();
 function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes.current) {
@@ -329,7 +329,8 @@ function createAndCacheBall(imgEle, x, y, radius = appProps.radiusSizes.current,
         console.log(err);
     }
 }
-function draw(ctx) {
+function draw() {
+    const ctx = appProps.canvas.getContext('2d');
     const ellapsedTime = new Date().getTime() - appProps.currentTime;
     appProps.currentTime = new Date().getTime();
     ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
@@ -337,7 +338,7 @@ function draw(ctx) {
         drawBall(ctx, ball);
         ball.updatePosition(1, 1, ellapsedTime);
     });
-    window.requestAnimationFrame(() => { draw(ctx); });
+    window.requestAnimationFrame(() => { draw(); });
 }
 function drawBall(ctx, ball) {
     const { position, radius, selected, rotation, img } = ball;
@@ -353,6 +354,8 @@ function drawBall(ctx, ball) {
         ctx.stroke();
     }
     ctx.restore();
+}
+function checkWallCollission(ball) {
 }
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();

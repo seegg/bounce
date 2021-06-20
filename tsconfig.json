@@ -1,5 +1,6 @@
 {
   "include": [
+    "scripts/types.ts",
     "scripts/ball.ts",
     "scripts/utility.ts",
     "scripts/imageList.ts",

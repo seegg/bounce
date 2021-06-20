@@ -59,8 +59,8 @@ class Ball {
     this.collided = [this.id]
   }
 
-  wallBounce(side: 'left' | 'right' | 'top' | 'bottom') {
-    switch (side) {
+  wallBounce(wall: Wall) {
+    switch (wall) {
       case 'left':
         this.velocity.vX *= -1;
         break;

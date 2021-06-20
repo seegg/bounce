@@ -1,6 +1,6 @@
+
 const util = (function utilityFunctions() {
 
-  type Point = { x: number, y: number };
 
   /**
    * returns the new velocity of object1 after collision with object2
