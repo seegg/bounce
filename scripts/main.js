@@ -52,20 +52,19 @@ class Ball {
         }
     }
     ballBounce(ball2) {
-        if ((this.velocity.vX === 0 && ball2.velocity.vY === 0) ||
-            this.collided.includes(ball2.id))
+        if (this.selected || ball2.selected)
             return;
-        const centerToCenterDist = Math.sqrt(Math.pow(this.position.x - ball2.position.x, 2) +
-            Math.pow(this.position.y - ball2.position.y, 2));
-        const radiusTotal = this.radius + ball2.radius;
-        if (centerToCenterDist < radiusTotal) {
-            const overlap = centerToCenterDist - radiusTotal;
-            this.reverseDistance(overlap);
-            const [vX, vY] = util.getBallCollisionVelocity(this, ball2);
-            const [vX2, vY2] = util.getBallCollisionVelocity(ball2, this);
-            this.velocity = { vX, vY };
-            ball2.velocity = { vX: vX2, vY: vY2 };
-            this.collided.push(ball2.id);
+        if (this.collided.includes(ball2.id) || ball2.collided.includes(this.id))
+            return;
+        ball2.collided.push(this.id);
+        const distance = util.distanceBetween2Points(this.position, ball2.position);
+        const twoRadii = this.radius + ball2.radius;
+        if (distance <= twoRadii) {
+            console.log('bounce');
+            const velocity1 = util.getBallCollisionVelocity(this, ball2);
+            const velocity2 = util.getBallCollisionVelocity(ball2, this);
+            this.velocity = velocity1;
+            ball2.velocity = velocity2;
         }
     }
 }
@@ -82,7 +81,7 @@ const util = (function utilityFunctions() {
         const sc = dotProduct / magnitude * mass;
         const newVx = vx1 - (sc * distX);
         const newVy = vy1 - (sc * distY);
-        return [newVx, newVy];
+        return { vX: newVx, vY: newVy };
     }
     function getBallCollisionVelocity(ball1, ball2) {
         return calculateCollisionVelocity(ball1.position.x, ball1.position.y, ball1.velocity.vX, ball1.velocity.vY, ball2.position.x, ball2.position.y, ball2.velocity.vX, ball2.velocity.vY);
@@ -341,6 +340,14 @@ function draw() {
         ball.updatePosition(1, 1, ellapsedTime);
         checkWallCollission(ball);
     });
+    appProps.balls.forEach(ball => {
+        appProps.balls.forEach(ball2 => {
+            if (ball2.id !== ball.id) {
+                ball.ballBounce(ball2);
+            }
+        });
+    });
+    appProps.balls.forEach(ball => ball.collided = []);
     drawBall(ctx, appProps.selectedBall);
     window.requestAnimationFrame(() => { draw(); });
 }
@@ -438,6 +445,7 @@ function onMouseMove(evt) {
 }
 function onMouseUp(evt) {
     if (appProps.selectedBall) {
+        console.log(appProps.selectedBall.id);
         const [x, y] = getRelativeMousePos(evt);
         const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.reference);
         const ellapsedTime = new Date().getTime() - appProps.selectedTime;

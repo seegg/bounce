@@ -15,7 +15,13 @@ const util = (function utilityFunctions() {
    * @param mass1 mass object1
    * @param mass2 mass object2
    */
-  function calculateCollisionVelocity(x1: number, y1: number, vx1: number, vy1: number, x2: number, y2: number, vx2: number, vy2: number, mass1?: number, mass2?: number): [number, number] {
+  function calculateCollisionVelocity(
+    x1: number, y1: number,
+    vx1: number, vy1: number,
+    x2: number, y2: number,
+    vx2: number, vy2: number,
+    mass1?: number, mass2?: number
+  ): Velocity {
     const mass = mass1 && mass2 ? (2 * mass2) / (mass1 + mass2) : 1;
     const distX = x1 - x2;
     const distY = y1 - y2;
@@ -27,7 +33,7 @@ const util = (function utilityFunctions() {
 
     const newVx = vx1 - (sc * distX);
     const newVy = vy1 - (sc * distY);
-    return [newVx, newVy];
+    return { vX: newVx, vY: newVy };
   }
 
   /**

@@ -202,6 +202,16 @@ function draw() {
     checkWallCollission(ball);
   })
 
+  appProps.balls.forEach(ball => {
+    appProps.balls.forEach(ball2 => {
+      if (ball2.id !== ball.id) {
+        ball.ballBounce(ball2);
+      }
+    })
+  })
+
+  appProps.balls.forEach(ball => ball.collided = []);
+
   //draw selected ball last so it shows on top.
   drawBall(ctx, appProps.selectedBall);
 
@@ -339,7 +349,7 @@ function onMouseMove(evt: MouseEvent) {
  */
 function onMouseUp(evt: MouseEvent) {
   if (appProps.selectedBall) {
-
+    console.log(appProps.selectedBall.id);
     const [x, y] = getRelativeMousePos(evt);
     const [distX, distY] = util.xyDiffBetweenPoints({ x, y }, appProps.selectedPositions.reference);
 
