@@ -77,20 +77,21 @@ class Ball {
   }
 
   ballBounce(ball2: Ball): void {
-    if (this.selected || ball2.selected) return;
-    if (this.collided.includes(ball2.id) || ball2.collided.includes(this.id)) return;
-
-    ball2.collided.push(this.id);
 
     const distance = util.distanceBetween2Points(this.position, ball2.position);
-
     const twoRadii = this.radius + ball2.radius;
-    if (distance <= twoRadii) {
-      console.log('bounce');
-      const velocity1 = util.getBallCollisionVelocity(this, ball2);
-      const velocity2 = util.getBallCollisionVelocity(ball2, this);
-      this.velocity = velocity1;
-      ball2.velocity = velocity2;
+
+    if (distance < twoRadii) {
+      const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
+      const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
+      console.log(angle);
+      if (angle < 90) {
+        console.log('bounce');
+        const velocity1 = util.getBallCollisionVelocity(this, ball2);
+        const velocity2 = util.getBallCollisionVelocity(ball2, this);
+        this.velocity = velocity1;
+        ball2.velocity = velocity2;
+      }
     }
   }
 

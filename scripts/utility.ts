@@ -48,7 +48,7 @@ const util = (function utilityFunctions() {
    * from origin to destination
    */
   function xyDiffBetweenPoints(origin: Point, destination: Point): [number, number] {
-    return [origin.x - destination.x, origin.y - destination.y];
+    return [destination.x - origin.x, destination.y - origin.y];
   }
 
   /**
