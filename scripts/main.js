@@ -8,7 +8,6 @@ class Ball {
         this.velocity = { vX: 0, vY: 0 };
         this.img = img;
         this.selected = selected;
-        this.collided = [this.id];
         Ball.baseId++;
     }
     updatePosition(gravity, deceleration, ellapsedTime) {
@@ -32,9 +31,6 @@ class Ball {
     containsPoint(x, y) {
         return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.radius, 2);
     }
-    resetCollided() {
-        this.collided = [this.id];
-    }
     wallBounce(wall) {
         switch (wall) {
             case 'left':
@@ -57,9 +53,7 @@ class Ball {
         if (distance < twoRadii) {
             const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
             const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
-            console.log(angle);
             if (angle < 90) {
-                console.log('bounce');
                 const velocity1 = util.getBallCollisionVelocity(this, ball2);
                 const velocity2 = util.getBallCollisionVelocity(ball2, this);
                 this.velocity = velocity1;
@@ -347,7 +341,6 @@ function draw() {
             }
         });
     });
-    appProps.balls.forEach(ball => ball.collided = []);
     drawBall(ctx, appProps.selectedBall);
     window.requestAnimationFrame(() => { draw(); });
 }

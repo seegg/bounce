@@ -210,8 +210,6 @@ function draw() {
     })
   })
 
-  appProps.balls.forEach(ball => ball.collided = []);
-
   //draw selected ball last so it shows on top.
   drawBall(ctx, appProps.selectedBall);
 

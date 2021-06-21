@@ -6,7 +6,6 @@ class Ball {
   rotation: number;
   velocity: Velocity;
   selected: boolean;
-  collided: number[];
   // The img associated with an instance of Ball
   img: ImageBitmap;
 
@@ -18,7 +17,6 @@ class Ball {
     this.velocity = { vX: 0, vY: 0 }
     this.img = img;
     this.selected = selected;
-    this.collided = [this.id];
     Ball.baseId++;
   }
 
@@ -55,10 +53,6 @@ class Ball {
     return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.radius, 2);
   }
 
-  resetCollided(): void {
-    this.collided = [this.id]
-  }
-
   wallBounce(wall: Wall) {
     switch (wall) {
       case 'left':
@@ -76,17 +70,23 @@ class Ball {
     }
   }
 
+  /**
+   * Check if the two balls are touching and then check the 
+   * angle of the ball to see if it's going towards or bouncing away
+   * from ball two.
+   */
   ballBounce(ball2: Ball): void {
 
     const distance = util.distanceBetween2Points(this.position, ball2.position);
     const twoRadii = this.radius + ball2.radius;
 
+    //check if balls is touching
     if (distance < twoRadii) {
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
       const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
-      console.log(angle);
+      //check angle of ball's velocity compare to direction towards
+      //from this center to ball2's center.
       if (angle < 90) {
-        console.log('bounce');
         const velocity1 = util.getBallCollisionVelocity(this, ball2);
         const velocity2 = util.getBallCollisionVelocity(ball2, this);
         this.velocity = velocity1;
