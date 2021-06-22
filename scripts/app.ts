@@ -32,45 +32,16 @@ const appProps = {
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   //Load all the images in the image list
-  Promise.all(imageList.map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)))
-    .then(_ => {
-      appProps.currentTime = new Date().getTime();
-      draw();
-    });
+  Promise.all(
+    imageList.map(img => addImage(
+      img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)
+    )
+  ).then(_ => {
+    appProps.currentTime = new Date().getTime();
+    draw();
+  });
 })();
 
-/**
- * Add an image base on a input url. create a bitmap and HTMLImageElement base on this image.
- * store the bitmap to an array and append the img element to the img container.
- * @param imgSrc URL for the image
- * @param imgArr Array to store the bmp created base on the image url
- * @param radius The radius of the bitmap 
- * @param callback event handler for click event on the img element
- */
-function addImage(
-  imgSrc: string,
-  imgArr: ImageBitmap[],
-  callback: MouseClickCallback | null = null,
-  radius: number = appProps.radiusSizes.current
-) {
-  const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
-  const imgContainer = document.getElementById('img-container');
-  const loadingPlaceholder = document.createElement('img');
-  loadingPlaceholder.classList.add('h-12', 'w-12');
-  loadingPlaceholder.src = 'images/spinner.gif';
-  imgContainer?.appendChild(loadingPlaceholder);
-  return createAndCacheBitmap(imgSrc, imgArr, radius)
-    .then(([img, imgIdx]) => {
-      return createImgEleWithIndex(imgSrc, imgIdx, classList, callback)
-    })
-    .then(imgEle => {
-      if (imgContainer === null) throw new Error('image container is null');
-      appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
-    })
-    .catch(err => {
-      console.error(err);
-    })
-}
 
 /**
  * Append a HTMLImageELement to a parent container
@@ -262,6 +233,7 @@ function checkWallCollission(ball: Ball): void {
 
   if (position.y + radius > height) {
     position.y = height - radius;
+    if (velocity.vY < 0.05) velocity.vY = 0;
     wall = 'bottom';
     velocity.vY < 0 || ball.wallBounce(wall, appProps.wallModifiers[wall]);
   }

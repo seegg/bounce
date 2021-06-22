@@ -64,7 +64,7 @@ class Ball {
     const centerDistance = util.distanceBetween2Points(this.position, otherBall.position);
     const sumOfRadii = this.radius + otherBall.radius;
     const overlap = sumOfRadii - centerDistance;
-    return overlap > 0 ? overlap : 0;
+    return overlap >= 0 ? overlap : -1;
   }
   /**
    * bounce off of a wall.
@@ -96,7 +96,7 @@ class Ball {
   ballBounce(ball2: Ball): void {
     //check if the balls are touching.
     const overlap = this.getOverlapDistance(ball2);
-    if (overlap > 0) {
+    if (overlap >= 0) {
       //check if the angle is less than 90 degrees
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
       const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;

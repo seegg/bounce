@@ -5,6 +5,7 @@
     "scripts/utility.ts",
     "scripts/imageList.ts",
     "scripts/app.ts",
+    "scripts/images.ts"
   ],
   "compilerOptions": {
     "lib": [

@@ -41,7 +41,7 @@ class Ball {
         const centerDistance = util.distanceBetween2Points(this.position, otherBall.position);
         const sumOfRadii = this.radius + otherBall.radius;
         const overlap = sumOfRadii - centerDistance;
-        return overlap > 0 ? overlap : 0;
+        return overlap >= 0 ? overlap : -1;
     }
     wallBounce(wall, mod) {
         switch (wall) {
@@ -62,7 +62,7 @@ class Ball {
     }
     ballBounce(ball2) {
         const overlap = this.getOverlapDistance(ball2);
-        if (overlap > 0) {
+        if (overlap >= 0) {
             const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
             const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
             if (angle < 90) {
@@ -229,32 +229,11 @@ const appProps = {
     addEventListeners();
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-    Promise.all(imageList.map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50)))
-        .then(_ => {
+    Promise.all(imageList.map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         draw();
     });
 })();
-function addImage(imgSrc, imgArr, callback = null, radius = appProps.radiusSizes.current) {
-    const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
-    const imgContainer = document.getElementById('img-container');
-    const loadingPlaceholder = document.createElement('img');
-    loadingPlaceholder.classList.add('h-12', 'w-12');
-    loadingPlaceholder.src = 'images/spinner.gif';
-    imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.appendChild(loadingPlaceholder);
-    return createAndCacheBitmap(imgSrc, imgArr, radius)
-        .then(([img, imgIdx]) => {
-        return createImgEleWithIndex(imgSrc, imgIdx, classList, callback);
-    })
-        .then(imgEle => {
-        if (imgContainer === null)
-            throw new Error('image container is null');
-        appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
-    })
-        .catch(err => {
-        console.error(err);
-    });
-}
 function appendImgElemToContainer(imgEle, imgContainer, loadingImg) {
     if (loadingImg) {
         imgContainer.replaceChild(imgEle, loadingImg);
@@ -393,6 +372,8 @@ function checkWallCollission(ball) {
     }
     if (position.y + radius > height) {
         position.y = height - radius;
+        if (velocity.vY < 0.05)
+            velocity.vY = 0;
         wall = 'bottom';
         velocity.vY < 0 || ball.wallBounce(wall, appProps.wallModifiers[wall]);
     }
@@ -479,4 +460,43 @@ function onMouseLeave(evt) {
         appProps.selectedBall.velocity = { vX: 0, vY: 0 };
         appProps.selectedBall = null;
     }
+}
+function addImage(imgSrc, imgArr, callback = null, radius) {
+    const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
+    const imgContainer = document.getElementById('img-container');
+    const loadingPlaceholder = document.createElement('img');
+    loadingPlaceholder.classList.add('h-12', 'w-12');
+    loadingPlaceholder.src = 'images/spinner.gif';
+    imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.appendChild(loadingPlaceholder);
+    return createAndCacheBitmap(imgSrc, imgArr, radius)
+        .then(([img, imgIdx]) => {
+        return createImgEleWithIndex(imgSrc, imgIdx, classList, callback);
+    })
+        .then(imgEle => {
+        if (imgContainer === null)
+            throw new Error('image container is null');
+        appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
+    })
+        .catch(err => {
+        console.error(err);
+    });
+}
+function appendImgElemToContainer(imgEle, imgContainer, loadingImg) {
+    if (loadingImg) {
+        imgContainer.replaceChild(imgEle, loadingImg);
+    }
+    else {
+        imgContainer.append(imgEle);
+    }
+}
+function createImgEleWithIndex(src, imgIndex, classList, callback) {
+    const imgEle = document.createElement('img');
+    imgEle.classList.add(...classList);
+    imgEle.onclick = callback ? callback : null;
+    imgEle.setAttribute('data-index', imgIndex + '');
+    imgEle.onload = () => {
+        URL.revokeObjectURL(src);
+    };
+    imgEle.src = src;
+    return imgEle;
 }
