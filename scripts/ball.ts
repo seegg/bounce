@@ -1,7 +1,7 @@
 class Ball {
   private static baseId = 1;
   readonly id: number;
-  position: { x: number, y: number }
+  position: Point;
   radius: number;
   rotation: number;
   velocity: Velocity;
@@ -21,12 +21,16 @@ class Ball {
   }
 
   /**
-   * update the position of the ball base on various variables.
+   * update the position and state of the ball base on various variables.
    */
   updatePosition(gravity: number, deceleration: number, ellapsedTime: number): void {
     if (this.selected) return;
     this.position.x += this.velocity.vX * ellapsedTime;
     this.position.y += this.velocity.vY * ellapsedTime;
+    this.velocity.vY += gravity;
+    this.velocity.vX *= deceleration;
+    if (Math.abs(this.velocity.vX) < 0.001) this.velocity.vX = 0;
+    if (Math.abs(this.velocity.vY) < gravity) this.velocity.vY = 0;
   }
 
   /**
@@ -55,23 +59,31 @@ class Ball {
   containsPoint(x: number, y: number): boolean {
     return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.radius, 2);
   }
+
+  getOverlapDistance(otherBall: Ball): number {
+    const centerDistance = util.distanceBetween2Points(this.position, otherBall.position);
+    const sumOfRadii = this.radius + otherBall.radius;
+    const overlap = sumOfRadii - centerDistance;
+    return overlap > 0 ? overlap : 0;
+  }
   /**
    * bounce off of a wall.
    * @param wall the side of the wall bouncing off of.
    */
-  wallBounce(wall: Wall) {
+  wallBounce(wall: Wall, mod: number) {
     switch (wall) {
       case 'left':
-        this.velocity.vX *= -1;
+        this.velocity.vX *= -1 / mod;
         break;
       case 'right':
-        this.velocity.vX *= -1;
+        this.velocity.vX *= -1 / mod;
         break;
       case 'top':
-        this.velocity.vY *= -1;
+        this.velocity.vY *= -1 / mod;
         break;
       case 'bottom':
-        this.velocity.vY *= -1;
+        this.velocity.vY -= 0.0001;
+        this.velocity.vY *= -1 / mod;
         break;
     }
   }
@@ -83,9 +95,8 @@ class Ball {
    */
   ballBounce(ball2: Ball): void {
     //check if the balls are touching.
-    const distance = util.distanceBetween2Points(this.position, ball2.position);
-    const twoRadii = this.radius + ball2.radius;
-    if (distance < twoRadii) {
+    const overlap = this.getOverlapDistance(ball2);
+    if (overlap > 0) {
       //check if the angle is less than 90 degrees
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
       const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
