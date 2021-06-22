@@ -115,14 +115,14 @@ const util = (function utilityFunctions() {
         });
     }
     function stepDownImage(image, targetSize) {
-        const wRatio = image.width / targetSize.w;
-        const hRatio = image.height / targetSize.h;
-        const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2));
         const canvas = document.createElement('canvas');
         canvas.height = image.height;
         canvas.width = image.width;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        const wRatio = image.width / targetSize.w;
+        const hRatio = image.height / targetSize.h;
+        const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2));
         const canvas2 = document.createElement('canvas');
         const ctx2 = canvas2.getContext('2d');
         for (let i = 1; i < steps; i++) {
@@ -274,6 +274,7 @@ function addEventListeners() {
     appProps.canvas.addEventListener('pointerdown', onMouseDown);
     appProps.canvas.addEventListener('pointermove', onMouseMove);
     appProps.canvas.addEventListener('pointerup', onMouseUp);
+    appProps.canvas.addEventListener('pointerleave', onMouseLeave);
 }
 function handleWindowResize() {
     try {

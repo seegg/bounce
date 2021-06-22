@@ -122,6 +122,7 @@ function addEventListeners(): void {
   appProps.canvas.addEventListener('pointerdown', onMouseDown);
   appProps.canvas.addEventListener('pointermove', onMouseMove);
   appProps.canvas.addEventListener('pointerup', onMouseUp);
+  appProps.canvas.addEventListener('pointerleave', onMouseLeave);
 }
 
 /**

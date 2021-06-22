@@ -102,12 +102,6 @@ const util = (function utilityFunctions() {
    */
   function stepDownImage(image: HTMLImageElement, targetSize: { w: number, h: number }): HTMLCanvasElement {
 
-    //get the number of steps to be performed base on the largest
-    //dimension of the image.
-    const wRatio = image.width / targetSize.w;
-    const hRatio = image.height / targetSize.h;
-    const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2))
-
     //draw the image to an offscreen canvas.
     const canvas = document.createElement('canvas');
     canvas.height = image.height;
@@ -115,7 +109,12 @@ const util = (function utilityFunctions() {
     const ctx = canvas.getContext('2d')!;
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-    //halve the image at each step until just before the last step.
+    //get the number of steps to be performed base on the largest dimension
+    const wRatio = image.width / targetSize.w;
+    const hRatio = image.height / targetSize.h;
+    const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2))
+
+    //halve the image with a second at each step until just before the final step.
     const canvas2 = document.createElement('canvas');
     const ctx2 = canvas2.getContext('2d')!;
     for (let i = 1; i < steps; i++) {
@@ -127,7 +126,7 @@ const util = (function utilityFunctions() {
       ctx.drawImage(canvas2, 0, 0);
     }
 
-    //final step, draw the image at the desired size.
+    //final step, draw the image to the desired size.
     canvas2.width = targetSize.w;
     canvas2.height = targetSize.h;
     ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
