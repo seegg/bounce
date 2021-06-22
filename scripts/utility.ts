@@ -56,7 +56,7 @@ const util = (function utilityFunctions() {
    * crop image to circle with globalCompositeOperation = 'destination-in'
    * returns a promise that resolves to an bitmap of the canvas picture.
    * @param imgScr image src
-   * @param radius radius of the circle
+   * @param radius radius of the output circle image
    * @param outlineColour the outline colour of the circle
    */
   function createCircleImg(imgScr: string, radius: number, outlineColour: string = 'white', outlineSize: number = 3): Promise<ImageBitmap> {
@@ -97,32 +97,42 @@ const util = (function utilityFunctions() {
   /**
    * Downscale an image in incremental steps using 2 HTMLcanvas by halving
    * the size of the image each time for better results.
+   * @param image The input HTMLImageElement.
+   * @param targetSize The size of the output image.
    */
   function stepDownImage(image: HTMLImageElement, targetSize: { w: number, h: number }): HTMLCanvasElement {
+
+    //get the number of steps to be performed base on the largest
+    //dimension of the image.
     const wRatio = image.width / targetSize.w;
     const hRatio = image.height / targetSize.h;
     const steps = Math.ceil(Math.log(wRatio >= hRatio ? hRatio : wRatio) / Math.log(2))
 
+    //draw the image to an offscreen canvas.
     const canvas = document.createElement('canvas');
     canvas.height = image.height;
     canvas.width = image.width;
     const ctx = canvas.getContext('2d')!;
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-    if (steps > 1) {
-      const canvas2 = document.createElement('canvas');
-      const ctx2 = canvas2.getContext('2d')!;
-      for (let i = 1; i < steps; i++) {
-        canvas2.width = canvas.width / 2;
-        canvas2.height = canvas.height / 2;
-        ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
-        canvas.width = canvas2.width;
-        canvas.height = canvas2.height;
-        ctx.drawImage(canvas2, 0, 0);
-      }
+    //halve the image at each step until just before the last step.
+    const canvas2 = document.createElement('canvas');
+    const ctx2 = canvas2.getContext('2d')!;
+    for (let i = 1; i < steps; i++) {
+      canvas2.width = canvas.width / 2;
+      canvas2.height = canvas.height / 2;
+      ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+      canvas.width = canvas2.width;
+      canvas.height = canvas2.height;
+      ctx.drawImage(canvas2, 0, 0);
     }
 
-    return canvas;
+    //final step, draw the image at the desired size.
+    canvas2.width = targetSize.w;
+    canvas2.height = targetSize.h;
+    ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+
+    return canvas2;
   }
 
   /**

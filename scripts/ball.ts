@@ -20,7 +20,9 @@ class Ball {
     Ball.baseId++;
   }
 
-  // Update the position and state of the ball after every frame
+  /**
+   * update the position of the ball base on various variables.
+   */
   updatePosition(gravity: number, deceleration: number, ellapsedTime: number): void {
     if (this.selected) return;
     this.position.x += this.velocity.vX * ellapsedTime;
@@ -36,10 +38,11 @@ class Ball {
   }
 
   /**
-   * Reverse the position of the ball base on 
-   * the distance of the intersection.
+   * Reverse the position of the ball
+   * by a given distance in the opposite direction
+   * of its velocity.
    */
-  reverseDistance(distance: number): void {
+  reversePosition(distance: number): void {
     const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
     this.position.x += this.velocity.vX * velocityRatio;
     this.position.y += this.velocity.vY * velocityRatio;
@@ -71,9 +74,9 @@ class Ball {
   }
 
   /**
-   * Check if the two balls are touching and then check the 
-   * angle of the ball to see if it's going towards or bouncing away
-   * from ball two.
+   * Check if this and ball2 are touching and then check the 
+   * angle between the velocity and the line between the two centers.
+   * if it's less than 90degrees then consider the balls to be colliding.
    */
   ballBounce(ball2: Ball): void {
 
@@ -84,8 +87,6 @@ class Ball {
     if (distance < twoRadii) {
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
       const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
-      //check angle of ball's velocity compare to direction towards
-      //from this center to ball2's center.
       if (angle < 90) {
         const velocity1 = util.getBallCollisionVelocity(this, ball2);
         const velocity2 = util.getBallCollisionVelocity(ball2, this);

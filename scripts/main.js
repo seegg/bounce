@@ -20,7 +20,7 @@ class Ball {
         this.position.x += x;
         this.position.y += y;
     }
-    reverseDistance(distance) {
+    reversePosition(distance) {
         const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
         this.position.x += this.velocity.vX * velocityRatio;
         this.position.y += this.velocity.vY * velocityRatio;
@@ -123,19 +123,20 @@ const util = (function utilityFunctions() {
         canvas.width = image.width;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        if (steps > 1) {
-            const canvas2 = document.createElement('canvas');
-            const ctx2 = canvas2.getContext('2d');
-            for (let i = 1; i < steps; i++) {
-                canvas2.width = canvas.width / 2;
-                canvas2.height = canvas.height / 2;
-                ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
-                canvas.width = canvas2.width;
-                canvas.height = canvas2.height;
-                ctx.drawImage(canvas2, 0, 0);
-            }
+        const canvas2 = document.createElement('canvas');
+        const ctx2 = canvas2.getContext('2d');
+        for (let i = 1; i < steps; i++) {
+            canvas2.width = canvas.width / 2;
+            canvas2.height = canvas.height / 2;
+            ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+            canvas.width = canvas2.width;
+            canvas.height = canvas2.height;
+            ctx.drawImage(canvas2, 0, 0);
         }
-        return canvas;
+        canvas2.width = targetSize.w;
+        canvas2.height = targetSize.h;
+        ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+        return canvas2;
     }
     function convertBmpToBlob(image, mimeType = 'image/png') {
         return new Promise((resolve, reject) => {
