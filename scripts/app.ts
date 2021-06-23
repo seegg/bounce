@@ -24,8 +24,6 @@ const appProps = {
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
 
-
-
 (function init(): void {
   addEventListeners();
   //set initial canvas dimensions
@@ -42,40 +40,6 @@ const appProps = {
   });
 })();
 
-
-/**
- * Append a HTMLImageELement to a parent container
- * optional loading placeholder.
- */
-function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLElement, loadingImg?: HTMLImageElement): void {
-  if (loadingImg) {
-    imgContainer.replaceChild(imgEle, loadingImg);
-  } else {
-    imgContainer.append(imgEle);
-  }
-}
-
-/**
- *create a new img element with a given src and a list of classes.
- *assign an index number from the bitmap image array associated with 
- *the src.
- */
-function createImgEleWithIndex(
-  src: string,
-  imgIndex: number,
-  classList: string[],
-  callback?: MouseClickCallback | null
-): HTMLImageElement {
-  const imgEle = document.createElement('img');
-  imgEle.classList.add(...classList);
-  imgEle.onclick = callback ? callback : null;
-  imgEle.setAttribute('data-index', imgIndex + '');
-  imgEle.onload = () => {
-    URL.revokeObjectURL(src);
-  }
-  imgEle.src = src;
-  return imgEle;
-}
 
 /** 
  * Create a bitmap image from a URL and add it to the bitmap array.
@@ -173,6 +137,14 @@ function draw() {
       drawBall(ctx, ball);
     }
     ball.updatePosition(appProps.gravity, appProps.deceleration, ellapsedTime);
+    appProps.balls.forEach(ball2 => {
+      if (ball.id !== ball2.id && !ball2.selected) {
+        const overlap = ball.getOverlap(ball2);
+        if (overlap > 0) {
+          ball.reversePosition(overlap);
+        }
+      }
+    })
     checkWallCollission(ball);
   })
 

@@ -24,13 +24,17 @@ class Ball {
    * update the position and state of the ball base on various variables.
    */
   updatePosition(gravity: number, deceleration: number, ellapsedTime: number): void {
-    if (this.selected) return;
-    this.position.x += this.velocity.vX * ellapsedTime;
-    this.position.y += this.velocity.vY * ellapsedTime;
-    this.velocity.vY += gravity;
-    this.velocity.vX *= deceleration;
-    if (Math.abs(this.velocity.vX) < 0.001) this.velocity.vX = 0;
-    if (Math.abs(this.velocity.vY) < gravity) this.velocity.vY = 0;
+    try {
+      if (this.selected) return;
+      this.position.x += this.velocity.vX * ellapsedTime;
+      this.position.y += this.velocity.vY * ellapsedTime;
+      this.velocity.vY += gravity;
+      this.velocity.vX *= deceleration;
+      if (Math.abs(this.velocity.vX) < 0.001) this.velocity.vX = 0;
+      if (Math.abs(this.velocity.vY) < gravity) this.velocity.vY = 0;
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   /**
@@ -60,7 +64,7 @@ class Ball {
     return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.radius, 2);
   }
 
-  getOverlapDistance(otherBall: Ball): number {
+  getOverlap(otherBall: Ball): number {
     const centerDistance = util.distanceBetween2Points(this.position, otherBall.position);
     const sumOfRadii = this.radius + otherBall.radius;
     const overlap = sumOfRadii - centerDistance;
@@ -95,7 +99,7 @@ class Ball {
    */
   ballBounce(ball2: Ball): void {
     //check if the balls are touching.
-    const overlap = this.getOverlapDistance(ball2);
+    const overlap = this.getOverlap(ball2);
     if (overlap >= 0) {
       //check if the angle is less than 90 degrees
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
@@ -103,6 +107,12 @@ class Ball {
       if (angle < 90) {
         const velocity1 = util.getBallCollisionVelocity(this, ball2);
         const velocity2 = util.getBallCollisionVelocity(ball2, this);
+        const minValue = 0.005
+        velocity1.vX = Math.abs(velocity1.vX) < minValue ? 0 : velocity1.vX * 0.9;
+        velocity1.vY = Math.abs(velocity1.vY) < minValue ? 0 : velocity1.vY * 0.9;
+        velocity2.vX = Math.abs(velocity2.vX) < minValue ? 0 : velocity2.vX * 0.9;
+        velocity2.vY = Math.abs(velocity2.vY) < minValue ? 0 : velocity2.vY * 0.9;
+        console.log(this.id, velocity1);
         this.velocity = velocity1;
         ball2.velocity = velocity2;
       }

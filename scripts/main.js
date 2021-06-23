@@ -11,16 +11,21 @@ class Ball {
         Ball.baseId++;
     }
     updatePosition(gravity, deceleration, ellapsedTime) {
-        if (this.selected)
-            return;
-        this.position.x += this.velocity.vX * ellapsedTime;
-        this.position.y += this.velocity.vY * ellapsedTime;
-        this.velocity.vY += gravity;
-        this.velocity.vX *= deceleration;
-        if (Math.abs(this.velocity.vX) < 0.001)
-            this.velocity.vX = 0;
-        if (Math.abs(this.velocity.vY) < gravity)
-            this.velocity.vY = 0;
+        try {
+            if (this.selected)
+                return;
+            this.position.x += this.velocity.vX * ellapsedTime;
+            this.position.y += this.velocity.vY * ellapsedTime;
+            this.velocity.vY += gravity;
+            this.velocity.vX *= deceleration;
+            if (Math.abs(this.velocity.vX) < 0.001)
+                this.velocity.vX = 0;
+            if (Math.abs(this.velocity.vY) < gravity)
+                this.velocity.vY = 0;
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
     move(x, y) {
         this.position.x += x;
@@ -37,7 +42,7 @@ class Ball {
     containsPoint(x, y) {
         return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.radius, 2);
     }
-    getOverlapDistance(otherBall) {
+    getOverlap(otherBall) {
         const centerDistance = util.distanceBetween2Points(this.position, otherBall.position);
         const sumOfRadii = this.radius + otherBall.radius;
         const overlap = sumOfRadii - centerDistance;
@@ -61,13 +66,19 @@ class Ball {
         }
     }
     ballBounce(ball2) {
-        const overlap = this.getOverlapDistance(ball2);
+        const overlap = this.getOverlap(ball2);
         if (overlap >= 0) {
             const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
             const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
             if (angle < 90) {
                 const velocity1 = util.getBallCollisionVelocity(this, ball2);
                 const velocity2 = util.getBallCollisionVelocity(ball2, this);
+                const minValue = 0.005;
+                velocity1.vX = Math.abs(velocity1.vX) < minValue ? 0 : velocity1.vX * 0.9;
+                velocity1.vY = Math.abs(velocity1.vY) < minValue ? 0 : velocity1.vY * 0.9;
+                velocity2.vX = Math.abs(velocity2.vX) < minValue ? 0 : velocity2.vX * 0.9;
+                velocity2.vY = Math.abs(velocity2.vY) < minValue ? 0 : velocity2.vY * 0.9;
+                console.log(this.id, velocity1);
                 this.velocity = velocity1;
                 ball2.velocity = velocity2;
             }
@@ -234,25 +245,6 @@ const appProps = {
         draw();
     });
 })();
-function appendImgElemToContainer(imgEle, imgContainer, loadingImg) {
-    if (loadingImg) {
-        imgContainer.replaceChild(imgEle, loadingImg);
-    }
-    else {
-        imgContainer.append(imgEle);
-    }
-}
-function createImgEleWithIndex(src, imgIndex, classList, callback) {
-    const imgEle = document.createElement('img');
-    imgEle.classList.add(...classList);
-    imgEle.onclick = callback ? callback : null;
-    imgEle.setAttribute('data-index', imgIndex + '');
-    imgEle.onload = () => {
-        URL.revokeObjectURL(src);
-    };
-    imgEle.src = src;
-    return imgEle;
-}
 function createAndCacheBitmap(imgSrc, imgArr, radius) {
     return util.createCircleImg(imgSrc, radius)
         .then(image => {
@@ -327,6 +319,14 @@ function draw() {
             drawBall(ctx, ball);
         }
         ball.updatePosition(appProps.gravity, appProps.deceleration, ellapsedTime);
+        appProps.balls.forEach(ball2 => {
+            if (ball.id !== ball2.id && !ball2.selected) {
+                const overlap = ball.getOverlap(ball2);
+                if (overlap > 0) {
+                    ball.reversePosition(overlap);
+                }
+            }
+        });
         checkWallCollission(ball);
     });
     appProps.balls.forEach(ball => {
