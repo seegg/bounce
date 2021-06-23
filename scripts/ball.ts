@@ -51,6 +51,7 @@ class Ball {
    * of its velocity.
    */
   reversePosition(distance: number): void {
+    if (this.getTotalVelocity() === 0) return;
     const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
     this.position.x += this.velocity.vX * velocityRatio;
     this.position.y += this.velocity.vY * velocityRatio;
@@ -98,6 +99,7 @@ class Ball {
    * if it's less than 90degrees then consider the balls to be colliding.
    */
   ballBounce(ball2: Ball): void {
+    if (this.selected || ball2.selected) return;
     //check if the balls are touching.
     const overlap = this.getOverlap(ball2);
     if (overlap >= 0) {
@@ -105,14 +107,13 @@ class Ball {
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
       const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
       if (angle < 90) {
+        const modifier = 0.8;
         const velocity1 = util.getBallCollisionVelocity(this, ball2);
         const velocity2 = util.getBallCollisionVelocity(ball2, this);
-        const minValue = 0.005
-        velocity1.vX = Math.abs(velocity1.vX) < minValue ? 0 : velocity1.vX * 0.9;
-        velocity1.vY = Math.abs(velocity1.vY) < minValue ? 0 : velocity1.vY * 0.9;
-        velocity2.vX = Math.abs(velocity2.vX) < minValue ? 0 : velocity2.vX * 0.9;
-        velocity2.vY = Math.abs(velocity2.vY) < minValue ? 0 : velocity2.vY * 0.9;
-        console.log(this.id, velocity1);
+        velocity1.vX *= modifier;
+        velocity1.vY *= modifier;
+        velocity2.vX *= modifier;
+        velocity2.vY *= modifier;
         this.velocity = velocity1;
         ball2.velocity = velocity2;
       }

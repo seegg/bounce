@@ -136,7 +136,7 @@ function draw() {
     if (!ball.selected) {
       drawBall(ctx, ball);
     }
-    ball.updatePosition(appProps.gravity, appProps.deceleration, ellapsedTime);
+    updateBall(ball, ellapsedTime);
     appProps.balls.forEach(ball2 => {
       if (ball.id !== ball2.id && !ball2.selected) {
         const overlap = ball.getOverlap(ball2);
@@ -160,6 +160,18 @@ function draw() {
   drawBall(ctx, appProps.selectedBall);
 
   window.requestAnimationFrame(() => { draw() });
+}
+
+function updateBall(ball: Ball, ellapsedTime: number) {
+  const { position, radius, selected, velocity } = ball
+  if (!selected) {
+    position.x += velocity.vX * ellapsedTime;
+    position.y += velocity.vY * ellapsedTime;
+    velocity.vX *= appProps.deceleration;
+    velocity.vY += appProps.gravity;
+    if (Math.abs(velocity.vX) < 0.001) velocity.vX = 0;
+    if (Math.abs(velocity.vY) < appProps.gravity) velocity.vY = 0;
+  }
 }
 
 /**

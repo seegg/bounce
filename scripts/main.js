@@ -32,6 +32,8 @@ class Ball {
         this.position.y += y;
     }
     reversePosition(distance) {
+        if (this.getTotalVelocity() === 0)
+            return;
         const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
         this.position.x += this.velocity.vX * velocityRatio;
         this.position.y += this.velocity.vY * velocityRatio;
@@ -66,19 +68,20 @@ class Ball {
         }
     }
     ballBounce(ball2) {
+        if (this.selected || ball2.selected)
+            return;
         const overlap = this.getOverlap(ball2);
         if (overlap >= 0) {
             const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
             const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
             if (angle < 90) {
+                const modifier = 0.8;
                 const velocity1 = util.getBallCollisionVelocity(this, ball2);
                 const velocity2 = util.getBallCollisionVelocity(ball2, this);
-                const minValue = 0.005;
-                velocity1.vX = Math.abs(velocity1.vX) < minValue ? 0 : velocity1.vX * 0.9;
-                velocity1.vY = Math.abs(velocity1.vY) < minValue ? 0 : velocity1.vY * 0.9;
-                velocity2.vX = Math.abs(velocity2.vX) < minValue ? 0 : velocity2.vX * 0.9;
-                velocity2.vY = Math.abs(velocity2.vY) < minValue ? 0 : velocity2.vY * 0.9;
-                console.log(this.id, velocity1);
+                velocity1.vX *= modifier;
+                velocity1.vY *= modifier;
+                velocity2.vX *= modifier;
+                velocity2.vY *= modifier;
                 this.velocity = velocity1;
                 ball2.velocity = velocity2;
             }
@@ -318,7 +321,7 @@ function draw() {
         if (!ball.selected) {
             drawBall(ctx, ball);
         }
-        ball.updatePosition(appProps.gravity, appProps.deceleration, ellapsedTime);
+        updateBall(ball, ellapsedTime);
         appProps.balls.forEach(ball2 => {
             if (ball.id !== ball2.id && !ball2.selected) {
                 const overlap = ball.getOverlap(ball2);
@@ -338,6 +341,19 @@ function draw() {
     });
     drawBall(ctx, appProps.selectedBall);
     window.requestAnimationFrame(() => { draw(); });
+}
+function updateBall(ball, ellapsedTime) {
+    const { position, radius, selected, velocity } = ball;
+    if (!selected) {
+        position.x += velocity.vX * ellapsedTime;
+        position.y += velocity.vY * ellapsedTime;
+        velocity.vX *= appProps.deceleration;
+        velocity.vY += appProps.gravity;
+        if (Math.abs(velocity.vX) < 0.001)
+            velocity.vX = 0;
+        if (Math.abs(velocity.vY) < appProps.gravity)
+            velocity.vY = 0;
+    }
 }
 function drawBall(ctx, ball) {
     if (ball === null)
