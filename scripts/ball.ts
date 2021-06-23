@@ -21,23 +21,6 @@ class Ball {
   }
 
   /**
-   * update the position and state of the ball base on various variables.
-   */
-  updatePosition(gravity: number, deceleration: number, ellapsedTime: number): void {
-    try {
-      if (this.selected) return;
-      this.position.x += this.velocity.vX * ellapsedTime;
-      this.position.y += this.velocity.vY * ellapsedTime;
-      this.velocity.vY += gravity;
-      this.velocity.vX *= deceleration;
-      if (Math.abs(this.velocity.vX) < 0.001) this.velocity.vX = 0;
-      if (Math.abs(this.velocity.vY) < gravity) this.velocity.vY = 0;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  /**
    * move the ball by x and y amount.
    */
   move(x: number, y: number): void {

@@ -40,18 +40,9 @@ const appProps = {
   });
 })();
 
-
-/** 
- * Create a bitmap image from a URL and add it to the bitmap array.
+/**
+ * Add event handlers for the canvas.
  */
-function createAndCacheBitmap(imgSrc: string, imgArr: ImageBitmap[], radius: number): Promise<[ImageBitmap, number]> {
-  return util.createCircleImg(imgSrc, radius)
-    .then(image => {
-      imgArr.push(image);
-      return [image, imgArr.length - 1];
-    })
-}
-
 function addEventListeners(): void {
   window.onresize = () => {
     handleWindowResize();
@@ -162,6 +153,10 @@ function draw() {
   window.requestAnimationFrame(() => { draw() });
 }
 
+/**
+ * update the ball's position and velocity after each frame.
+ * Set the balls velocity to 0 if it's below a certain value. 
+ */
 function updateBall(ball: Ball, ellapsedTime: number) {
   const { position, radius, selected, velocity } = ball
   if (!selected) {
@@ -236,28 +231,6 @@ function checkWallCollission(ball: Ball): void {
 function getRelativeMousePos(evt: MouseEvent): [number, number] {
   const boundingRect = (<HTMLElement>evt.target).getBoundingClientRect();
   return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];
-}
-
-/**
- * Toggle/Select the img elements 
- * in the img container
- */
-function toggleSelectedImgElement(imgEle: HTMLImageElement) {
-  const grayscale = 'grayscale';
-  appProps.selectedImgEle?.classList.toggle(grayscale);
-  if (imgEle === appProps.selectedImgEle) {
-    appProps.selectedImgEle = null;
-  } else {
-    imgEle.classList.toggle(grayscale);
-    appProps.selectedImgEle = imgEle;
-  }
-  scrollToImgElement(imgEle);
-}
-
-function scrollToImgElement(imgEle: HTMLImageElement) {
-  const container = document.getElementById('img-container')!;
-  const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
-  container.scroll(0, scrollDistance);
 }
 
 //

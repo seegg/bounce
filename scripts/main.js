@@ -10,23 +10,6 @@ class Ball {
         this.selected = selected;
         Ball.baseId++;
     }
-    updatePosition(gravity, deceleration, ellapsedTime) {
-        try {
-            if (this.selected)
-                return;
-            this.position.x += this.velocity.vX * ellapsedTime;
-            this.position.y += this.velocity.vY * ellapsedTime;
-            this.velocity.vY += gravity;
-            this.velocity.vX *= deceleration;
-            if (Math.abs(this.velocity.vX) < 0.001)
-                this.velocity.vX = 0;
-            if (Math.abs(this.velocity.vY) < gravity)
-                this.velocity.vY = 0;
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
     move(x, y) {
         this.position.x += x;
         this.position.y += y;
@@ -248,13 +231,6 @@ const appProps = {
         draw();
     });
 })();
-function createAndCacheBitmap(imgSrc, imgArr, radius) {
-    return util.createCircleImg(imgSrc, radius)
-        .then(image => {
-        imgArr.push(image);
-        return [image, imgArr.length - 1];
-    });
-}
 function addEventListeners() {
     window.onresize = () => {
         handleWindowResize();
@@ -403,24 +379,6 @@ function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();
     return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];
 }
-function toggleSelectedImgElement(imgEle) {
-    var _a;
-    const grayscale = 'grayscale';
-    (_a = appProps.selectedImgEle) === null || _a === void 0 ? void 0 : _a.classList.toggle(grayscale);
-    if (imgEle === appProps.selectedImgEle) {
-        appProps.selectedImgEle = null;
-    }
-    else {
-        imgEle.classList.toggle(grayscale);
-        appProps.selectedImgEle = imgEle;
-    }
-    scrollToImgElement(imgEle);
-}
-function scrollToImgElement(imgEle) {
-    const container = document.getElementById('img-container');
-    const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
-    container.scroll(0, scrollDistance);
-}
 function onMouseDown(evt) {
     if (evt.button !== 0)
         return;
@@ -484,9 +442,10 @@ function addImage(imgSrc, imgArr, callback = null, radius) {
     loadingPlaceholder.classList.add('h-12', 'w-12');
     loadingPlaceholder.src = 'images/spinner.gif';
     imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.appendChild(loadingPlaceholder);
-    return createAndCacheBitmap(imgSrc, imgArr, radius)
-        .then(([img, imgIdx]) => {
-        return createImgEleWithIndex(imgSrc, imgIdx, classList, callback);
+    return util.createCircleImg(imgSrc, radius)
+        .then(bitmapImg => {
+        const index = imgArr.push(bitmapImg) - 1;
+        return createImgEleWithIndex(imgSrc, index, classList, callback);
     })
         .then(imgEle => {
         if (imgContainer === null)
@@ -515,4 +474,22 @@ function createImgEleWithIndex(src, imgIndex, classList, callback) {
     };
     imgEle.src = src;
     return imgEle;
+}
+function toggleSelectedImgElement(imgEle) {
+    var _a;
+    const grayscale = 'grayscale';
+    (_a = appProps.selectedImgEle) === null || _a === void 0 ? void 0 : _a.classList.toggle(grayscale);
+    if (imgEle === appProps.selectedImgEle) {
+        appProps.selectedImgEle = null;
+    }
+    else {
+        imgEle.classList.toggle(grayscale);
+        appProps.selectedImgEle = imgEle;
+    }
+    scrollToImgElement(imgEle);
+}
+function scrollToImgElement(imgEle) {
+    const container = document.getElementById('img-container');
+    const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+    container.scroll(0, scrollDistance);
 }

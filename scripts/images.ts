@@ -18,9 +18,10 @@ function addImage(
   loadingPlaceholder.classList.add('h-12', 'w-12');
   loadingPlaceholder.src = 'images/spinner.gif';
   imgContainer?.appendChild(loadingPlaceholder);
-  return createAndCacheBitmap(imgSrc, imgArr, radius)
-    .then(([img, imgIdx]) => {
-      return createImgEleWithIndex(imgSrc, imgIdx, classList, callback)
+  return util.createCircleImg(imgSrc, radius)
+    .then(bitmapImg => {
+      const index = imgArr.push(bitmapImg) - 1;
+      return createImgEleWithIndex(imgSrc, index, classList, callback)
     })
     .then(imgEle => {
       if (imgContainer === null) throw new Error('image container is null');
@@ -44,7 +45,7 @@ function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLEl
 }
 
 /**
- *create a new img element with a given src and a list of classes.
+ *create a new HTMLImageElement with a src and a list of classes.
  *assign an index number from the bitmap image array associated with 
  *the src.
  */
@@ -63,4 +64,26 @@ function createImgEleWithIndex(
   }
   imgEle.src = src;
   return imgEle;
+}
+
+/**
+ * Toggle/Select the img elements 
+ * in the img container
+ */
+function toggleSelectedImgElement(imgEle: HTMLImageElement) {
+  const grayscale = 'grayscale';
+  appProps.selectedImgEle?.classList.toggle(grayscale);
+  if (imgEle === appProps.selectedImgEle) {
+    appProps.selectedImgEle = null;
+  } else {
+    imgEle.classList.toggle(grayscale);
+    appProps.selectedImgEle = imgEle;
+  }
+  scrollToImgElement(imgEle);
+}
+
+function scrollToImgElement(imgEle: HTMLImageElement) {
+  const container = document.getElementById('img-container')!;
+  const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+  container.scroll(0, scrollDistance);
 }
