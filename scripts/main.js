@@ -355,14 +355,6 @@ function draw() {
             drawBall(ctx, ball);
         }
         updateBall(ball, ellapsedTime);
-        appProps.balls.forEach(ball2 => {
-            if (ball.id !== ball2.id && !ball2.selected) {
-                const overlap = ball.getOverlap(ball2);
-                if (overlap > 0) {
-                    ball.reversePosition(overlap);
-                }
-            }
-        });
         checkWallCollission(ball);
     });
     appProps.balls.forEach(ball => {
@@ -376,7 +368,7 @@ function draw() {
     window.requestAnimationFrame(() => { draw(); });
 }
 function updateBall(ball, ellapsedTime) {
-    const { position, radius, selected, velocity } = ball;
+    const { id, position, radius, selected, velocity } = ball;
     if (!selected) {
         position.x += velocity.vX * ellapsedTime;
         position.y += velocity.vY * ellapsedTime;
@@ -386,6 +378,14 @@ function updateBall(ball, ellapsedTime) {
             velocity.vX = 0;
         if (Math.abs(velocity.vY) < appProps.gravity)
             velocity.vY = 0;
+        appProps.balls.forEach(ball2 => {
+            if (id !== ball2.id && !ball2.selected) {
+                const overlap = ball.getOverlap(ball2);
+                if (overlap > 0) {
+                    ball.reversePosition(overlap);
+                }
+            }
+        });
     }
 }
 function drawBall(ctx, ball) {

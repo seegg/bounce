@@ -128,14 +128,6 @@ function draw() {
       drawBall(ctx, ball);
     }
     updateBall(ball, ellapsedTime);
-    appProps.balls.forEach(ball2 => {
-      if (ball.id !== ball2.id && !ball2.selected) {
-        const overlap = ball.getOverlap(ball2);
-        if (overlap > 0) {
-          ball.reversePosition(overlap);
-        }
-      }
-    })
     checkWallCollission(ball);
   })
 
@@ -158,7 +150,7 @@ function draw() {
  * Set the balls velocity to 0 if it's below a certain value. 
  */
 function updateBall(ball: Ball, ellapsedTime: number) {
-  const { position, radius, selected, velocity } = ball
+  const { id, position, radius, selected, velocity } = ball
   if (!selected) {
     position.x += velocity.vX * ellapsedTime;
     position.y += velocity.vY * ellapsedTime;
@@ -166,8 +158,18 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     velocity.vY += appProps.gravity;
     if (Math.abs(velocity.vX) < appProps.gravity) velocity.vX = 0;
     if (Math.abs(velocity.vY) < appProps.gravity) velocity.vY = 0;
+    //adjust the ball if it overlaps with any other ball.
+    appProps.balls.forEach(ball2 => {
+      if (id !== ball2.id && !ball2.selected) {
+        const overlap = ball.getOverlap(ball2);
+        if (overlap > 0) {
+          ball.reversePosition(overlap);
+        }
+      }
+    })
   }
 }
+
 
 /**
  * Draw an individual ball.
