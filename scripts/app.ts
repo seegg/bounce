@@ -164,7 +164,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
     velocity.vY += appProps.gravity;
-    if (Math.abs(velocity.vX) < 0.001) velocity.vX = 0;
+    if (Math.abs(velocity.vX) < appProps.gravity) velocity.vX = 0;
     if (Math.abs(velocity.vY) < appProps.gravity) velocity.vY = 0;
   }
 }

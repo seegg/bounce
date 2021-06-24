@@ -45,7 +45,6 @@ class Ball {
                 this.velocity.vY *= -1 / mod;
                 break;
             case 'bottom':
-                this.velocity.vY -= 0.0001;
                 this.velocity.vY *= -1 / mod;
                 break;
         }
@@ -191,6 +190,70 @@ const util = (function utilityFunctions() {
         distanceBetween2Points
     };
 })();
+const imageList = (function () {
+    const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
+    const imageUrls = [];
+    const path = "images/";
+    return imageFiles.map(img => path + img).concat(imageUrls);
+})();
+function addImage(imgSrc, imgArr, callback = null, radius) {
+    const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
+    const imgContainer = document.getElementById('img-container');
+    const loadingPlaceholder = document.createElement('img');
+    loadingPlaceholder.classList.add('h-12', 'w-12');
+    loadingPlaceholder.src = 'images/spinner.gif';
+    imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.appendChild(loadingPlaceholder);
+    return util.createCircleImg(imgSrc, radius)
+        .then(bitmapImg => {
+        const index = imgArr.push(bitmapImg) - 1;
+        return createImgEleWithIndex(imgSrc, index, classList, callback);
+    })
+        .then(imgEle => {
+        if (imgContainer === null)
+            throw new Error('image container is null');
+        appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
+    })
+        .catch(err => {
+        console.error(err);
+    });
+}
+function appendImgElemToContainer(imgEle, imgContainer, loadingImg) {
+    if (loadingImg) {
+        imgContainer.replaceChild(imgEle, loadingImg);
+    }
+    else {
+        imgContainer.append(imgEle);
+    }
+}
+function createImgEleWithIndex(src, imgIndex, classList, callback) {
+    const imgEle = document.createElement('img');
+    imgEle.classList.add(...classList);
+    imgEle.onclick = callback ? callback : null;
+    imgEle.setAttribute('data-index', imgIndex + '');
+    imgEle.onload = () => {
+        URL.revokeObjectURL(src);
+    };
+    imgEle.src = src;
+    return imgEle;
+}
+function toggleSelectedImgElement(imgEle) {
+    var _a;
+    const grayscale = 'grayscale';
+    (_a = appProps.selectedImgEle) === null || _a === void 0 ? void 0 : _a.classList.toggle(grayscale);
+    if (imgEle === appProps.selectedImgEle) {
+        appProps.selectedImgEle = null;
+    }
+    else {
+        imgEle.classList.toggle(grayscale);
+        appProps.selectedImgEle = imgEle;
+    }
+    scrollToImgElement(imgEle);
+}
+function scrollToImgElement(imgEle) {
+    const container = document.getElementById('img-container');
+    const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+    container.scroll(0, scrollDistance);
+}
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
@@ -319,7 +382,7 @@ function updateBall(ball, ellapsedTime) {
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
         velocity.vY += appProps.gravity;
-        if (Math.abs(velocity.vX) < 0.001)
+        if (Math.abs(velocity.vX) < appProps.gravity)
             velocity.vX = 0;
         if (Math.abs(velocity.vY) < appProps.gravity)
             velocity.vY = 0;
@@ -428,68 +491,4 @@ function onMouseLeave(evt) {
         appProps.selectedBall.velocity = { vX: 0, vY: 0 };
         appProps.selectedBall = null;
     }
-}
-const imageList = (function () {
-    const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
-    const imageUrls = [];
-    const path = "images/";
-    return imageFiles.map(img => path + img).concat(imageUrls);
-})();
-function addImage(imgSrc, imgArr, callback = null, radius) {
-    const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
-    const imgContainer = document.getElementById('img-container');
-    const loadingPlaceholder = document.createElement('img');
-    loadingPlaceholder.classList.add('h-12', 'w-12');
-    loadingPlaceholder.src = 'images/spinner.gif';
-    imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.appendChild(loadingPlaceholder);
-    return util.createCircleImg(imgSrc, radius)
-        .then(bitmapImg => {
-        const index = imgArr.push(bitmapImg) - 1;
-        return createImgEleWithIndex(imgSrc, index, classList, callback);
-    })
-        .then(imgEle => {
-        if (imgContainer === null)
-            throw new Error('image container is null');
-        appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
-    })
-        .catch(err => {
-        console.error(err);
-    });
-}
-function appendImgElemToContainer(imgEle, imgContainer, loadingImg) {
-    if (loadingImg) {
-        imgContainer.replaceChild(imgEle, loadingImg);
-    }
-    else {
-        imgContainer.append(imgEle);
-    }
-}
-function createImgEleWithIndex(src, imgIndex, classList, callback) {
-    const imgEle = document.createElement('img');
-    imgEle.classList.add(...classList);
-    imgEle.onclick = callback ? callback : null;
-    imgEle.setAttribute('data-index', imgIndex + '');
-    imgEle.onload = () => {
-        URL.revokeObjectURL(src);
-    };
-    imgEle.src = src;
-    return imgEle;
-}
-function toggleSelectedImgElement(imgEle) {
-    var _a;
-    const grayscale = 'grayscale';
-    (_a = appProps.selectedImgEle) === null || _a === void 0 ? void 0 : _a.classList.toggle(grayscale);
-    if (imgEle === appProps.selectedImgEle) {
-        appProps.selectedImgEle = null;
-    }
-    else {
-        imgEle.classList.toggle(grayscale);
-        appProps.selectedImgEle = imgEle;
-    }
-    scrollToImgElement(imgEle);
-}
-function scrollToImgElement(imgEle) {
-    const container = document.getElementById('img-container');
-    const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
-    container.scroll(0, scrollDistance);
 }

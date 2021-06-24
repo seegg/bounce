@@ -3,9 +3,8 @@
     "scripts/types.ts",
     "scripts/ball.ts",
     "scripts/utility.ts",
-    "scripts/imageList.ts",
+    "scripts/images.ts",
     "scripts/app.ts",
-    "scripts/images.ts"
   ],
   "compilerOptions": {
     "lib": [
