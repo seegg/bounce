@@ -1,3 +1,13 @@
+const imageList = (function () {
+
+  const imageFiles = <string[]>["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
+  const imageUrls = <string[]>[];
+  const path = "images/";
+
+  return imageFiles.map(img => path + img).concat(imageUrls);
+
+})();
+
 /**
  * Add an image base on a input url. create a bitmap and HTMLImageElement base on this image.
  * store the bitmap to an array and append the img element to the img container.

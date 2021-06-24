@@ -48,6 +48,9 @@ class Ball {
     return Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.radius, 2);
   }
 
+  /**
+   * The overlap between this instance of ball and another ball
+   */
   getOverlap(otherBall: Ball): number {
     const centerDistance = util.distanceBetween2Points(this.position, otherBall.position);
     const sumOfRadii = this.radius + otherBall.radius;

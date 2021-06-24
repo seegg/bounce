@@ -191,12 +191,6 @@ const util = (function utilityFunctions() {
         distanceBetween2Points
     };
 })();
-const imageList = (function () {
-    const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
-    const imageUrls = [];
-    const path = "images/";
-    return imageFiles.map(img => path + img).concat(imageUrls);
-})();
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
@@ -435,6 +429,12 @@ function onMouseLeave(evt) {
         appProps.selectedBall = null;
     }
 }
+const imageList = (function () {
+    const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
+    const imageUrls = [];
+    const path = "images/";
+    return imageFiles.map(img => path + img).concat(imageUrls);
+})();
 function addImage(imgSrc, imgArr, callback = null, radius) {
     const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
     const imgContainer = document.getElementById('img-container');
