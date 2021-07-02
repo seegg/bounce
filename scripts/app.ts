@@ -128,7 +128,7 @@ function draw() {
       drawBall(ctx, ball);
     }
     updateBall(ball, ellapsedTime);
-    checkWallCollission(ball);
+
   })
 
   appProps.balls.forEach(ball => {
@@ -154,6 +154,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
   if (!selected) {
     if (Math.abs(velocity.vX) < 0.0001) velocity.vX = 0;
     if (Math.abs(velocity.vY) < appProps.gravity) velocity.vY = 0;
+    ball.rotation += velocity.vX * 10;
     position.x += velocity.vX * ellapsedTime;
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
@@ -161,6 +162,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
 
     //adjust the ball if it overlaps with any other ball.
     handleBallCollission(ball);
+    handleWallCollission(ball);
 
   }
 }
@@ -201,7 +203,7 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
   ctx.rotate(Math.PI / 180 * rotation);
   ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
 
-  if (ball.selected) {
+  if (selected) {
     ctx.lineWidth = 4
     ctx.strokeStyle = 'cyan'
     ctx.beginPath()
@@ -215,7 +217,7 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
  * Check to see if a ball collides with a side of the canvas
  * and then update its properties.
  */
-function checkWallCollission(ball: Ball): void {
+function handleWallCollission(ball: Ball): void {
   const { position, radius, velocity } = ball;
   const { width, height } = appProps.canvas;
   let wall: Wall;

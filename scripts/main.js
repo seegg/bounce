@@ -355,7 +355,6 @@ function draw() {
             drawBall(ctx, ball);
         }
         updateBall(ball, ellapsedTime);
-        checkWallCollission(ball);
     });
     appProps.balls.forEach(ball => {
         appProps.balls.forEach(ball2 => {
@@ -374,11 +373,13 @@ function updateBall(ball, ellapsedTime) {
             velocity.vX = 0;
         if (Math.abs(velocity.vY) < appProps.gravity)
             velocity.vY = 0;
+        ball.rotation += velocity.vX * 10;
         position.x += velocity.vX * ellapsedTime;
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
         velocity.vY += appProps.gravity;
         handleBallCollission(ball);
+        handleWallCollission(ball);
     }
 }
 function handleBallCollission(ball) {
@@ -410,7 +411,7 @@ function drawBall(ctx, ball) {
     ctx.translate(position.x, position.y);
     ctx.rotate(Math.PI / 180 * rotation);
     ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
-    if (ball.selected) {
+    if (selected) {
         ctx.lineWidth = 4;
         ctx.strokeStyle = 'cyan';
         ctx.beginPath();
@@ -419,7 +420,7 @@ function drawBall(ctx, ball) {
     }
     ctx.restore();
 }
-function checkWallCollission(ball) {
+function handleWallCollission(ball) {
     const { position, radius, velocity } = ball;
     const { width, height } = appProps.canvas;
     let wall;
