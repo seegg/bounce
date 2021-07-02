@@ -146,8 +146,7 @@ function draw() {
 }
 
 /**
- * update the ball's position and velocity after each frame.
- * Set the balls velocity to 0 if it's below a certain value. 
+ * update the ball's state after each frame.
  */
 function updateBall(ball: Ball, ellapsedTime: number) {
   const { id, position, radius, selected, velocity } = ball
