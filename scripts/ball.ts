@@ -93,7 +93,7 @@ class Ball {
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
       const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
       if (angle < 90) {
-        const modifier = 0.8;
+        const modifier = 0.85;
         const velocity1 = util.getBallCollisionVelocity(this, ball2);
         const velocity2 = util.getBallCollisionVelocity(ball2, this);
         velocity1.vX *= modifier;
