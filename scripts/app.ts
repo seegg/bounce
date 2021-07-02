@@ -160,26 +160,33 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     velocity.vY += appProps.gravity;
 
     //adjust the ball if it overlaps with any other ball.
-    let collissions = <Ball[]>[];
-    appProps.balls.forEach(ball2 => {
-      if (id !== ball2.id && !ball2.selected) {
-        const overlap = ball.getOverlap(ball2);
-        if (overlap > 0) collissions.push(ball2);
-      }
-    })
-    //if there's a collision find the nearest collided ball and adjust current ball's position.
-    if (collissions.length > 0) {
-      let nearestCollidedBall = collissions[0];
-      for (let i = 1; i < collissions.length; i++) {
-        const dist = util.distanceBetween2Points(ball.position, nearestCollidedBall.position);
-        if (dist > util.distanceBetween2Points(ball.position, collissions[i].position)) {
-          nearestCollidedBall = collissions[i];
-        }
-      }
-      ball.reversePosition(ball.getOverlap(nearestCollidedBall));
-    }
-    collissions = [];
+    handleBallCollission(ball);
+
   }
+}
+/**
+ * Adjust the position of the ball based on the nearest ball collission
+ */
+function handleBallCollission(ball: Ball): void {
+  let collissions = <Ball[]>[];
+  appProps.balls.forEach(ball2 => {
+    if (ball.id !== ball2.id && !ball2.selected) {
+      const overlap = ball.getOverlap(ball2);
+      if (overlap > 0) collissions.push(ball2);
+    }
+  })
+  //if there's a collision find the nearest collided ball and adjust current ball's position.
+  if (collissions.length > 0) {
+    let nearestCollidedBall = collissions[0];
+    for (let i = 1; i < collissions.length; i++) {
+      const dist = util.distanceBetween2Points(ball.position, nearestCollidedBall.position);
+      if (dist > util.distanceBetween2Points(ball.position, collissions[i].position)) {
+        nearestCollidedBall = collissions[i];
+      }
+    }
+    ball.reversePosition(ball.getOverlap(nearestCollidedBall));
+  }
+  collissions = [];
 }
 
 

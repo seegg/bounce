@@ -378,26 +378,29 @@ function updateBall(ball, ellapsedTime) {
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
         velocity.vY += appProps.gravity;
-        let collissions = [];
-        appProps.balls.forEach(ball2 => {
-            if (id !== ball2.id && !ball2.selected) {
-                const overlap = ball.getOverlap(ball2);
-                if (overlap > 0)
-                    collissions.push(ball2);
-            }
-        });
-        if (collissions.length > 0) {
-            let nearestCollidedBall = collissions[0];
-            for (let i = 1; i < collissions.length; i++) {
-                const dist = util.distanceBetween2Points(ball.position, nearestCollidedBall.position);
-                if (dist > util.distanceBetween2Points(ball.position, collissions[i].position)) {
-                    nearestCollidedBall = collissions[i];
-                }
-            }
-            ball.reversePosition(ball.getOverlap(nearestCollidedBall));
-        }
-        collissions = [];
+        handleBallCollission(ball);
     }
+}
+function handleBallCollission(ball) {
+    let collissions = [];
+    appProps.balls.forEach(ball2 => {
+        if (ball.id !== ball2.id && !ball2.selected) {
+            const overlap = ball.getOverlap(ball2);
+            if (overlap > 0)
+                collissions.push(ball2);
+        }
+    });
+    if (collissions.length > 0) {
+        let nearestCollidedBall = collissions[0];
+        for (let i = 1; i < collissions.length; i++) {
+            const dist = util.distanceBetween2Points(ball.position, nearestCollidedBall.position);
+            if (dist > util.distanceBetween2Points(ball.position, collissions[i].position)) {
+                nearestCollidedBall = collissions[i];
+            }
+        }
+        ball.reversePosition(ball.getOverlap(nearestCollidedBall));
+    }
+    collissions = [];
 }
 function drawBall(ctx, ball) {
     if (ball === null)
