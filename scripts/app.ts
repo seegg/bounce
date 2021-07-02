@@ -160,14 +160,11 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     velocity.vY += appProps.gravity;
 
     //adjust the ball if it overlaps with any other ball.
-    const collissions = <Ball[]>[];
+    let collissions = <Ball[]>[];
     appProps.balls.forEach(ball2 => {
       if (id !== ball2.id && !ball2.selected) {
         const overlap = ball.getOverlap(ball2);
-        if (overlap > 0) {
-          // ball.reversePosition(overlap);
-          collissions.push(ball2);
-        }
+        if (overlap > 0) collissions.push(ball2);
       }
     })
     //if there's a collision find the nearest collided ball and adjust current ball's position.
@@ -181,7 +178,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
       }
       ball.reversePosition(ball.getOverlap(nearestCollidedBall));
     }
-
+    collissions = [];
   }
 }
 

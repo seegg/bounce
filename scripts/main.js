@@ -378,13 +378,12 @@ function updateBall(ball, ellapsedTime) {
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
         velocity.vY += appProps.gravity;
-        const collissions = [];
+        let collissions = [];
         appProps.balls.forEach(ball2 => {
             if (id !== ball2.id && !ball2.selected) {
                 const overlap = ball.getOverlap(ball2);
-                if (overlap > 0) {
+                if (overlap > 0)
                     collissions.push(ball2);
-                }
             }
         });
         if (collissions.length > 0) {
@@ -397,6 +396,7 @@ function updateBall(ball, ellapsedTime) {
             }
             ball.reversePosition(ball.getOverlap(nearestCollidedBall));
         }
+        collissions = [];
     }
 }
 function drawBall(ctx, ball) {
