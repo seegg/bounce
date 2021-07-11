@@ -1,0 +1,5 @@
+.image-upload-modal{
+  position:fixed;
+  background-color: beige;
+  z-index: 100;
+}

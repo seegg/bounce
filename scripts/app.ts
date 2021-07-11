@@ -151,7 +151,7 @@ function draw() {
 function updateBall(ball: Ball, ellapsedTime: number) {
   const { id, position, radius, selected, velocity } = ball
   if (!selected) {
-    if (Math.abs(velocity.vX) < 0.0001) velocity.vX = 0;
+    // if (Math.abs(velocity.vX) < 0.0001) velocity.vX = 0;
     if (Math.abs(velocity.vY) < appProps.gravity) velocity.vY = 0;
     ball.rotation += velocity.vX * 10;
     position.x += velocity.vX * ellapsedTime;

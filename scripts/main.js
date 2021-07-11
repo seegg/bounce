@@ -60,9 +60,7 @@ class Ball {
                 const modifier = 0.85;
                 const velocity1 = util.getBallCollisionVelocity(this, ball2);
                 const velocity2 = util.getBallCollisionVelocity(ball2, this);
-                velocity1.vX *= modifier;
                 velocity1.vY *= modifier;
-                velocity2.vX *= modifier;
                 velocity2.vY *= modifier;
                 this.velocity = velocity1;
                 ball2.velocity = velocity2;
@@ -254,6 +252,8 @@ function scrollToImgElement(imgEle) {
     const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scroll(0, scrollDistance);
 }
+function uploadPic(evt) {
+}
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
@@ -369,8 +369,6 @@ function draw() {
 function updateBall(ball, ellapsedTime) {
     const { id, position, radius, selected, velocity } = ball;
     if (!selected) {
-        if (Math.abs(velocity.vX) < 0.0001)
-            velocity.vX = 0;
         if (Math.abs(velocity.vY) < appProps.gravity)
             velocity.vY = 0;
         ball.rotation += velocity.vX * 10;

@@ -96,9 +96,9 @@ class Ball {
         const modifier = 0.85;
         const velocity1 = util.getBallCollisionVelocity(this, ball2);
         const velocity2 = util.getBallCollisionVelocity(ball2, this);
-        velocity1.vX *= modifier;
+        // velocity1.vX *= modifier;
         velocity1.vY *= modifier;
-        velocity2.vX *= modifier;
+        // velocity2.vX *= modifier;
         velocity2.vY *= modifier;
         this.velocity = velocity1;
         ball2.velocity = velocity2;

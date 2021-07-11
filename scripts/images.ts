@@ -97,3 +97,7 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
   const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
   container.scroll(0, scrollDistance);
 }
+
+function uploadPic(evt: Event): void {
+
+}
