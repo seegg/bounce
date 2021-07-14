@@ -37,10 +37,20 @@
 
   </div>
 
-  <div class="image-upload-modal">
-    <p>Image upload</p>
+  <div class="image-upload-modal flex-col bg-red-100 p-1 rounded" id="modal">
+    <h2 class="text-4xl font-bold mx-auto ">Upload Image</h2>
+    <form id="image-upload-form" class="flex flex-col">
+      <label for="imgFile" class="font-bold">Upload Image:</label>
+      <input type="file" id="myFile" name="imgFile" accept="image/*">
+      <label for="imgUrl" class="font-bold">Image URL:</label>
+      <input type="text" name="imgURL" id="imgURL" placeholder="Image URL" class="w-full">
+      <div class="mx-auto">
+        <button class="mx-1">Ok</button>
+        <button class="mx-1">Cancel</button>
+      </div>
+    </form>
   </div>
-  <div class="modal-overlay">
+  <div class="modal-overlay" id="modal-overlay">
 
   </div>
 </body>
