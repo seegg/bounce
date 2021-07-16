@@ -254,6 +254,13 @@ function scrollToImgElement(imgEle) {
 }
 function uploadPic(evt) {
 }
+const imageUploadModal = document.getElementById('modal');
+const modalOverlay = document.getElementById('modal-overlay');
+function toggleModal(e) {
+    imageUploadModal === null || imageUploadModal === void 0 ? void 0 : imageUploadModal.classList.toggle('close');
+    modalOverlay === null || modalOverlay === void 0 ? void 0 : modalOverlay.classList.toggle('close');
+}
+modalOverlay === null || modalOverlay === void 0 ? void 0 : modalOverlay.addEventListener('pointerdown', (event) => { toggleModal(event); });
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
