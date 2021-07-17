@@ -260,11 +260,14 @@ const imageUploadModal = {
     overlay: document.getElementById('modal-overlay'),
     openButton: document.getElementById('image-upload-btn'),
 };
+const uploadForm = document.getElementById('image-upload-form');
 function toggleModal(e) {
     var _a, _b;
     e.preventDefault();
     (_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.toggle('close');
     (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
+}
+function handleFormSubmit(evt) {
 }
 (_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', (event) => { toggleModal(event); });
 (_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', (event) => { toggleModal(event); });
