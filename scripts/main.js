@@ -254,13 +254,20 @@ function scrollToImgElement(imgEle) {
 }
 function uploadPic(evt) {
 }
-const imageUploadModal = document.getElementById('modal');
-const modalOverlay = document.getElementById('modal-overlay');
+var _a, _b;
+const imageUploadModal = {
+    modal: document.getElementById('modal'),
+    overlay: document.getElementById('modal-overlay'),
+    openButton: document.getElementById('image-upload-btn'),
+};
 function toggleModal(e) {
-    imageUploadModal === null || imageUploadModal === void 0 ? void 0 : imageUploadModal.classList.toggle('close');
-    modalOverlay === null || modalOverlay === void 0 ? void 0 : modalOverlay.classList.toggle('close');
+    var _a, _b;
+    e.preventDefault();
+    (_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.toggle('close');
+    (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
 }
-modalOverlay === null || modalOverlay === void 0 ? void 0 : modalOverlay.addEventListener('pointerdown', (event) => { toggleModal(event); });
+(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', (event) => { toggleModal(event); });
+(_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', (event) => { toggleModal(event); });
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },

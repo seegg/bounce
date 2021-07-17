@@ -1,9 +1,15 @@
-const imageUploadModal = document.getElementById('modal');
-const modalOverlay = document.getElementById('modal-overlay');
-
-function toggleModal(e: Event): void {
-  imageUploadModal?.classList.toggle('close');
-  modalOverlay?.classList.toggle('close');
+const imageUploadModal = {
+  modal: document.getElementById('modal'),
+  overlay: document.getElementById('modal-overlay'),
+  openButton: document.getElementById('image-upload-btn'),
 }
 
-modalOverlay?.addEventListener('pointerdown', (event) => { toggleModal(event) });
+function toggleModal(e: PointerEvent | MouseEvent): void {
+  e.preventDefault();
+  imageUploadModal.modal?.classList.toggle('close');
+  imageUploadModal.overlay?.classList.toggle('close');
+}
+
+imageUploadModal.overlay?.addEventListener('pointerdown', (event) => { toggleModal(event) });
+imageUploadModal.openButton?.addEventListener('click', (event) => { toggleModal(event) });
+
