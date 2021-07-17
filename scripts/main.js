@@ -254,13 +254,17 @@ function scrollToImgElement(imgEle) {
 }
 function uploadPic(evt) {
 }
-var _a, _b;
+var _a, _b, _c;
 const imageUploadModal = {
     modal: document.getElementById('modal'),
     overlay: document.getElementById('modal-overlay'),
     openButton: document.getElementById('image-upload-btn'),
 };
-const uploadForm = document.getElementById('image-upload-form');
+const uploadForm = {
+    form: document.getElementById('image-upload-form'),
+    okButton: document.getElementById('form-ok-btn'),
+    cancelButton: document.getElementById('form-cancel-btn')
+};
 function toggleModal(e) {
     var _a, _b;
     e.preventDefault();
@@ -268,9 +272,12 @@ function toggleModal(e) {
     (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
 }
 function handleFormSubmit(evt) {
+    evt.preventDefault();
+    const imgInputElement = evt.target;
 }
-(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', (event) => { toggleModal(event); });
-(_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', (event) => { toggleModal(event); });
+(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', toggleModal);
+(_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', toggleModal);
+(_c = uploadForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', handleFormSubmit);
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
