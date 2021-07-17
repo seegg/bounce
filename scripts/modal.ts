@@ -21,7 +21,15 @@ function toggleModal(e: PointerEvent | MouseEvent): void {
 
 function handleFormSubmit(evt: Event) {
   evt.preventDefault();
-  const imgInputElement = <HTMLInputElement>evt.target;
+  const imgFileInputElement = <HTMLInputElement>document.getElementById('img-file');
+  const imgURLInputElement = <HTMLInputElement>document.getElementById('img-URL');
+  let imgSrc: string;
+  if (imgFileInputElement.files) {
+    imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+  } else {
+    imgSrc = imgURLInputElement.value;
+  }
+
 }
 
 imageUploadModal.overlay?.addEventListener('pointerdown', toggleModal);

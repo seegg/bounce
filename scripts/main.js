@@ -252,8 +252,6 @@ function scrollToImgElement(imgEle) {
     const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scroll(0, scrollDistance);
 }
-function uploadPic(evt) {
-}
 var _a, _b, _c;
 const imageUploadModal = {
     modal: document.getElementById('modal'),
@@ -273,7 +271,15 @@ function toggleModal(e) {
 }
 function handleFormSubmit(evt) {
     evt.preventDefault();
-    const imgInputElement = evt.target;
+    const imgFileInputElement = document.getElementById('img-file');
+    const imgURLInputElement = document.getElementById('img-URL');
+    let imgSrc;
+    if (imgFileInputElement.files) {
+        imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+    }
+    else {
+        imgSrc = imgURLInputElement.value;
+    }
 }
 (_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', toggleModal);
 (_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', toggleModal);
