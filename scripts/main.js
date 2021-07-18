@@ -195,7 +195,7 @@ const imageList = (function () {
     return imageFiles.map(img => path + img).concat(imageUrls);
 })();
 let imageCache = [];
-function addImage(imgSrc, imgArr, callback = null, radius) {
+function addImage(imgSrc, imgArr, radius) {
     const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
     const imgContainer = document.getElementById('img-container');
     const loadingPlaceholder = document.createElement('img');
@@ -205,7 +205,7 @@ function addImage(imgSrc, imgArr, callback = null, radius) {
     return util.createCircleImg(imgSrc, radius)
         .then(bitmapImg => {
         const index = imgArr.push(bitmapImg) - 1;
-        return createImgEleWithIndex(imgSrc, index, classList, callback);
+        return createImgEleWithIndex(imgSrc, index, classList);
     })
         .then(imgEle => {
         if (imgContainer === null)
@@ -224,7 +224,7 @@ function appendImgElemToContainer(imgEle, imgContainer, loadingImg) {
         imgContainer.append(imgEle);
     }
 }
-function createImgEleWithIndex(src, imgIndex, classList, callback) {
+function createImgEleWithIndex(src, imgIndex, classList) {
     const imgEle = document.createElement('img');
     imgEle.classList.add(...classList);
     imgEle.onclick = ({ target }) => { toggleSelectedImgElement(target); };
@@ -253,43 +253,10 @@ function scrollToImgElement(imgEle) {
     const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scroll(0, scrollDistance);
 }
-var _a, _b, _c;
-const imageUploadModal = {
-    modal: document.getElementById('modal'),
-    overlay: document.getElementById('modal-overlay'),
-    openButton: document.getElementById('image-upload-btn'),
-};
-const uploadForm = {
-    form: document.getElementById('image-upload-form'),
-    okButton: document.getElementById('form-ok-btn'),
-    cancelButton: document.getElementById('form-cancel-btn')
-};
-function toggleModal(e) {
-    var _a, _b;
-    e.preventDefault();
-    (_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.toggle('close');
-    (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
-}
-function handleFormSubmit(evt) {
-    evt.preventDefault();
-    const imgFileInputElement = document.getElementById('img-file');
-    const imgURLInputElement = document.getElementById('img-URL');
-    let imgSrc;
-    if (imgFileInputElement.files) {
-        imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
-    }
-    else {
-        imgSrc = imgURLInputElement.value;
-    }
-}
-(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', toggleModal);
-(_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', toggleModal);
-(_c = uploadForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', handleFormSubmit);
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
     gravity: 9.98 / 1000,
-    imageCache: [],
     balls: [],
     selectedImgEle: null,
     selectedBall: null,
@@ -314,7 +281,7 @@ const appProps = {
     addEventListeners();
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-    Promise.all(imageList.map(img => addImage(img, imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50))).then(_ => {
+    Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         draw();
     });
@@ -536,3 +503,35 @@ function onMouseLeave(evt) {
         appProps.selectedBall = null;
     }
 }
+var _a, _b, _c;
+const imageUploadModal = {
+    modal: document.getElementById('modal'),
+    overlay: document.getElementById('modal-overlay'),
+    openButton: document.getElementById('image-upload-btn'),
+};
+const uploadForm = {
+    form: document.getElementById('image-upload-form'),
+    okButton: document.getElementById('form-ok-btn'),
+    cancelButton: document.getElementById('form-cancel-btn')
+};
+function toggleModal(e) {
+    var _a, _b;
+    e.preventDefault();
+    (_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.toggle('close');
+    (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
+}
+function handleFormSubmit(evt) {
+    evt.preventDefault();
+    const imgFileInputElement = document.getElementById('img-file');
+    const imgURLInputElement = document.getElementById('img-URL');
+    let imgSrc;
+    if (imgFileInputElement.files) {
+        imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+    }
+    else {
+        imgSrc = imgURLInputElement.value;
+    }
+}
+(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', toggleModal);
+(_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', toggleModal);
+(_c = uploadForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', handleFormSubmit);

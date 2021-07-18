@@ -2,7 +2,6 @@ const appProps = {
   radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
   gravity: 9.98 / 1000,
-  imageCache: <ImageBitmap[]>[],
   balls: <Ball[]>[],
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
@@ -21,7 +20,7 @@ const appProps = {
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
   party: { active: false, start: 0, duration: 10, colour: '' },
-  rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
+  rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
 (function init(): void {
@@ -32,7 +31,7 @@ const appProps = {
   //Load all the images in the image list
   Promise.all(
     imageList.map(img => addImage(
-      img, imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)
+      img, imageCache, 50)
     )
   ).then(_ => {
     appProps.currentTime = new Date().getTime();

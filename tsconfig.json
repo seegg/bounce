@@ -4,8 +4,8 @@
     "scripts/ball.ts",
     "scripts/utility.ts",
     "scripts/images.ts",
-    "scripts/modal.ts",
     "scripts/app.ts",
+    "scripts/modal.ts",
   ],
   "compilerOptions": {
     "lib": [

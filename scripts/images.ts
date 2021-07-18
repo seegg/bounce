@@ -22,7 +22,6 @@ let imageCache = <ImageBitmap[]>[];
 function addImage(
   imgSrc: string,
   imgArr: ImageBitmap[],
-  callback: MouseClickCallback | null = null,
   radius: number
 ) {
   const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
@@ -34,7 +33,7 @@ function addImage(
   return util.createCircleImg(imgSrc, radius)
     .then(bitmapImg => {
       const index = imgArr.push(bitmapImg) - 1;
-      return createImgEleWithIndex(imgSrc, index, classList, callback)
+      return createImgEleWithIndex(imgSrc, index, classList)
     })
     .then(imgEle => {
       if (imgContainer === null) throw new Error('image container is null');
@@ -65,12 +64,10 @@ function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLEl
 function createImgEleWithIndex(
   src: string,
   imgIndex: number,
-  classList: string[],
-  callback?: MouseClickCallback | null
+  classList: string[]
 ): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
-  // imgEle.onclick = callback ? callback : null;
   imgEle.onclick = ({ target }) => { toggleSelectedImgElement(<HTMLImageElement>target) };
   imgEle.setAttribute('data-index', imgIndex + '');
   imgEle.onload = () => {
