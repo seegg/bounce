@@ -32,7 +32,7 @@ const appProps = {
   //Load all the images in the image list
   Promise.all(
     imageList.map(img => addImage(
-      img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)
+      img, imageCache, (evt) => { toggleSelectedImgElement(evt.target as HTMLImageElement) }, 50)
     )
   ).then(_ => {
     appProps.currentTime = new Date().getTime();
@@ -105,7 +105,7 @@ function createAndCacheBall(
 ): Ball | undefined {
   try {
     const imgIndex = Number(imgEle.dataset['index']);
-    const ball = new Ball(appProps.imageCache[imgIndex], x, y, radius, selected);
+    const ball = new Ball(imageCache[imgIndex], x, y, radius, selected);
     appProps.balls.push(ball);
     return ball;
   } catch (err) {

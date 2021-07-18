@@ -194,6 +194,7 @@ const imageList = (function () {
     const path = "images/";
     return imageFiles.map(img => path + img).concat(imageUrls);
 })();
+let imageCache = [];
 function addImage(imgSrc, imgArr, callback = null, radius) {
     const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
     const imgContainer = document.getElementById('img-container');
@@ -226,7 +227,7 @@ function appendImgElemToContainer(imgEle, imgContainer, loadingImg) {
 function createImgEleWithIndex(src, imgIndex, classList, callback) {
     const imgEle = document.createElement('img');
     imgEle.classList.add(...classList);
-    imgEle.onclick = callback ? callback : null;
+    imgEle.onclick = ({ target }) => { toggleSelectedImgElement(target); };
     imgEle.setAttribute('data-index', imgIndex + '');
     imgEle.onload = () => {
         URL.revokeObjectURL(src);
@@ -313,7 +314,7 @@ const appProps = {
     addEventListeners();
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-    Promise.all(imageList.map(img => addImage(img, appProps.imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50))).then(_ => {
+    Promise.all(imageList.map(img => addImage(img, imageCache, (evt) => { toggleSelectedImgElement(evt.target); }, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         draw();
     });
@@ -367,7 +368,7 @@ function removeBall(ballToDelete) {
 function createAndCacheBall(imgEle, x, y, radius = appProps.radiusSizes.current, selected = false) {
     try {
         const imgIndex = Number(imgEle.dataset['index']);
-        const ball = new Ball(appProps.imageCache[imgIndex], x, y, radius, selected);
+        const ball = new Ball(imageCache[imgIndex], x, y, radius, selected);
         appProps.balls.push(ball);
         return ball;
     }

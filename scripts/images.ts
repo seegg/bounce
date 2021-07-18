@@ -8,6 +8,9 @@ const imageList = (function () {
 
 })();
 
+//Keeps track of the bitmaps created from imageList and input image url and image files.
+let imageCache = <ImageBitmap[]>[];
+
 /**
  * Add an image base on a input url. create a bitmap and HTMLImageElement base on this image.
  * store the bitmap to an array and append the img element to the img container.
@@ -67,7 +70,8 @@ function createImgEleWithIndex(
 ): HTMLImageElement {
   const imgEle = document.createElement('img');
   imgEle.classList.add(...classList);
-  imgEle.onclick = callback ? callback : null;
+  // imgEle.onclick = callback ? callback : null;
+  imgEle.onclick = ({ target }) => { toggleSelectedImgElement(<HTMLImageElement>target) };
   imgEle.setAttribute('data-index', imgIndex + '');
   imgEle.onload = () => {
     URL.revokeObjectURL(src);
