@@ -525,10 +525,14 @@ function handleFormSubmit(evt) {
     evt.preventDefault();
     const imgFileInputElement = document.getElementById('img-file');
     const imgURLInputElement = document.getElementById('img-URL');
-    let imgSrc;
+    let imgSrc = '';
     if ((_a = imgFileInputElement.files) === null || _a === void 0 ? void 0 : _a.item(0)) {
-        console.log(imgFileInputElement.files);
-        imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+        try {
+            imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+        }
+        catch (e) {
+            console.error(e);
+        }
     }
     else {
         imgSrc = imgURLInputElement.value;

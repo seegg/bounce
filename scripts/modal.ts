@@ -23,10 +23,13 @@ function handleFormSubmit(evt: Event) {
   evt.preventDefault();
   const imgFileInputElement = <HTMLInputElement>document.getElementById('img-file');
   const imgURLInputElement = <HTMLInputElement>document.getElementById('img-URL');
-  let imgSrc: string;
+  let imgSrc = ''
   if (imgFileInputElement.files?.item(0)) {
-    console.log(imgFileInputElement.files);
-    imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+    try {
+      imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+    } catch (e) {
+      console.error(e);
+    }
   } else {
     imgSrc = imgURLInputElement.value;
   }
