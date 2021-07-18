@@ -24,12 +24,13 @@ function handleFormSubmit(evt: Event) {
   const imgFileInputElement = <HTMLInputElement>document.getElementById('img-file');
   const imgURLInputElement = <HTMLInputElement>document.getElementById('img-URL');
   let imgSrc: string;
-  if (imgFileInputElement.files) {
+  if (imgFileInputElement.files?.item(0)) {
+    console.log(imgFileInputElement.files);
     imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
   } else {
     imgSrc = imgURLInputElement.value;
   }
-
+  return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
 }
 
 imageUploadModal.overlay?.addEventListener('pointerdown', toggleModal);

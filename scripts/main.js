@@ -521,16 +521,19 @@ function toggleModal(e) {
     (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
 }
 function handleFormSubmit(evt) {
+    var _a;
     evt.preventDefault();
     const imgFileInputElement = document.getElementById('img-file');
     const imgURLInputElement = document.getElementById('img-URL');
     let imgSrc;
-    if (imgFileInputElement.files) {
+    if ((_a = imgFileInputElement.files) === null || _a === void 0 ? void 0 : _a.item(0)) {
+        console.log(imgFileInputElement.files);
         imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
     }
     else {
         imgSrc = imgURLInputElement.value;
     }
+    return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
 }
 (_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', toggleModal);
 (_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', toggleModal);
