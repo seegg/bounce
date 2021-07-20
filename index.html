@@ -41,7 +41,11 @@
     <h2 class="text-4xl font-bold mx-auto ">Upload Image</h2>
     <form id="image-upload-form" class="flex flex-col">
       <label for="imgFile" class="font-bold">Upload Image:</label>
-      <input type="file" id="img-file" name="imgFile" accept="image/*">
+      <input hidden type="file" id="img-file" name="imgFile" accept="image/*">
+      <div class="flex w-full">
+        <input readonly class="w-full mr-2" type="text" name="fileName" placeholder="No file selected"
+          id="file-name"><button>Upload</button>
+      </div>
       <label for="imgUrl" class="font-bold">Image URL:</label>
       <input type="text" name="imgURL" id="img-URL" placeholder="Image URL" class="w-full">
       <div class="mx-auto">
