@@ -213,6 +213,7 @@ function addImage(imgSrc, imgArr, radius) {
         appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
     })
         .catch(err => {
+        imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.removeChild(loadingPlaceholder);
         console.error(err);
     });
 }
@@ -512,6 +513,8 @@ const imageUploadModal = {
 const uploadForm = {
     form: document.getElementById('image-upload-form'),
     okButton: document.getElementById('form-ok-btn'),
+    imgFileInput: document.getElementById('img-file'),
+    imgURLInput: document.getElementById('img-URL'),
     cancelButton: document.getElementById('form-cancel-btn')
 };
 function toggleModal(e) {
@@ -524,6 +527,7 @@ function handleFormSubmit(evt) {
     var _a;
     evt.preventDefault();
     const imgFileInputElement = document.getElementById('img-file');
+    const imgFileDisplay = document.getElementById('file-name');
     const imgURLInputElement = document.getElementById('img-URL');
     let imgSrc = '';
     if ((_a = imgFileInputElement.files) === null || _a === void 0 ? void 0 : _a.item(0)) {

@@ -7,6 +7,8 @@ const imageUploadModal = {
 const uploadForm = {
   form: document.getElementById('image-upload-form'),
   okButton: document.getElementById('form-ok-btn'),
+  imgFileInput: <HTMLInputElement>document.getElementById('img-file'),
+  imgURLInput: <HTMLInputElement>document.getElementById('img-URL'),
   cancelButton: document.getElementById('form-cancel-btn')
 }
 
@@ -22,6 +24,7 @@ function toggleModal(e: PointerEvent | MouseEvent): void {
 function handleFormSubmit(evt: Event) {
   evt.preventDefault();
   const imgFileInputElement = <HTMLInputElement>document.getElementById('img-file');
+  const imgFileDisplay = <HTMLInputElement>document.getElementById('file-name');
   const imgURLInputElement = <HTMLInputElement>document.getElementById('img-URL');
   let imgSrc = ''
   if (imgFileInputElement.files?.item(0)) {

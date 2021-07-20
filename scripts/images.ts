@@ -40,6 +40,7 @@ function addImage(
       appendImgElemToContainer(imgEle, imgContainer, loadingPlaceholder);
     })
     .catch(err => {
+      imgContainer?.removeChild(loadingPlaceholder);
       console.error(err);
     })
 }
