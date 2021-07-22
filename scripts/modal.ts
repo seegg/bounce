@@ -2,6 +2,14 @@ const imageUploadModal = {
   modal: document.getElementById('modal'),
   overlay: document.getElementById('modal-overlay'),
   openButton: document.getElementById('image-upload-btn'),
+  /**
+   * open/close modal
+   */
+  toggle: (e: PointerEvent | MouseEvent) => {
+    e.preventDefault();
+    imageUploadModal.modal?.classList.toggle('close');
+    imageUploadModal.overlay?.classList.toggle('close');
+  }
 }
 
 const imageForm = {
@@ -18,37 +26,26 @@ const imageForm = {
   },
   handleFileInputChange: () => {
     imageForm.imgFileDisplay.value = imageForm.imgFileInput.files?.item(0)?.name || 'No Image Selected';
-  }
-}
-
-
-/**
- * open/close
- */
-function toggleModal(e: PointerEvent | MouseEvent): void {
-  e.preventDefault();
-  imageUploadModal.modal?.classList.toggle('close');
-  imageUploadModal.overlay?.classList.toggle('close');
-}
-
-function handleFormSubmit(evt: Event) {
-  evt.preventDefault();
-  let imgSrc = ''
-  if (imageForm.imgFileInput.files?.item(0)) {
-    try {
-      imgSrc = URL.createObjectURL(imageForm.imgFileInput.files[0]);
-    } catch (e) {
-      console.error(e);
+  },
+  handleSubmit: (evt: Event){
+    evt.preventDefault();
+    let imgSrc = ''
+    if (imageForm.imgFileInput.files?.item(0)) {
+      try {
+        imgSrc = URL.createObjectURL(imageForm.imgFileInput.files[0]);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      imgSrc = imageForm.imgURLInput.value;
     }
-  } else {
-    imgSrc = imageForm.imgURLInput.value;
+    return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
   }
-  return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
 }
 
-imageUploadModal.overlay?.addEventListener('pointerdown', toggleModal);
-imageUploadModal.openButton?.addEventListener('click', toggleModal);
-imageForm.form?.addEventListener('submit', handleFormSubmit);
+imageUploadModal.overlay?.addEventListener('pointerdown', imageUploadModal.toggle);
+imageUploadModal.openButton?.addEventListener('click', imageUploadModal.toggle);
+imageForm.form?.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
 imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
 

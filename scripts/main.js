@@ -509,6 +509,12 @@ const imageUploadModal = {
     modal: document.getElementById('modal'),
     overlay: document.getElementById('modal-overlay'),
     openButton: document.getElementById('image-upload-btn'),
+    toggle: (e) => {
+        var _a, _b;
+        e.preventDefault();
+        (_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.toggle('close');
+        (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
+    }
 };
 const imageForm = {
     form: document.getElementById('image-upload-form'),
@@ -525,33 +531,27 @@ const imageForm = {
     handleFileInputChange: () => {
         var _a, _b;
         imageForm.imgFileDisplay.value = ((_b = (_a = imageForm.imgFileInput.files) === null || _a === void 0 ? void 0 : _a.item(0)) === null || _b === void 0 ? void 0 : _b.name) || 'No Image Selected';
+    },
+    handleSubmit: (evt) => {
+        var _a;
+        evt.preventDefault();
+        let imgSrc = '';
+        if ((_a = imageForm.imgFileInput.files) === null || _a === void 0 ? void 0 : _a.item(0)) {
+            try {
+                imgSrc = URL.createObjectURL(imageForm.imgFileInput.files[0]);
+            }
+            catch (e) {
+                console.error(e);
+            }
+        }
+        else {
+            imgSrc = imageForm.imgURLInput.value;
+        }
+        return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
     }
 };
-function toggleModal(e) {
-    var _a, _b;
-    e.preventDefault();
-    (_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.toggle('close');
-    (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
-}
-function handleFormSubmit(evt) {
-    var _a;
-    evt.preventDefault();
-    let imgSrc = '';
-    if ((_a = imageForm.imgFileInput.files) === null || _a === void 0 ? void 0 : _a.item(0)) {
-        try {
-            imgSrc = URL.createObjectURL(imageForm.imgFileInput.files[0]);
-        }
-        catch (e) {
-            console.error(e);
-        }
-    }
-    else {
-        imgSrc = imageForm.imgURLInput.value;
-    }
-    return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
-}
-(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', toggleModal);
-(_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', toggleModal);
-(_c = imageForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', handleFormSubmit);
+(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', imageUploadModal.toggle);
+(_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', imageUploadModal.toggle);
+(_c = imageForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
 imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
