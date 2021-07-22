@@ -2,7 +2,7 @@ const imageUploadModal = {
   modal: document.getElementById('modal'),
   overlay: document.getElementById('modal-overlay'),
   openButton: document.getElementById('image-upload-btn'),
-  /**
+  /** 
    * open/close modal
    */
   toggle: (evt: PointerEvent | MouseEvent) => {
