@@ -509,9 +509,9 @@ const imageUploadModal = {
     modal: document.getElementById('modal'),
     overlay: document.getElementById('modal-overlay'),
     openButton: document.getElementById('image-upload-btn'),
-    toggle: (e) => {
+    toggle: (evt) => {
         var _a, _b;
-        e.preventDefault();
+        evt.preventDefault();
         (_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.toggle('close');
         (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
     }

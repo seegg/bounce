@@ -5,8 +5,8 @@ const imageUploadModal = {
   /**
    * open/close modal
    */
-  toggle: (e: PointerEvent | MouseEvent) => {
-    e.preventDefault();
+  toggle: (evt: PointerEvent | MouseEvent) => {
+    evt.preventDefault();
     imageUploadModal.modal?.classList.toggle('close');
     imageUploadModal.overlay?.classList.toggle('close');
   }
@@ -27,7 +27,7 @@ const imageForm = {
   handleFileInputChange: () => {
     imageForm.imgFileDisplay.value = imageForm.imgFileInput.files?.item(0)?.name || 'No Image Selected';
   },
-  handleSubmit: (evt: Event){
+  handleSubmit: (evt: Event) => {
     evt.preventDefault();
     let imgSrc = ''
     if (imageForm.imgFileInput.files?.item(0)) {
