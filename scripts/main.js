@@ -510,12 +510,22 @@ const imageUploadModal = {
     overlay: document.getElementById('modal-overlay'),
     openButton: document.getElementById('image-upload-btn'),
 };
-const uploadForm = {
+const imageForm = {
     form: document.getElementById('image-upload-form'),
     okButton: document.getElementById('form-ok-btn'),
     imgFileInput: document.getElementById('img-file'),
     imgURLInput: document.getElementById('img-URL'),
-    cancelButton: document.getElementById('form-cancel-btn')
+    imgFileDisplay: document.getElementById('file-name'),
+    imgFileDisplayButton: document.getElementById('upload-button'),
+    cancelButton: document.getElementById('form-cancel-btn'),
+    handleFileDisplayClick: (evt) => {
+        evt.preventDefault();
+        imageForm.imgFileInput.click();
+    },
+    handleFileInputChange: () => {
+        var _a, _b;
+        imageForm.imgFileDisplay.value = ((_b = (_a = imageForm.imgFileInput.files) === null || _a === void 0 ? void 0 : _a.item(0)) === null || _b === void 0 ? void 0 : _b.name) || 'No Image Selected';
+    }
 };
 function toggleModal(e) {
     var _a, _b;
@@ -526,23 +536,22 @@ function toggleModal(e) {
 function handleFormSubmit(evt) {
     var _a;
     evt.preventDefault();
-    const imgFileInputElement = document.getElementById('img-file');
-    const imgFileDisplay = document.getElementById('file-name');
-    const imgURLInputElement = document.getElementById('img-URL');
     let imgSrc = '';
-    if ((_a = imgFileInputElement.files) === null || _a === void 0 ? void 0 : _a.item(0)) {
+    if ((_a = imageForm.imgFileInput.files) === null || _a === void 0 ? void 0 : _a.item(0)) {
         try {
-            imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+            imgSrc = URL.createObjectURL(imageForm.imgFileInput.files[0]);
         }
         catch (e) {
             console.error(e);
         }
     }
     else {
-        imgSrc = imgURLInputElement.value;
+        imgSrc = imageForm.imgURLInput.value;
     }
     return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
 }
 (_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', toggleModal);
 (_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', toggleModal);
-(_c = uploadForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', handleFormSubmit);
+(_c = imageForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', handleFormSubmit);
+imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
+imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);

@@ -4,16 +4,26 @@ const imageUploadModal = {
   openButton: document.getElementById('image-upload-btn'),
 }
 
-const uploadForm = {
+const imageForm = {
   form: document.getElementById('image-upload-form'),
   okButton: document.getElementById('form-ok-btn'),
   imgFileInput: <HTMLInputElement>document.getElementById('img-file'),
   imgURLInput: <HTMLInputElement>document.getElementById('img-URL'),
-  cancelButton: document.getElementById('form-cancel-btn')
+  imgFileDisplay: <HTMLInputElement>document.getElementById('file-name'),
+  imgFileDisplayButton: <HTMLButtonElement>document.getElementById('upload-button'),
+  cancelButton: document.getElementById('form-cancel-btn'),
+  handleFileDisplayClick: (evt: Event) => {
+    evt.preventDefault();
+    imageForm.imgFileInput.click();
+  },
+  handleFileInputChange: () => {
+    imageForm.imgFileDisplay.value = imageForm.imgFileInput.files?.item(0)?.name || 'No Image Selected';
+  }
 }
 
+
 /**
- * Toggle modal open and close.
+ * open/close
  */
 function toggleModal(e: PointerEvent | MouseEvent): void {
   e.preventDefault();
@@ -23,22 +33,22 @@ function toggleModal(e: PointerEvent | MouseEvent): void {
 
 function handleFormSubmit(evt: Event) {
   evt.preventDefault();
-  const imgFileInputElement = <HTMLInputElement>document.getElementById('img-file');
-  const imgFileDisplay = <HTMLInputElement>document.getElementById('file-name');
-  const imgURLInputElement = <HTMLInputElement>document.getElementById('img-URL');
   let imgSrc = ''
-  if (imgFileInputElement.files?.item(0)) {
+  if (imageForm.imgFileInput.files?.item(0)) {
     try {
-      imgSrc = URL.createObjectURL(imgFileInputElement.files[0]);
+      imgSrc = URL.createObjectURL(imageForm.imgFileInput.files[0]);
     } catch (e) {
       console.error(e);
     }
   } else {
-    imgSrc = imgURLInputElement.value;
+    imgSrc = imageForm.imgURLInput.value;
   }
   return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
 }
 
 imageUploadModal.overlay?.addEventListener('pointerdown', toggleModal);
 imageUploadModal.openButton?.addEventListener('click', toggleModal);
-uploadForm.form?.addEventListener('submit', handleFormSubmit);
+imageForm.form?.addEventListener('submit', handleFormSubmit);
+imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
+imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
+
