@@ -48,4 +48,8 @@ imageUploadModal.openButton?.addEventListener('click', imageUploadModal.toggle);
 imageForm.form?.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
 imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
+imageForm.cancelButton?.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  console.log('cancel');
+})
 
