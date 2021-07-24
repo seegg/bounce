@@ -40,6 +40,9 @@ const imageForm = {
       imgSrc = imageForm.imgURLInput.value;
     }
     return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
+  },
+  handleCancel: (evt: Event) => {
+    imageForm.form!.nodeValue = null;
   }
 }
 
@@ -48,8 +51,5 @@ imageUploadModal.openButton?.addEventListener('click', imageUploadModal.toggle);
 imageForm.form?.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
 imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
-imageForm.cancelButton?.addEventListener('click', (evt) => {
-  evt.preventDefault();
-  console.log('cancel');
-})
+imageForm.cancelButton!.textContent = 'Fucking Hell!';
 

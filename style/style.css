@@ -1,4 +1,4 @@
-.image-upload-modal{
+.upload-modal{
   position:fixed;
   display: flex;
   width: min(100%, 800px);
