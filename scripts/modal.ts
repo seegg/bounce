@@ -5,8 +5,7 @@ const imageUploadModal = {
   /** 
    * open/close modal
    */
-  toggle: (evt: PointerEvent | MouseEvent) => {
-    evt.preventDefault();
+  toggle: () => {
     imageUploadModal.modal?.classList.toggle('close');
     imageUploadModal.overlay?.classList.toggle('close');
   }
@@ -29,6 +28,7 @@ const imageForm = {
   },
   handleSubmit: (evt: Event) => {
     evt.preventDefault();
+    console.log('submit');
     let imgSrc = ''
     if (imageForm.imgFileInput.files?.item(0)) {
       try {
@@ -42,14 +42,17 @@ const imageForm = {
     return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
   },
   handleCancel: (evt: Event) => {
-    imageForm.form!.nodeValue = null;
+    imageForm.imgURLInput.value = '';
+    imageForm.imgFileInput.value = '';
+    imageForm.imgFileDisplay.value = '';
+    imageUploadModal.toggle();
   }
 }
 
-imageUploadModal.overlay?.addEventListener('pointerdown', imageUploadModal.toggle);
+imageUploadModal.overlay?.addEventListener('click', imageUploadModal.toggle);
 imageUploadModal.openButton?.addEventListener('click', imageUploadModal.toggle);
 imageForm.form?.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
 imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
-imageForm.cancelButton!.textContent = 'Fucking Hell!';
+imageForm.cancelButton?.addEventListener('click', imageForm.handleCancel);
 

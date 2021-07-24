@@ -504,14 +504,13 @@ function onMouseLeave(evt) {
         appProps.selectedBall = null;
     }
 }
-var _a, _b, _c;
+var _a, _b, _c, _d;
 const imageUploadModal = {
     modal: document.getElementById('modal'),
     overlay: document.getElementById('modal-overlay'),
     openButton: document.getElementById('image-upload-btn'),
-    toggle: (evt) => {
+    toggle: () => {
         var _a, _b;
-        evt.preventDefault();
         (_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.toggle('close');
         (_b = imageUploadModal.overlay) === null || _b === void 0 ? void 0 : _b.classList.toggle('close');
     }
@@ -535,6 +534,7 @@ const imageForm = {
     handleSubmit: (evt) => {
         var _a;
         evt.preventDefault();
+        console.log('submit');
         let imgSrc = '';
         if ((_a = imageForm.imgFileInput.files) === null || _a === void 0 ? void 0 : _a.item(0)) {
             try {
@@ -548,10 +548,17 @@ const imageForm = {
             imgSrc = imageForm.imgURLInput.value;
         }
         return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
+    },
+    handleCancel: (evt) => {
+        imageForm.imgURLInput.value = '';
+        imageForm.imgFileInput.value = '';
+        imageForm.imgFileDisplay.value = '';
+        imageUploadModal.toggle();
     }
 };
-(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', imageUploadModal.toggle);
+(_a = imageUploadModal.overlay) === null || _a === void 0 ? void 0 : _a.addEventListener('click', imageUploadModal.toggle);
 (_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', imageUploadModal.toggle);
 (_c = imageForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
 imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
+(_d = imageForm.cancelButton) === null || _d === void 0 ? void 0 : _d.addEventListener('click', imageForm.handleCancel);
