@@ -48,9 +48,6 @@ const imageForm = {
         console.log('something');
       })
   },
-  /**
-   * Close modal and reset input element values
-   */
   handleCancel: (evt: Event) => {
     imageForm.imgURLInput.value = '';
     imageForm.imgFileInput.value = '';
