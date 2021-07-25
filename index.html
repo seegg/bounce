@@ -12,46 +12,57 @@
 </head>
 
 <body class="bg-red-100">
-  <div id="app" class="flex flex-col items-center">
-    <div id="app-controls" class="w-full px-2 sm:px-10 my-1 flex justify-between items-center">
-      <div id="ball-select" class="flex rounded bg-red-300 shadow p-1 pr-2">
-        <div id="ball-scroll-controls" class="flex flex-col justify-between mr-4 ml-1">
-          <button id="img-up" class="rounded flex items-center h-4">&#9650;</button>
-          <button id="img-down" class="rounded flex items-center h-4">&#9660;</button>
+  <main>
+    <div id="app" class="flex flex-col items-center">
+      <div id="app-controls" class="w-full px-2 sm:px-10 my-1 flex justify-between items-center">
+        <div id="ball-select" class="flex rounded bg-red-300 shadow p-1 pr-2">
+          <div id="ball-scroll-controls" class="flex flex-col justify-between mr-4 ml-1">
+            <button id="img-up" class="rounded flex items-center h-4">&#9650;</button>
+            <button id="img-down" class="rounded flex items-center h-4">&#9660;</button>
+          </div>
+          <div id="img-container" class="rounded flex flex-wrap h-12 overflow-y-auto w-full">
+          </div>
+
         </div>
-        <div id="img-container" class="rounded flex flex-wrap h-12 overflow-y-auto w-full">
+
+        <div id="button-controls" class="flex">
+          <button id="image-upload-btn"
+            class="h-11 mr-1 w-11 px-1 rounded bg-gray-300 hover:bg-gray-100">&plus;</button>
+          <button id="party-btn" class="h-11 w-11 mr-1 px-1 rounded bg-gray-300 hover:bg-gray-100"> &#127881;</button>
         </div>
 
       </div>
 
-      <div id="button-controls" class="flex">
-        <button id="image-upload-btn" class="h-11 mr-1 w-11 px-1 rounded bg-gray-300 hover:bg-gray-100">&plus;</button>
-        <button id="party-btn" class="h-11 w-11 mr-1 px-1 rounded bg-gray-300 hover:bg-gray-100"> &#127881;</button>
-      </div>
+      <canvas id="canvas" class="bg-yellow-600 rounded flex-shrink-0">
+        Canvas is not supported.
+      </canvas>
 
     </div>
-
-    <canvas id="canvas" class="bg-yellow-600 rounded flex-shrink-0">
-      Canvas is not supported.
-    </canvas>
-
-  </div>
+  </main>
 
   <div class="upload-modal flex-col bg-red-100 p-1 rounded close" id="modal">
     <h2 class="text-4xl font-bold mx-auto ">Upload Image</h2>
-    <form id="image-upload-form" class="flex flex-col">
-      <label for="imgFile" class="font-bold">Upload Image:</label>
+    <form id="image-upload-form" class="flex flex-col h-full">
       <input hidden type="file" id="img-file" name="imgFile" accept="image/*">
-      <div class="flex w-full">
-        <input readonly class="w-full mr-2" type="text" name="fileName" placeholder="No file selected"
-          id="file-name"><button type="button" id='upload-button'>Upload</button>
+
+      <div>
+        <label for="fileName" class="font-bold">Upload Image:</label>
+        <div class="flex w-full">
+          <input readonly class="w-full mr-2" type="text" name="fileName" placeholder="No file selected"
+            id="file-name"><button type="button" id='upload-button'>Upload</button>
+        </div>
       </div>
-      <label for="imgUrl" class="font-bold">Image URL:</label>
-      <input type="text" name="imgURL" id="img-URL" placeholder="Image URL" class="w-full">
+
+      <div>
+        <label for="imgUrl" class="font-bold">Image URL:</label>
+        <input type="text" name="imgURL" id="img-URL" placeholder="Image URL" class="w-full">
+      </div>
+
       <div class="mx-auto">
         <button type="submit" class="mx-1" id="form-ok-btn">Ok</button>
         <button type="button" class="mx-1" id="form-cancel-btn">Cancel</button>
       </div>
+
     </form>
   </div>
   <div class="modal-overlay close" id="modal-overlay">
