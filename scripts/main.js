@@ -546,7 +546,14 @@ const imageForm = {
         else {
             imgSrc = imageForm.imgURLInput.value;
         }
-        return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
+        addImage(imgSrc, imageCache, appProps.radiusSizes.current)
+            .then(_ => {
+            console.log('whatever');
+            imageUploadModal.toggle();
+        })
+            .catch(err => {
+            console.log('something');
+        });
     },
     handleCancel: (evt) => {
         imageForm.imgURLInput.value = '';
