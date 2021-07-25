@@ -23,12 +23,11 @@ const imageForm = {
     evt.preventDefault();
     imageForm.imgFileInput.click();
   },
-  handleFileInputChange: () => {
+  handleFileChange: () => {
     imageForm.imgFileDisplay.value = imageForm.imgFileInput.files?.item(0)?.name || 'No Image Selected';
   },
   handleSubmit: (evt: Event) => {
     evt.preventDefault();
-    console.log('submit');
     let imgSrc = ''
     if (imageForm.imgFileInput.files?.item(0)) {
       try {
@@ -41,6 +40,9 @@ const imageForm = {
     }
     return addImage(imgSrc, imageCache, appProps.radiusSizes.current);
   },
+  /**
+   * Close modal and reset input element values
+   */
   handleCancel: (evt: Event) => {
     imageForm.imgURLInput.value = '';
     imageForm.imgFileInput.value = '';
@@ -53,6 +55,6 @@ imageUploadModal.overlay?.addEventListener('click', imageUploadModal.toggle);
 imageUploadModal.openButton?.addEventListener('click', imageUploadModal.toggle);
 imageForm.form?.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
-imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
+imageForm.imgFileInput.addEventListener('change', imageForm.handleFileChange);
 imageForm.cancelButton?.addEventListener('click', imageForm.handleCancel);
 

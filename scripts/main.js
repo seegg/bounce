@@ -527,14 +527,13 @@ const imageForm = {
         evt.preventDefault();
         imageForm.imgFileInput.click();
     },
-    handleFileInputChange: () => {
+    handleFileChange: () => {
         var _a, _b;
         imageForm.imgFileDisplay.value = ((_b = (_a = imageForm.imgFileInput.files) === null || _a === void 0 ? void 0 : _a.item(0)) === null || _b === void 0 ? void 0 : _b.name) || 'No Image Selected';
     },
     handleSubmit: (evt) => {
         var _a;
         evt.preventDefault();
-        console.log('submit');
         let imgSrc = '';
         if ((_a = imageForm.imgFileInput.files) === null || _a === void 0 ? void 0 : _a.item(0)) {
             try {
@@ -560,5 +559,5 @@ const imageForm = {
 (_b = imageUploadModal.openButton) === null || _b === void 0 ? void 0 : _b.addEventListener('click', imageUploadModal.toggle);
 (_c = imageForm.form) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
-imageForm.imgFileInput.addEventListener('change', imageForm.handleFileInputChange);
+imageForm.imgFileInput.addEventListener('change', imageForm.handleFileChange);
 (_d = imageForm.cancelButton) === null || _d === void 0 ? void 0 : _d.addEventListener('click', imageForm.handleCancel);
