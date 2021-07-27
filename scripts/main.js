@@ -257,7 +257,7 @@ function scrollToImgElement(imgEle) {
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
-    gravity: 9.98 / 1000,
+    gravity: 0.01,
     balls: [],
     selectedImgEle: null,
     selectedBall: null,
@@ -355,21 +355,16 @@ function draw() {
         }
         updateBall(ball, ellapsedTime);
     });
-    appProps.balls.forEach(ball => {
-        appProps.balls.forEach(ball2 => {
-            if (ball2.id !== ball.id) {
-                ball.ballBounce(ball2);
-            }
-        });
-    });
     drawBall(ctx, appProps.selectedBall);
     window.requestAnimationFrame(() => { draw(); });
 }
 function updateBall(ball, ellapsedTime) {
     const { id, position, radius, selected, velocity } = ball;
     if (!selected) {
-        if (Math.abs(velocity.vY) < appProps.gravity)
-            velocity.vY = 0;
+        if (Math.abs(ball.velocity.vX) <= 0.001)
+            ball.velocity.vX = 0;
+        if (Math.abs(ball.velocity.vY) <= 0.001)
+            ball.velocity.vY = 0;
         ball.rotation += velocity.vX * 10;
         position.x += velocity.vX * ellapsedTime;
         position.y += velocity.vY * ellapsedTime;
@@ -397,6 +392,7 @@ function handleBallCollission(ball) {
             }
         }
         ball.reversePosition(ball.getOverlap(nearestCollidedBall));
+        ball.ballBounce(nearestCollidedBall);
     }
     collissions = [];
 }

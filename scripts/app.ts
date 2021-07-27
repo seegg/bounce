@@ -1,7 +1,7 @@
 const appProps = {
   radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
-  gravity: 9.98 / 1000,
+  gravity: 0.01,
   balls: <Ball[]>[],
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
@@ -130,15 +130,15 @@ function draw() {
 
   })
 
-  appProps.balls.forEach(ball => {
-    appProps.balls.forEach(ball2 => {
-      if (ball2.id !== ball.id) {
-        ball.ballBounce(ball2);
-      }
-    })
-  })
+  // appProps.balls.forEach(ball => {
+  //   appProps.balls.forEach(ball2 => {
+  //     if (ball2.id !== ball.id) {
+  //       ball.ballBounce(ball2);
+  //     }
+  //   })
+  // })
 
-  //draw selected ball last so it shows on top.
+  //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
 
   window.requestAnimationFrame(() => { draw() });
@@ -150,8 +150,8 @@ function draw() {
 function updateBall(ball: Ball, ellapsedTime: number) {
   const { id, position, radius, selected, velocity } = ball
   if (!selected) {
-    // if (Math.abs(velocity.vX) < 0.0001) velocity.vX = 0;
-    if (Math.abs(velocity.vY) < appProps.gravity) velocity.vY = 0;
+    if (Math.abs(ball.velocity.vX) <= 0.001) ball.velocity.vX = 0;
+    if (Math.abs(ball.velocity.vY) <= 0.001) ball.velocity.vY = 0;
     ball.rotation += velocity.vX * 10;
     position.x += velocity.vX * ellapsedTime;
     position.y += velocity.vY * ellapsedTime;
@@ -185,6 +185,7 @@ function handleBallCollission(ball: Ball): void {
       }
     }
     ball.reversePosition(ball.getOverlap(nearestCollidedBall));
+    ball.ballBounce(nearestCollidedBall);
   }
   collissions = [];
 }
