@@ -129,15 +129,6 @@ function draw() {
     updateBall(ball, ellapsedTime);
 
   })
-
-  // appProps.balls.forEach(ball => {
-  //   appProps.balls.forEach(ball2 => {
-  //     if (ball2.id !== ball.id) {
-  //       ball.ballBounce(ball2);
-  //     }
-  //   })
-  // })
-
   //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
 
@@ -158,7 +149,6 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     velocity.vX *= appProps.deceleration;
     velocity.vY += appProps.gravity;
 
-    //adjust the ball if it overlaps with any other ball.
     handleBallCollission(ball);
     handleWallCollission(ball);
 
