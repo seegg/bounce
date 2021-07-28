@@ -20,6 +20,12 @@ body {
 .upload-modal{
   position:fixed;
   display: flex;
+  flex-direction: column;
+  background-color: var(--main-bg);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   width: min(100%, 800px);
   max-width: 100%;
   height: min(100%, 400px);
