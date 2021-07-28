@@ -7,6 +7,20 @@
   --border-radius: 0.25rem;
 }
 
+div{
+  box-sizing: border-box;
+}
+
+button{
+  background: none;
+  box-shadow: none;
+  border: none;
+}
+
+button:focus {
+  outline: none;
+}
+
 body {
   background-color: var(--main-bg);
 }
@@ -63,10 +77,6 @@ body {
 
 .close {
   display: none;
-}
-
-button:focus {
-  outline: none;
 }
 
 .btn-ctrl{
