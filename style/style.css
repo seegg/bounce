@@ -17,6 +17,14 @@ body {
   align-items: center;
 }
 
+.title{
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 2.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .upload-modal{
   position:fixed;
   display: flex;
