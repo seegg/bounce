@@ -1,5 +1,10 @@
 :root{
   --canvas-bg: rgba(245, 158, 11);
+  --bg-main: rgba(254, 226, 226);
+}
+
+body {
+  background-color: var(--bg-main);
 }
 
 .upload-modal{
