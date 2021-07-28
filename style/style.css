@@ -1,8 +1,8 @@
 :root{
   --canvas-bg: rgba(245, 158, 11, 1);
   --main-bg: rgba(254, 226, 226, 1);
-  --btn-hover-bg: rgba(209, 213, 219, 1);
-  --btn-bg: rgba(243, 244, 246, 1);
+  --btn-bg: rgba(209, 213, 219, 1);
+  --btn-hover-bg: rgba(243, 244, 246, 1);
 }
 
 body {
@@ -44,6 +44,13 @@ button:focus {
   height: 2.75rem;
   width: 2.75rem;
   border-radius: 0.25rem;
+  padding: 0.25rem;
+  margin-right: 0.25rem;
+  background-color: var(--btn-bg);
+}
+
+.btn-ctrl:hover{
+  background-color: var(--btn-hover-bg);
 }
 
 canvas{
