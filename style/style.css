@@ -1,10 +1,12 @@
 :root{
-  --canvas-bg: rgba(245, 158, 11);
-  --bg-main: rgba(254, 226, 226);
+  --canvas-bg: rgba(245, 158, 11, 1);
+  --main-bg: rgba(254, 226, 226, 1);
+  --btn-hover-bg: rgba(209, 213, 219, 1);
+  --btn-bg: rgba(243, 244, 246, 1);
 }
 
 body {
-  background-color: var(--bg-main);
+  background-color: var(--main-bg);
 }
 
 .upload-modal{
@@ -36,6 +38,12 @@ body {
 
 button:focus {
   outline: none;
+}
+
+.btn-ctrl{
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 0.25rem;
 }
 
 canvas{
