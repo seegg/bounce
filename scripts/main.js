@@ -282,6 +282,7 @@ const appProps = {
     addEventListeners();
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
+    setSizes();
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         draw();
@@ -289,14 +290,14 @@ const appProps = {
 })();
 function addEventListeners() {
     window.onresize = () => {
-        handleWindowResize();
+        setSizes();
     };
     appProps.canvas.addEventListener('pointerdown', onMouseDown);
     appProps.canvas.addEventListener('pointermove', onMouseMove);
     appProps.canvas.addEventListener('pointerup', onMouseUp);
     appProps.canvas.addEventListener('pointerleave', onMouseLeave);
 }
-function handleWindowResize() {
+function setSizes() {
     try {
         if (appProps.canvas === null)
             throw new Error('canvas is null');
@@ -341,7 +342,7 @@ function createAndCacheBall(imgEle, x, y, radius = appProps.radiusSizes.current,
         return ball;
     }
     catch (err) {
-        console.log(err);
+        console.error(err);
     }
 }
 function draw() {
@@ -491,7 +492,6 @@ function onMouseMove(evt) {
 function onMouseUp(evt) {
     if (appProps.selectedBall) {
         try {
-            console.log(appProps.selectedBall.id);
             const [x, y] = getRelativeMousePos(evt);
             const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.reference, { x, y });
             const ellapsedTime = new Date().getTime() - appProps.selectedTime;

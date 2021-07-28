@@ -28,6 +28,7 @@ const appProps = {
   //set initial canvas dimensions
   appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
+  setSizes();
   //Load all the images in the image list
   Promise.all(
     imageList.map(img => addImage(
@@ -44,7 +45,7 @@ const appProps = {
  */
 function addEventListeners(): void {
   window.onresize = () => {
-    handleWindowResize();
+    setSizes();
   };
   appProps.canvas.addEventListener('pointerdown', onMouseDown);
   appProps.canvas.addEventListener('pointermove', onMouseMove);
@@ -56,7 +57,7 @@ function addEventListeners(): void {
  * Change the canvas dimensions and the ball radius sizes
  * everytime the browser is resized.
  */
-function handleWindowResize(): void {
+function setSizes(): void {
   try {
     if (appProps.canvas === null) throw new Error('canvas is null');
     const width = window.innerWidth;
@@ -78,6 +79,7 @@ function handleWindowResize(): void {
     console.error(err);
   }
 }
+
 
 /**
  * Remove the selected ball from the ball array
@@ -108,7 +110,7 @@ function createAndCacheBall(
     appProps.balls.push(ball);
     return ball;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 
@@ -308,7 +310,6 @@ function onMouseMove(evt: MouseEvent) {
 function onMouseUp(evt: MouseEvent) {
   if (appProps.selectedBall) {
     try {
-      console.log(appProps.selectedBall.id);
       const [x, y] = getRelativeMousePos(evt);
       const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.reference, { x, y });
 
