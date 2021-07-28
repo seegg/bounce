@@ -66,6 +66,15 @@ button:focus {
   height: 1rem;
 }
 
+.btn-scroll-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 0.25rem;
+  margin-right: 1rem;
+}
+
 .img-container{
   border-radius: var(--border-radius);
   display: flex;
