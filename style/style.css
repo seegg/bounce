@@ -1,3 +1,7 @@
+:root{
+  --canvas-bg: rgba(245, 158, 11);
+}
+
 .upload-modal{
   position:fixed;
   display: flex;
@@ -23,4 +27,13 @@
 
 .close {
   display: none;
+}
+
+button:focus {
+  outline: none;
+}
+
+canvas{
+  background-color: var(--canvas-bg);
+  border-radius: 0.25rem;
 }
