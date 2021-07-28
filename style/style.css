@@ -59,6 +59,13 @@ button:focus {
   margin-left: 0.25rem;
 }
 
+.btn-scroll{
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  height: 1rem;
+}
+
 .img-container{
   border-radius: var(--border-radius);
   display: flex;
