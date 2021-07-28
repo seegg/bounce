@@ -11,6 +11,12 @@ body {
   background-color: var(--main-bg);
 }
 
+#app{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .upload-modal{
   position:fixed;
   display: flex;
