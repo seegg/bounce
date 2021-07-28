@@ -189,7 +189,7 @@ const util = (function utilityFunctions() {
     };
 })();
 const imageList = (function () {
-    const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
+    const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp", "pepper.png"];
     const imageUrls = [];
     const path = "images/";
     return imageFiles.map(img => path + img).concat(imageUrls);
@@ -365,8 +365,8 @@ function updateBall(ball, ellapsedTime) {
             ball.velocity.vX = 0;
         if (Math.abs(ball.velocity.vY) <= 0.001)
             ball.velocity.vY = 0;
-        ball.rotation += velocity.vX * 10;
-        position.x += velocity.vX * ellapsedTime;
+        ball.rotation += calcBallRotation(ball, ellapsedTime);
+        position.x += (velocity.vX * ellapsedTime);
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
         velocity.vY += appProps.gravity;
@@ -412,6 +412,12 @@ function drawBall(ctx, ball) {
         ctx.stroke();
     }
     ctx.restore();
+}
+function calcBallRotation(ball, ellapsedTime) {
+    const parameter = 2 * Math.PI * ball.radius;
+    const rotation = ball.velocity.vX / parameter;
+    console.log(rotation, ball.velocity.vX);
+    return rotation * ellapsedTime;
 }
 function handleWallCollission(ball) {
     const { position, radius, velocity } = ball;
@@ -483,12 +489,19 @@ function onMouseMove(evt) {
 }
 function onMouseUp(evt) {
     if (appProps.selectedBall) {
-        console.log(appProps.selectedBall.id);
-        const [x, y] = getRelativeMousePos(evt);
-        const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.reference, { x, y });
-        const ellapsedTime = new Date().getTime() - appProps.selectedTime;
-        appProps.selectedBall.velocity.vX = distX / ellapsedTime;
-        appProps.selectedBall.velocity.vY = distY / ellapsedTime;
+        try {
+            console.log(appProps.selectedBall.id);
+            const [x, y] = getRelativeMousePos(evt);
+            const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.reference, { x, y });
+            const ellapsedTime = new Date().getTime() - appProps.selectedTime;
+            appProps.selectedBall.velocity.vX = distX / ellapsedTime;
+            appProps.selectedBall.velocity.vY = distY / ellapsedTime;
+            if (!Number(appProps.selectedBall.velocity.vX) || !Number(appProps.selectedBall.velocity.vY))
+                throw new Error('Velocity must be a number');
+        }
+        catch (err) {
+            console.error(err.message);
+        }
         appProps.selectedBall.selected = false;
         appProps.selectedBall = null;
     }

@@ -1,6 +1,6 @@
 const imageList = (function () {
 
-  const imageFiles = <string[]>["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp"];
+  const imageFiles = <string[]>["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp", "pepper.png"];
   const imageUrls = <string[]>[];
   const path = "images/";
 

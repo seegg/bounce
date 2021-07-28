@@ -143,8 +143,8 @@ function updateBall(ball: Ball, ellapsedTime: number) {
   if (!selected) {
     if (Math.abs(ball.velocity.vX) <= 0.001) ball.velocity.vX = 0;
     if (Math.abs(ball.velocity.vY) <= 0.001) ball.velocity.vY = 0;
-    ball.rotation += velocity.vX * 10;
-    position.x += velocity.vX * ellapsedTime;
+    ball.rotation += calcBallRotation(ball, ellapsedTime);
+    position.x += (velocity.vX * ellapsedTime);
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
     velocity.vY += appProps.gravity;
@@ -200,6 +200,13 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
     ctx.stroke()
   }
   ctx.restore();
+}
+
+function calcBallRotation(ball: Ball, ellapsedTime: number): number {
+  const parameter = 2 * Math.PI * ball.radius;
+  const rotation = ball.velocity.vX / parameter;
+  console.log(rotation, ball.velocity.vX);
+  return rotation * ellapsedTime;
 }
 
 /**
@@ -299,15 +306,20 @@ function onMouseMove(evt: MouseEvent) {
  */
 function onMouseUp(evt: MouseEvent) {
   if (appProps.selectedBall) {
-    console.log(appProps.selectedBall.id);
-    const [x, y] = getRelativeMousePos(evt);
-    const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.reference, { x, y });
+    try {
+      console.log(appProps.selectedBall.id);
+      const [x, y] = getRelativeMousePos(evt);
+      const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.reference, { x, y });
 
-    const ellapsedTime = new Date().getTime() - appProps.selectedTime;
+      const ellapsedTime = new Date().getTime() - appProps.selectedTime;
 
-    appProps.selectedBall.velocity.vX = distX / ellapsedTime;
-    appProps.selectedBall.velocity.vY = distY / ellapsedTime;
-
+      appProps.selectedBall.velocity.vX = distX / ellapsedTime;
+      appProps.selectedBall.velocity.vY = distY / ellapsedTime;
+      if (!Number(appProps.selectedBall.velocity.vX) || !Number(appProps.selectedBall.velocity.vY))
+        throw new Error('Velocity must be a number');
+    } catch (err) {
+      console.error(err.message);
+    }
     appProps.selectedBall.selected = false;
     appProps.selectedBall = null;
   }
