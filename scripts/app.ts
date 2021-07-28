@@ -139,12 +139,14 @@ function draw() {
  * update the ball's state after each frame.
  */
 function updateBall(ball: Ball, ellapsedTime: number) {
-  const { id, position, radius, selected, velocity } = ball
+  const { position, selected, velocity } = ball
   if (!selected) {
     if (Math.abs(ball.velocity.vX) <= 0.001) ball.velocity.vX = 0;
     if (Math.abs(ball.velocity.vY) <= 0.001) ball.velocity.vY = 0;
-    ball.rotation += calcBallRotation(ball, ellapsedTime);
-    position.x += (velocity.vX * ellapsedTime);
+    const distX = velocity.vX * ellapsedTime;
+    ball.rotation += calcBallRotation(ball, distX);
+    position.x += distX;
+    position.x += distX;
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
     velocity.vY += appProps.gravity;
@@ -202,11 +204,10 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
   ctx.restore();
 }
 
-function calcBallRotation(ball: Ball, ellapsedTime: number): number {
+function calcBallRotation(ball: Ball, distance: number): number {
   const parameter = 2 * Math.PI * ball.radius;
-  const rotation = ball.velocity.vX / parameter;
-  console.log(rotation, ball.velocity.vX);
-  return rotation * ellapsedTime;
+  const rotation = distance / parameter;
+  return rotation * 360;
 }
 
 /**

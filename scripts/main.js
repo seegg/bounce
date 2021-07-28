@@ -359,14 +359,16 @@ function draw() {
     window.requestAnimationFrame(() => { draw(); });
 }
 function updateBall(ball, ellapsedTime) {
-    const { id, position, radius, selected, velocity } = ball;
+    const { position, selected, velocity } = ball;
     if (!selected) {
         if (Math.abs(ball.velocity.vX) <= 0.001)
             ball.velocity.vX = 0;
         if (Math.abs(ball.velocity.vY) <= 0.001)
             ball.velocity.vY = 0;
-        ball.rotation += calcBallRotation(ball, ellapsedTime);
-        position.x += (velocity.vX * ellapsedTime);
+        const distX = velocity.vX * ellapsedTime;
+        ball.rotation += calcBallRotation(ball, distX);
+        position.x += distX;
+        position.x += distX;
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
         velocity.vY += appProps.gravity;
@@ -413,11 +415,10 @@ function drawBall(ctx, ball) {
     }
     ctx.restore();
 }
-function calcBallRotation(ball, ellapsedTime) {
+function calcBallRotation(ball, distance) {
     const parameter = 2 * Math.PI * ball.radius;
-    const rotation = ball.velocity.vX / parameter;
-    console.log(rotation, ball.velocity.vX);
-    return rotation * ellapsedTime;
+    const rotation = distance / parameter;
+    return rotation * 360;
 }
 function handleWallCollission(ball) {
     const { position, radius, velocity } = ball;
