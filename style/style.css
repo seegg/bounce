@@ -54,6 +54,20 @@ button:focus {
   background-color: var(--btn-hover-bg);
 }
 
+.btn-container{
+  display: flex;
+  margin-left: 0.25rem;
+}
+
+.img-container{
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-wrap: wrap;
+  height: 3rem;
+  overflow-y: auto;
+  width: 100%;
+}
+
 canvas{
   background-color: var(--canvas-bg);
   border-radius: var(--border-radius);
