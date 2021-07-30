@@ -37,8 +37,13 @@ body {
 input[type=text] {
   border-radius: var(--border-radius);
   border: none;
+  background-color: white;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   width: 100%;
+}
+
+input[type=text]:focus{
+  outline: none;
 }
 
 #app{
@@ -135,7 +140,11 @@ input[type=text] {
 }
 
 .btn-file{
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
   margin-left: 0.5rem;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .balls-container{
@@ -199,5 +208,16 @@ canvas{
 
 .img-file-display{
   display: flex;
+  background-color: white;
+  border-radius: var(--border-radius);
   width: 100%;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.img-file-display input[type=text]{
+  box-shadow: none;
+}
+
+.img-file-display input[type=text]:hover{
+  cursor: default;
 }
