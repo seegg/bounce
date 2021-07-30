@@ -7,9 +7,20 @@
   --border-radius: 0.25rem;
 }
 
-div{
-  box-sizing: border-box;
+
+* { 
+  margin:0; 
+  padding:0; 
+  box-sizing:border-box;
+  max-width: 100%;
 }
+
+*, ::before, ::after{
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+
 
 button{
   background: none;
@@ -23,6 +34,9 @@ button:focus {
 
 body {
   background-color: var(--main-bg);
+  box-sizing: border-box;
+  font-family: inherit;
+  line-height: inherit;
 }
 
 #app{
@@ -122,6 +136,15 @@ body {
   background-color: var(--balls-bg);
 }
 
+.img-container{
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-wrap: wrap;
+  height: 3rem;
+  overflow-y: auto;
+  width: 100%;
+}
+
 .controls{
   display: flex;
   justify-content: space-between;
@@ -140,16 +163,20 @@ body {
   }
 }
 
-.img-container{
-  border-radius: var(--border-radius);
-  display: flex;
-  flex-wrap: wrap;
-  height: 3rem;
-  overflow-y: auto;
-  width: 100%;
-}
-
 canvas{
   background-color: var(--canvas-bg);
   border-radius: var(--border-radius);
+}
+
+.img-thumb{
+  display: block;
+  border-radius: 50%;
+  height: 3rem;
+  width: 3rem;
+  object-fit: contain;
+}
+
+
+.grayscale{
+  filter: grayscale(100%);
 }

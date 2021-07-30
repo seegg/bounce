@@ -196,10 +196,10 @@ const imageList = (function () {
 })();
 let imageCache = [];
 function addImage(imgSrc, imgArr, radius) {
-    const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
+    const classList = ['img-thumb', 'grayscale'];
     const imgContainer = document.getElementById('img-container');
     const loadingPlaceholder = document.createElement('img');
-    loadingPlaceholder.classList.add('h-12', 'w-12');
+    loadingPlaceholder.classList.add('img-thumb');
     loadingPlaceholder.src = 'images/spinner.gif';
     imgContainer === null || imgContainer === void 0 ? void 0 : imgContainer.appendChild(loadingPlaceholder);
     return util.createCircleImg(imgSrc, radius)
