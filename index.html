@@ -6,7 +6,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script defer src="./scripts/main.js"></script>
-  <!-- <link rel="stylesheet" href="./style/main.css"> -->
   <link rel="stylesheet" href="/style/style.css">
   <title>Bounce</title>
 </head>
@@ -43,21 +42,23 @@
       <input hidden type="file" id="img-file" name="imgFile" accept="image/*">
 
       <div>
-        <div class="mb-10">
+        <div class="img-upload">
           <label for="fileName" class="font-bold">Image File:</label>
-          <div class="flex w-full">
-            <input readonly class="w-full mr-2" type="text" name="fileName" placeholder="No file selected"
-              id="file-name"><button type="button" id='upload-button'>Select</button>
+          <div class="img-file-display">
+            <input readonly type="text" name="fileName" placeholder="No file selected" id="file-name">
+            <button type="button" class="btn-file" id='upload-button'>Select</button>
           </div>
-        </div>
-
-        <div class="">
-          <label for="imgUrl" class="font-bold">Image URL:</label>
-          <input type="text" name="imgURL" id="img-URL" placeholder="Image URL" class="w-full">
         </div>
       </div>
 
-      <div class="mx-auto my-2">
+      <div class="img-upload">
+        <label for="imgUrl" class="font-bold">Image URL:</label>
+        <div>
+          <input type="text" name="imgURL" id="img-URL" placeholder="Image Link">
+        </div>
+      </div>
+
+      <div class="upload-controls">
         <button type="submit" class="mx-1" id="form-ok-btn">Ok</button>
         <button type="button" class="mx-1" id="form-cancel-btn">Cancel</button>
       </div>

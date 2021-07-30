@@ -13,14 +13,9 @@
   padding:0; 
   box-sizing:border-box;
   max-width: 100%;
+  font-family: monospace, monospace;
+  font-size: 1rem;
 }
-
-*, ::before, ::after{
-  border-width: 0;
-  border-style: solid;
-  border-color: #e5e7eb;
-}
-
 
 button{
   background: none;
@@ -37,6 +32,13 @@ body {
   box-sizing: border-box;
   font-family: inherit;
   line-height: inherit;
+}
+
+input[type=text] {
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  width: 100%;
 }
 
 #app{
@@ -76,6 +78,11 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.upload-controls{
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .modal-overlay{
@@ -127,6 +134,10 @@ body {
   margin-right: 1rem;
 }
 
+.btn-file{
+  margin-left: 0.5rem;
+}
+
 .balls-container{
   display: flex;
   border-radius: var(--border-radius);
@@ -176,7 +187,17 @@ canvas{
   object-fit: contain;
 }
 
-
 .grayscale{
   filter: grayscale(100%);
+}
+
+.img-upload{
+  display: block;
+  margin-bottom: 2.5rem;
+  font-weight: 600;
+}
+
+.img-file-display{
+  display: flex;
+  width: 100%;
 }
