@@ -11,6 +11,9 @@ const imageUploadModal = {
   }
 }
 
+/**
+ * image upload form for the modal
+ */
 const imageForm = {
   form: document.getElementById('image-upload-form'),
   okButton: document.getElementById('form-ok-btn'),
