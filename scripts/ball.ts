@@ -73,7 +73,6 @@ class Ball {
         this.velocity.vY *= -1 / mod;
         break;
       case 'bottom':
-        // this.velocity.vY -= 0.0001;
         this.velocity.vY *= -1 / mod;
         break;
     }

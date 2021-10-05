@@ -268,7 +268,7 @@ const appProps = {
     },
     selectedAngleThreshold: 10,
     mouseMoveDistThreshold: 10,
-    wallModifiers: { left: 1.1, right: 1.1, top: 1, bottom: 1.5 },
+    wallModifiers: { left: 1.1, right: 1.1, top: 1, bottom: 1.8 },
     currentTime: 0,
     selectedTime: 0,
     deceleration: 0.995,
@@ -501,7 +501,7 @@ function onMouseUp(evt) {
                 throw new Error('Velocity must be a number');
         }
         catch (err) {
-            console.error(err.message);
+            console.error(err);
         }
         appProps.selectedBall.selected = false;
         appProps.selectedBall = null;
