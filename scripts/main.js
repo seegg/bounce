@@ -36,16 +36,22 @@ class Ball {
     wallBounce(wall, mod) {
         switch (wall) {
             case 'left':
-                this.velocity.vX *= -1 / mod;
+                this.velocity.vX *= (-1 / mod);
+                if (Math.abs(this.velocity.vX) < 0.02)
+                    this.velocity.vX = 0;
                 break;
             case 'right':
-                this.velocity.vX *= -1 / mod;
+                this.velocity.vX *= (-1 / mod);
+                if (Math.abs(this.velocity.vX) < 0.02)
+                    this.velocity.vX = 0;
                 break;
             case 'top':
                 this.velocity.vY *= -1 / mod;
                 break;
             case 'bottom':
                 this.velocity.vY *= -1 / mod;
+                if (Math.abs(this.velocity.vY) < 0.01)
+                    this.velocity.vY = 0;
                 break;
         }
     }
@@ -283,6 +289,7 @@ const appProps = {
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     setSizes();
+    appProps.canvas.width = 300;
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         draw();
@@ -362,13 +369,13 @@ function draw() {
 function updateBall(ball, ellapsedTime) {
     const { position, selected, velocity } = ball;
     if (!selected) {
-        if (Math.abs(ball.velocity.vX) <= 0.001)
+        const halfGravity = appProps.gravity / 2;
+        if (Math.abs(ball.velocity.vX) <= halfGravity)
             ball.velocity.vX = 0;
-        if (Math.abs(ball.velocity.vY) <= 0.001)
+        if (Math.abs(ball.velocity.vY) <= halfGravity)
             ball.velocity.vY = 0;
         const distX = velocity.vX * ellapsedTime;
         ball.rotation += calcBallRotation(ball, distX);
-        position.x += distX;
         position.x += distX;
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
@@ -399,6 +406,33 @@ function handleBallCollission(ball) {
     }
     collissions = [];
 }
+function handleWallCollission(ball) {
+    const { position, radius, velocity } = ball;
+    const { canvas, wallModifiers } = appProps;
+    let wall = [];
+    if (position.x + radius > canvas.width) {
+        position.x = canvas.width - radius;
+        wall.push('right');
+        velocity.vX < 0 || (ball.velocity.vX *= -1 / wallModifiers['right']);
+    }
+    if (position.x - radius < 0) {
+        position.x = radius;
+        wall.push('left');
+        velocity.vX > 0 || (ball.velocity.vX *= -1 / wallModifiers['left']);
+    }
+    if (position.y + radius > canvas.height) {
+        position.y = canvas.height - radius;
+        if (velocity.vY < 0.05)
+            velocity.vY = 0;
+        wall.push('bottom');
+        velocity.vY < 0 || (ball.velocity.vY *= -1 / wallModifiers['bottom']);
+    }
+    if (position.y - radius < 0) {
+        position.y = radius;
+        wall.push('top');
+        velocity.vY > 0 || (ball.velocity.vY *= -1 / wallModifiers['top']);
+    }
+}
 function drawBall(ctx, ball) {
     if (ball === null)
         return;
@@ -420,33 +454,6 @@ function calcBallRotation(ball, distance) {
     const parameter = 2 * Math.PI * ball.radius;
     const rotation = distance / parameter;
     return rotation * 360;
-}
-function handleWallCollission(ball) {
-    const { position, radius, velocity } = ball;
-    const { width, height } = appProps.canvas;
-    let wall;
-    if (position.x + radius > width) {
-        position.x = width - radius;
-        wall = 'right';
-        velocity.vX < 0 || ball.wallBounce(wall, appProps.wallModifiers[wall]);
-    }
-    if (position.x - radius < 0) {
-        position.x = radius;
-        wall = 'left';
-        velocity.vX > 0 || ball.wallBounce(wall, appProps.wallModifiers[wall]);
-    }
-    if (position.y + radius > height) {
-        position.y = height - radius;
-        if (velocity.vY < 0.05)
-            velocity.vY = 0;
-        wall = 'bottom';
-        velocity.vY < 0 || ball.wallBounce(wall, appProps.wallModifiers[wall]);
-    }
-    if (position.y - radius < 0) {
-        position.y = radius;
-        wall = 'top';
-        velocity.vY > 0 || ball.wallBounce(wall, appProps.wallModifiers[wall]);
-    }
 }
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();
