@@ -99,7 +99,7 @@ function removeBall(ballToDelete: Ball) {
   }
 }
 
-function createAndCacheBall(
+function createAndStoreBall(
   imgEle: HTMLImageElement,
   x: number,
   y: number,
@@ -171,7 +171,7 @@ function handleBallCollission(ball: Ball): void {
       if (overlap > 0) collissions.push(ball2);
     }
   })
-  //if there's a collision find the nearest collided ball and adjust current ball's position.
+  //sort collision by distance between balls and then handle them sequentially.
   if (collissions.length > 0) {
     let nearestCollidedBall = collissions[0];
     for (let i = 1; i < collissions.length; i++) {
@@ -180,7 +180,13 @@ function handleBallCollission(ball: Ball): void {
         nearestCollidedBall = collissions[i];
       }
     }
-    ball.reversePosition(ball.getOverlap(nearestCollidedBall));
+    collissions.sort((a, b) => {
+      const distA = util.distanceBetween2Points(ball.position, a.position);
+      const distB = util.distanceBetween2Points(ball.position, b.position);
+      return distA - distB;
+    })
+
+    ball.reversePosition(ball.getOverlap(collissions[0]));
     ball.ballBounce(nearestCollidedBall);
   }
   collissions = [];
@@ -263,7 +269,7 @@ function onMouseDown(evt: MouseEvent) {
   if (evt.button !== 0) return; //not primary click
   const [x, y] = getRelativeMousePos(evt);
   if (appProps.selectedImgEle) {
-    appProps.selectedBall = createAndCacheBall(appProps.selectedImgEle, x, y) || null;
+    appProps.selectedBall = createAndStoreBall(appProps.selectedImgEle, x, y) || null;
   } else {
     appProps.selectedBall = appProps.balls.find(ball => ball.containsPoint(x, y)) || null;
   }

@@ -341,7 +341,7 @@ function removeBall(ballToDelete) {
         console.error(err);
     }
 }
-function createAndCacheBall(imgEle, x, y, radius = appProps.radiusSizes.current, selected = false) {
+function createAndStoreBall(imgEle, x, y, radius = appProps.radiusSizes.current, selected = false) {
     try {
         const imgIndex = Number(imgEle.dataset['index']);
         const ball = new Ball(imageCache[imgIndex], x, y, radius, selected);
@@ -401,7 +401,12 @@ function handleBallCollission(ball) {
                 nearestCollidedBall = collissions[i];
             }
         }
-        ball.reversePosition(ball.getOverlap(nearestCollidedBall));
+        collissions.sort((a, b) => {
+            const distA = util.distanceBetween2Points(ball.position, a.position);
+            const distB = util.distanceBetween2Points(ball.position, b.position);
+            return distA - distB;
+        });
+        ball.reversePosition(ball.getOverlap(collissions[0]));
         ball.ballBounce(nearestCollidedBall);
     }
     collissions = [];
@@ -459,7 +464,7 @@ function onMouseDown(evt) {
         return;
     const [x, y] = getRelativeMousePos(evt);
     if (appProps.selectedImgEle) {
-        appProps.selectedBall = createAndCacheBall(appProps.selectedImgEle, x, y) || null;
+        appProps.selectedBall = createAndStoreBall(appProps.selectedImgEle, x, y) || null;
     }
     else {
         appProps.selectedBall = appProps.balls.find(ball => ball.containsPoint(x, y)) || null;
