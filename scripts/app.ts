@@ -192,18 +192,15 @@ function handleBallCollission(ball: Ball): void {
 function handleWallCollission(ball: Ball): void {
   const { position, radius, velocity } = ball;
   const { canvas, wallModifiers } = appProps;
-  let wall: Wall[] = [];
   //right
   if (position.x + radius > canvas.width) {
     position.x = canvas.width - radius;
-    wall.push('right');
     velocity.vX < 0 || (ball.velocity.vX *= -1 / wallModifiers['right']);
   }
 
   //left
   if (position.x - radius < 0) {
     position.x = radius;
-    wall.push('left');
     velocity.vX > 0 || (ball.velocity.vX *= -1 / wallModifiers['left']);
   }
 
@@ -211,14 +208,12 @@ function handleWallCollission(ball: Ball): void {
   if (position.y + radius > canvas.height) {
     position.y = canvas.height - radius;
     if (velocity.vY < 0.05) velocity.vY = 0;
-    wall.push('bottom');
     velocity.vY < 0 || (ball.velocity.vY *= -1 / wallModifiers['bottom']);
   }
 
   //top
   if (position.y - radius < 0) {
     position.y = radius;
-    wall.push('top');
     velocity.vY > 0 || (ball.velocity.vY *= -1 / wallModifiers['top']);
   }
 }
