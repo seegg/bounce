@@ -133,6 +133,9 @@ function draw() {
     updateBall(ball, ellapsedTime);
 
   })
+
+  // fixOverlaps();
+
   //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
 
@@ -153,7 +156,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     position.x += distX;
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
-    // velocity.vY += appProps.gravity;
+    velocity.vY += appProps.gravity;
 
     handleBallCollission(ball);
     handleWallCollission(ball);
@@ -214,6 +217,18 @@ function handleWallCollission(ball: Ball): void {
     position.y = radius;
     velocity.vY > 0 || (ball.velocity.vY *= -1 / wallModifiers['top']);
   }
+}
+
+function fixOverlaps() {
+  appProps.balls.forEach(ball => {
+    appProps.balls.forEach(ball2 => {
+      if (ball.id !== ball2.id) {
+        if (ball.getOverlap(ball2) > 0) {
+          console.log('overlap remaining', ball.getOverlap(ball2));
+        }
+      }
+    })
+  })
 }
 
 
