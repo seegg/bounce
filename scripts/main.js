@@ -57,22 +57,25 @@ class Ball {
                 break;
         }
     }
+    checkBallCollision(ball2) {
+        if (this.getOverlap(ball2)) {
+            const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
+            const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
+            return angle <= 90;
+        }
+        return false;
+    }
     ballBounce(ball2) {
         if (this.selected || ball2.selected)
             return;
-        const overlap = this.getOverlap(ball2);
-        if (overlap >= 0) {
-            const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
-            const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
-            if (angle <= 90) {
-                const modifier = 0.85;
-                const velocity1 = util.getBallCollisionVelocity(this, ball2);
-                const velocity2 = util.getBallCollisionVelocity(ball2, this);
-                velocity1.vY *= modifier;
-                velocity2.vY *= modifier;
-                this.velocity = velocity1;
-                ball2.velocity = velocity2;
-            }
+        if (this.checkBallCollision(ball2)) {
+            const modifier = 0.85;
+            const velocity1 = util.getBallCollisionVelocity(this, ball2);
+            const velocity2 = util.getBallCollisionVelocity(ball2, this);
+            velocity1.vY *= modifier;
+            velocity2.vY *= modifier;
+            this.velocity = velocity1;
+            ball2.velocity = velocity2;
         }
     }
 }

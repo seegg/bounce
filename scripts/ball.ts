@@ -85,29 +85,34 @@ class Ball {
   }
 
   /**
-   * Check if this and ball2 are touching and then check the 
-   * angle between the velocity and the line between the two centers.
-   * if it's less than 90degrees then consider the balls to be colliding.
+   * Check if this ball is touching a certain ball
+   * and check if they're colliding or moving away
+   * by comparing the angles between the two.
+   */
+  checkBallCollision(ball2: Ball): boolean {
+    if (this.getOverlap(ball2)) {
+      const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
+      const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
+      return angle <= 90;
+    }
+    return false;
+  }
+
+  /**
+   * Bounce this against another ball.
    */
   ballBounce(ball2: Ball): void {
     if (this.selected || ball2.selected) return;
-    //check if the balls are touching.
-    const overlap = this.getOverlap(ball2);
-    if (overlap >= 0) {
-      //check if the angle is less than or equal 90 degrees
-      const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
-      const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
-      if (angle <= 90) {
-        const modifier = 0.85;
-        const velocity1 = util.getBallCollisionVelocity(this, ball2);
-        const velocity2 = util.getBallCollisionVelocity(ball2, this);
-        // velocity1.vX *= modifier;
-        velocity1.vY *= modifier;
-        // velocity2.vX *= modifier;
-        velocity2.vY *= modifier;
-        this.velocity = velocity1;
-        ball2.velocity = velocity2;
-      }
+    if (this.checkBallCollision(ball2)) {
+      const modifier = 0.85;
+      const velocity1 = util.getBallCollisionVelocity(this, ball2);
+      const velocity2 = util.getBallCollisionVelocity(ball2, this);
+      // velocity1.vX *= modifier;
+      velocity1.vY *= modifier;
+      // velocity2.vX *= modifier;
+      velocity2.vY *= modifier;
+      this.velocity = velocity1;
+      ball2.velocity = velocity2;
     }
   }
 
