@@ -294,7 +294,6 @@ const appProps = {
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     setSizes();
-    appProps.canvas.width = 300;
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         window.requestAnimationFrame(draw);
@@ -393,7 +392,7 @@ function handleBallCollission(ball) {
     let collissions = [];
     appProps.balls.forEach(ball2 => {
         if (ball.id !== ball2.id && !ball2.selected) {
-            if (ball.getOverlap(ball2) > 0.05)
+            if (ball.getOverlap(ball2) > 0.03)
                 collissions.push(ball2);
         }
     });

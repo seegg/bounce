@@ -30,7 +30,6 @@ const appProps = {
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   setSizes();
 
-  appProps.canvas.width = 300;
   //Load all the images in the image list
   Promise.all(
     imageList.map(img => addImage(
@@ -168,7 +167,7 @@ function handleBallCollission(ball: Ball): void {
   let collissions = <Ball[]>[];
   appProps.balls.forEach(ball2 => {
     if (ball.id !== ball2.id && !ball2.selected) {
-      if (ball.getOverlap(ball2) > 0.05) collissions.push(ball2);
+      if (ball.getOverlap(ball2) > 0.03) collissions.push(ball2);
     }
   })
   //sort collision by distance between balls and then handle them sequentially.
