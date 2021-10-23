@@ -167,13 +167,11 @@ function handleBallCollission(ball: Ball): void {
   let collissions = <Ball[]>[];
   appProps.balls.forEach(ball2 => {
     if (ball.id !== ball2.id && !ball2.selected) {
-      const overlap = ball.getOverlap(ball2);
-      if (overlap > 0) collissions.push(ball2);
+      if (ball.getOverlap(ball2) > 0) collissions.push(ball2);
     }
   })
   //sort collision by distance between balls and then handle them sequentially.
   if (collissions.length > 0) {
-    console.log(ball.id, 'collided');
     collissions.sort((a, b) => {
       const distA = util.distanceBetween2Points(ball.position, a.position);
       const distB = util.distanceBetween2Points(ball.position, b.position);
