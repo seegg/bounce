@@ -134,8 +134,6 @@ function draw() {
 
   })
 
-  // fixOverlaps();
-
   //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
 
@@ -170,7 +168,7 @@ function handleBallCollission(ball: Ball): void {
   let collissions = <Ball[]>[];
   appProps.balls.forEach(ball2 => {
     if (ball.id !== ball2.id && !ball2.selected) {
-      if (ball.getOverlap(ball2) > 0) collissions.push(ball2);
+      if (ball.getOverlap(ball2) > 0.05) collissions.push(ball2);
     }
   })
   //sort collision by distance between balls and then handle them sequentially.
@@ -218,19 +216,6 @@ function handleWallCollission(ball: Ball): void {
     velocity.vY > 0 || (ball.velocity.vY *= -1 / wallModifiers['top']);
   }
 }
-
-function fixOverlaps() {
-  appProps.balls.forEach(ball => {
-    appProps.balls.forEach(ball2 => {
-      if (ball.id !== ball2.id) {
-        if (ball.getOverlap(ball2) > 0) {
-          console.log('overlap remaining', ball.getOverlap(ball2));
-        }
-      }
-    })
-  })
-}
-
 
 /**
  * Draw an individual ball.

@@ -90,7 +90,7 @@ class Ball {
    * by comparing the angles between the two.
    */
   checkBallCollision(ball2: Ball): boolean {
-    if (this.getOverlap(ball2) > 0) {
+    if (this.getOverlap(ball2) >= 0) {
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
       const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
       return angle <= 90;

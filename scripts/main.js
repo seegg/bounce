@@ -58,7 +58,7 @@ class Ball {
         }
     }
     checkBallCollision(ball2) {
-        if (this.getOverlap(ball2) > 0) {
+        if (this.getOverlap(ball2) >= 0) {
             const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
             const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
             return angle <= 90;
@@ -393,7 +393,7 @@ function handleBallCollission(ball) {
     let collissions = [];
     appProps.balls.forEach(ball2 => {
         if (ball.id !== ball2.id && !ball2.selected) {
-            if (ball.getOverlap(ball2) > 0)
+            if (ball.getOverlap(ball2) > 0.05)
                 collissions.push(ball2);
         }
     });
@@ -429,17 +429,6 @@ function handleWallCollission(ball) {
         position.y = radius;
         velocity.vY > 0 || (ball.velocity.vY *= -1 / wallModifiers['top']);
     }
-}
-function fixOverlaps() {
-    appProps.balls.forEach(ball => {
-        appProps.balls.forEach(ball2 => {
-            if (ball.id !== ball2.id) {
-                if (ball.getOverlap(ball2) > 0) {
-                    console.log('overlap remaining', ball.getOverlap(ball2));
-                }
-            }
-        });
-    });
 }
 function drawBall(ctx, ball) {
     if (ball === null)
