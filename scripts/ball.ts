@@ -34,10 +34,12 @@ class Ball {
    * of its velocity.
    */
   reversePosition(distance: number): void {
-    if (this.getTotalVelocity() === 0) return;
-    const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
-    this.position.x += this.velocity.vX * velocityRatio;
-    this.position.y += this.velocity.vY * velocityRatio;
+    if (this.getTotalVelocity() === 0) {
+    } else {
+      const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
+      this.position.x += this.velocity.vX * velocityRatio;
+      this.position.y += this.velocity.vY * velocityRatio;
+    }
   }
 
   getTotalVelocity(): number {
@@ -92,10 +94,10 @@ class Ball {
     //check if the balls are touching.
     const overlap = this.getOverlap(ball2);
     if (overlap >= 0) {
-      //check if the angle is less than 90 degrees
+      //check if the angle is less than or equal 90 degrees
       const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
       const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
-      if (angle < 90) {
+      if (angle <= 90) {
         const modifier = 0.85;
         const velocity1 = util.getBallCollisionVelocity(this, ball2);
         const velocity2 = util.getBallCollisionVelocity(ball2, this);

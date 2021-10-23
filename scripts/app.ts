@@ -38,7 +38,7 @@ const appProps = {
     )
   ).then(_ => {
     appProps.currentTime = new Date().getTime();
-    draw();
+    window.requestAnimationFrame(draw);
   });
 })();
 
@@ -153,7 +153,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     position.x += distX;
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
-    velocity.vY += appProps.gravity;
+    // velocity.vY += appProps.gravity;
 
     handleBallCollission(ball);
     handleWallCollission(ball);
@@ -173,13 +173,7 @@ function handleBallCollission(ball: Ball): void {
   })
   //sort collision by distance between balls and then handle them sequentially.
   if (collissions.length > 0) {
-    let nearestCollidedBall = collissions[0];
-    for (let i = 1; i < collissions.length; i++) {
-      const dist = util.distanceBetween2Points(ball.position, nearestCollidedBall.position);
-      if (dist > util.distanceBetween2Points(ball.position, collissions[i].position)) {
-        nearestCollidedBall = collissions[i];
-      }
-    }
+    console.log(ball.id, 'collided');
     collissions.sort((a, b) => {
       const distA = util.distanceBetween2Points(ball.position, a.position);
       const distB = util.distanceBetween2Points(ball.position, b.position);
@@ -187,7 +181,7 @@ function handleBallCollission(ball: Ball): void {
     })
 
     ball.reversePosition(ball.getOverlap(collissions[0]));
-    ball.ballBounce(nearestCollidedBall);
+    ball.ballBounce(collissions[0]);
   }
   collissions = [];
 }
@@ -323,9 +317,8 @@ function onMouseUp(evt: MouseEvent) {
 
       appProps.selectedBall.velocity.vX = distX / ellapsedTime;
       appProps.selectedBall.velocity.vY = distY / ellapsedTime;
-      if (!Number(appProps.selectedBall.velocity.vX) || !Number(appProps.selectedBall.velocity.vY))
-        throw new Error('Velocity must be a number');
     } catch (err) {
+      appProps.selectedBall.position = { x: 50, y: 50 };
       console.error(err);
     }
     appProps.selectedBall.selected = false;

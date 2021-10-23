@@ -15,11 +15,13 @@ class Ball {
         this.position.y += y;
     }
     reversePosition(distance) {
-        if (this.getTotalVelocity() === 0)
-            return;
-        const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
-        this.position.x += this.velocity.vX * velocityRatio;
-        this.position.y += this.velocity.vY * velocityRatio;
+        if (this.getTotalVelocity() === 0) {
+        }
+        else {
+            const velocityRatio = Math.sqrt(Math.pow(distance, 2) / (Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2))) * -1;
+            this.position.x += this.velocity.vX * velocityRatio;
+            this.position.y += this.velocity.vY * velocityRatio;
+        }
     }
     getTotalVelocity() {
         return Math.sqrt(Math.pow(this.velocity.vX, 2) + Math.pow(this.velocity.vY, 2));
@@ -62,7 +64,7 @@ class Ball {
         if (overlap >= 0) {
             const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);
             const angle = util.angleBetween2DVector(this.velocity.vX, this.velocity.vY, centerToCenter[0], centerToCenter[1]) || 0;
-            if (angle < 90) {
+            if (angle <= 90) {
                 const modifier = 0.85;
                 const velocity1 = util.getBallCollisionVelocity(this, ball2);
                 const velocity2 = util.getBallCollisionVelocity(ball2, this);
@@ -292,7 +294,7 @@ const appProps = {
     appProps.canvas.width = 300;
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
-        draw();
+        window.requestAnimationFrame(draw);
     });
 })();
 function addEventListeners() {
@@ -379,7 +381,6 @@ function updateBall(ball, ellapsedTime) {
         position.x += distX;
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
-        velocity.vY += appProps.gravity;
         handleBallCollission(ball);
         handleWallCollission(ball);
     }
@@ -394,20 +395,14 @@ function handleBallCollission(ball) {
         }
     });
     if (collissions.length > 0) {
-        let nearestCollidedBall = collissions[0];
-        for (let i = 1; i < collissions.length; i++) {
-            const dist = util.distanceBetween2Points(ball.position, nearestCollidedBall.position);
-            if (dist > util.distanceBetween2Points(ball.position, collissions[i].position)) {
-                nearestCollidedBall = collissions[i];
-            }
-        }
+        console.log(ball.id, 'collided');
         collissions.sort((a, b) => {
             const distA = util.distanceBetween2Points(ball.position, a.position);
             const distB = util.distanceBetween2Points(ball.position, b.position);
             return distA - distB;
         });
         ball.reversePosition(ball.getOverlap(collissions[0]));
-        ball.ballBounce(nearestCollidedBall);
+        ball.ballBounce(collissions[0]);
     }
     collissions = [];
 }
@@ -504,10 +499,9 @@ function onMouseUp(evt) {
             const ellapsedTime = new Date().getTime() - appProps.selectedTime;
             appProps.selectedBall.velocity.vX = distX / ellapsedTime;
             appProps.selectedBall.velocity.vY = distY / ellapsedTime;
-            if (!Number(appProps.selectedBall.velocity.vX) || !Number(appProps.selectedBall.velocity.vY))
-                throw new Error('Velocity must be a number');
         }
         catch (err) {
+            appProps.selectedBall.position = { x: 50, y: 50 };
             console.error(err);
         }
         appProps.selectedBall.selected = false;
