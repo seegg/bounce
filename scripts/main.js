@@ -268,7 +268,7 @@ function scrollToImgElement(imgEle) {
 const appProps = {
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
-    gravity: 0.01,
+    gravity: { value: 0.01, isOn: true },
     balls: [],
     selectedImgEle: null,
     selectedBall: null,
@@ -300,6 +300,7 @@ const appProps = {
     });
 })();
 function addEventListeners() {
+    var _a;
     window.onresize = () => {
         setSizes();
     };
@@ -307,6 +308,9 @@ function addEventListeners() {
     appProps.canvas.addEventListener('pointermove', onMouseMove);
     appProps.canvas.addEventListener('pointerup', onMouseUp);
     appProps.canvas.addEventListener('pointerleave', onMouseLeave);
+    (_a = document.getElementById('gravity-btn')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function toggleGravity() {
+        appProps.gravity.isOn = !appProps.gravity.isOn;
+    });
 }
 function setSizes() {
     try {
@@ -373,7 +377,7 @@ function draw() {
 function updateBall(ball, ellapsedTime) {
     const { position, selected, velocity } = ball;
     if (!selected) {
-        const halfGravity = appProps.gravity / 2;
+        const halfGravity = appProps.gravity.value / 2;
         if (Math.abs(ball.velocity.vX) <= halfGravity)
             ball.velocity.vX = 0;
         if (Math.abs(ball.velocity.vY) <= halfGravity)
@@ -383,7 +387,7 @@ function updateBall(ball, ellapsedTime) {
         position.x += distX;
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
-        velocity.vY += appProps.gravity;
+        appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
         handleBallCollission(ball);
         handleWallCollission(ball);
     }

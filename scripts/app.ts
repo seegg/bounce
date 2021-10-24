@@ -1,7 +1,7 @@
 const appProps = {
   radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
-  gravity: 0.01,
+  gravity: { value: 0.01, isOn: true },
   balls: <Ball[]>[],
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
@@ -52,6 +52,11 @@ function addEventListeners(): void {
   appProps.canvas.addEventListener('pointermove', onMouseMove);
   appProps.canvas.addEventListener('pointerup', onMouseUp);
   appProps.canvas.addEventListener('pointerleave', onMouseLeave);
+  document.getElementById('gravity-btn')?.addEventListener('click',
+    function toggleGravity() {
+      appProps.gravity.isOn = !appProps.gravity.isOn;
+    }
+  );
 }
 
 /**
@@ -145,7 +150,7 @@ function draw() {
 function updateBall(ball: Ball, ellapsedTime: number) {
   const { position, selected, velocity } = ball
   if (!selected) {
-    const halfGravity = appProps.gravity / 2;
+    const halfGravity = appProps.gravity.value / 2;
     if (Math.abs(ball.velocity.vX) <= halfGravity) ball.velocity.vX = 0;
     if (Math.abs(ball.velocity.vY) <= halfGravity) ball.velocity.vY = 0;
     const distX = velocity.vX * ellapsedTime;
@@ -153,7 +158,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     position.x += distX;
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
-    velocity.vY += appProps.gravity;
+    appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
 
     handleBallCollission(ball);
     handleWallCollission(ball);
