@@ -221,3 +221,9 @@ canvas{
 .img-file-display input[type=text]:hover{
   cursor: default;
 }
+
+input[type=text]{
+  height: 2.5rem;
+  padding-left: 0.5rem;
+  padding-right: 00.5rem;
+}
