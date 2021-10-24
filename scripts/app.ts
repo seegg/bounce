@@ -1,4 +1,5 @@
 const appProps = {
+  count: 0,
   radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
   gravity: { value: 0.01, isOn: true },
@@ -37,7 +38,8 @@ const appProps = {
     )
   ).then(_ => {
     appProps.currentTime = new Date().getTime();
-    window.requestAnimationFrame(draw);
+    // window.requestAnimationFrame(draw);
+    draw();
   });
 })();
 
@@ -114,6 +116,7 @@ function createAndStoreBall(
     const imgIndex = Number(imgEle.dataset['index']);
     const ball = new Ball(imageCache[imgIndex], x, y, radius, selected);
     appProps.balls.push(ball);
+    appProps.count++;
     return ball;
   } catch (err) {
     console.error(err);
@@ -221,20 +224,27 @@ function handleWallCollission(ball: Ball): void {
   }
 }
 
+function fixBallOverlaps(balls: Ball[]) {
+  let sortedBallList = sortBalls(balls);
+  sortedBallList.forEach(ball => {
+
+  })
+}
+
 /**
  * Sort the list of balls base on position on the canvas.
  * Bottom to top, left to right.
  */
 function sortBalls(balls: Ball[]): Ball[] {
-  let sortedBallList = [balls[0]];
+  let sortedBallList = <Ball[]>[];
 
   balls.forEach(ball => {
     let listPosition = sortedBallList.findIndex(ball2 => {
-      if (ball.position.y < ball2.position.y) return true;
+      if (ball.position.y > ball2.position.y) return true;
       if (ball.position.y === ball2.position.y && ball.position.x < ball2.position.x) return true;
       return false;
     })
-    listPosition === -1 ? sortedBallList.push(ball) : sortedBallList.splice(listPosition, 1);
+    listPosition === -1 ? sortedBallList.push(ball) : sortedBallList.splice(listPosition, 0, ball);
   })
 
   return sortedBallList;

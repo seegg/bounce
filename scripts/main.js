@@ -244,6 +244,7 @@ function scrollToImgElement(imgEle) {
     container.scroll(0, scrollDistance);
 }
 const appProps = {
+    count: 0,
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
     gravity: { value: 0.01, isOn: true },
@@ -274,7 +275,7 @@ const appProps = {
     setSizes();
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
-        window.requestAnimationFrame(draw);
+        draw();
     });
 })();
 function addEventListeners() {
@@ -332,6 +333,7 @@ function createAndStoreBall(imgEle, x, y, radius = appProps.radiusSizes.current,
         const imgIndex = Number(imgEle.dataset['index']);
         const ball = new Ball(imageCache[imgIndex], x, y, radius, selected);
         appProps.balls.push(ball);
+        appProps.count++;
         return ball;
     }
     catch (err) {
@@ -411,17 +413,22 @@ function handleWallCollission(ball) {
         velocity.vY > 0 || (ball.velocity.vY *= -1 / wallModifiers['top']);
     }
 }
+function fixBallOverlaps(balls) {
+    let sortedBallList = sortBalls(balls);
+    sortedBallList.forEach(ball => {
+    });
+}
 function sortBalls(balls) {
-    let sortedBallList = [balls[0]];
+    let sortedBallList = [];
     balls.forEach(ball => {
         let listPosition = sortedBallList.findIndex(ball2 => {
-            if (ball.position.y < ball2.position.y)
+            if (ball.position.y > ball2.position.y)
                 return true;
             if (ball.position.y === ball2.position.y && ball.position.x < ball2.position.x)
                 return true;
             return false;
         });
-        listPosition === -1 ? sortedBallList.push(ball) : sortedBallList.splice(listPosition, 1);
+        listPosition === -1 ? sortedBallList.push(ball) : sortedBallList.splice(listPosition, 0, ball);
     });
     return sortedBallList;
 }
