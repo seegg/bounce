@@ -35,28 +35,6 @@ class Ball {
         const overlap = sumOfRadii - centerDistance;
         return overlap >= 0 ? overlap : -1;
     }
-    wallBounce(wall, mod) {
-        switch (wall) {
-            case 'left':
-                this.velocity.vX *= (-1 / mod);
-                if (Math.abs(this.velocity.vX) < 0.02)
-                    this.velocity.vX = 0;
-                break;
-            case 'right':
-                this.velocity.vX *= (-1 / mod);
-                if (Math.abs(this.velocity.vX) < 0.02)
-                    this.velocity.vX = 0;
-                break;
-            case 'top':
-                this.velocity.vY *= -1 / mod;
-                break;
-            case 'bottom':
-                this.velocity.vY *= -1 / mod;
-                if (Math.abs(this.velocity.vY) < 0.01)
-                    this.velocity.vY = 0;
-                break;
-        }
-    }
     checkBallCollision(ball2) {
         if (this.getOverlap(ball2) >= 0) {
             const centerToCenter = util.xyDiffBetweenPoints(this.position, ball2.position);

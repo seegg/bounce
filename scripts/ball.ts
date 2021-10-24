@@ -59,30 +59,6 @@ class Ball {
     const overlap = sumOfRadii - centerDistance;
     return overlap >= 0 ? overlap : -1;
   }
-  /**
-   * bounce off of a wall.
-   * @param wall the side of the wall bouncing off of.
-   */
-  wallBounce(wall: Wall, mod: number) {
-    switch (wall) {
-      case 'left':
-        this.velocity.vX *= (-1 / mod);
-        if (Math.abs(this.velocity.vX) < 0.02) this.velocity.vX = 0;
-        break;
-      case 'right':
-        this.velocity.vX *= (-1 / mod);
-        if (Math.abs(this.velocity.vX) < 0.02) this.velocity.vX = 0;
-        break;
-      case 'top':
-        this.velocity.vY *= -1 / mod;
-        break;
-      case 'bottom':
-        this.velocity.vY *= -1 / mod;
-        if (Math.abs(this.velocity.vY) < 0.01) this.velocity.vY = 0;
-        break;
-    }
-
-  }
 
   /**
    * Check if this ball is touching a certain ball
