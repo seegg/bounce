@@ -411,6 +411,20 @@ function handleWallCollission(ball) {
         velocity.vY > 0 || (ball.velocity.vY *= -1 / wallModifiers['top']);
     }
 }
+function sortBalls(balls) {
+    let sortedBallList = [balls[0]];
+    balls.forEach(ball => {
+        let listPosition = sortedBallList.findIndex(ball2 => {
+            if (ball.position.y < ball2.position.y)
+                return true;
+            if (ball.position.y === ball2.position.y && ball.position.x < ball2.position.x)
+                return true;
+            return false;
+        });
+        listPosition === -1 ? sortedBallList.push(ball) : sortedBallList.splice(listPosition, 1);
+    });
+    return sortedBallList;
+}
 function drawBall(ctx, ball) {
     if (ball === null)
         return;
