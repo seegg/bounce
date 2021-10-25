@@ -258,6 +258,7 @@ const appProps = {
     },
     selectedAngleThreshold: 10,
     mouseMoveDistThreshold: 10,
+    overlapThreshold: 0.05,
     wallModifiers: { left: 1.1, right: 1.1, top: 1, bottom: 1.8 },
     currentTime: 0,
     selectedTime: 0,
@@ -265,7 +266,7 @@ const appProps = {
     canvas: document.getElementById('canvas'),
     canvasHorizontalGap: 5 * 2,
     canvasTopOffset: 70,
-    party: { active: false, start: 0, duration: 10, colour: '' },
+    party: { active: false, start: 0, duration: 10, gravity: true },
     rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
 (function init() {
@@ -377,7 +378,7 @@ function handleBallCollission(ball) {
     let collisions = [];
     appProps.balls.forEach(ball2 => {
         if (ball.id !== ball2.id && !ball2.selected) {
-            if (ball.getOverlap(ball2) > 0.03)
+            if (ball.getOverlap(ball2) > appProps.overlapThreshold)
                 collisions.push(ball2);
         }
     });
@@ -386,9 +387,6 @@ function handleBallCollission(ball) {
             const distA = util.distanceBetween2Points(ball.position, a.position);
             const distB = util.distanceBetween2Points(ball.position, b.position);
             return distA - distB;
-        });
-        let collidingBalls = [ball, collisions[0]];
-        collidingBalls.forEach(ball => {
         });
         ball.reversePosition(ball.getOverlap(collisions[0]));
         ball.ballBounce(collisions[0]);
@@ -416,19 +414,6 @@ function handleWallCollission(ball) {
         position.y = radius;
         velocity.vY > 0 || (ball.velocity.vY *= -1 / wallModifiers['top']);
     }
-}
-function fixBallOverlaps(balls) {
-    let sortedBallList = sortBalls(balls);
-    sortedBallList.forEach(ball => {
-        !ball.selected && appProps.balls.forEach(ball2 => {
-            if (!ball2.selected && ball.id !== ball2.id) {
-                const overlap = ball.getOverlap(ball2);
-                if (overlap > 0.03) {
-                    console.log(ball.position, ball2.position, ball.velocity, ball2.velocity);
-                }
-            }
-        });
-    });
 }
 function sortBalls(balls) {
     let sortedBallList = [];
