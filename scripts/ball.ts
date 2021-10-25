@@ -2,6 +2,7 @@ class Ball {
   private static baseId = 1;
   readonly id: number;
   position: Point;
+  prevPosition: Point;
   radius: number;
   rotation: number;
   velocity: Velocity;
@@ -11,7 +12,8 @@ class Ball {
 
   constructor(img: ImageBitmap, x: number, y: number, r: number, selected: boolean = false) {
     this.id = Ball.baseId;
-    this.position = { x, y }
+    this.position = { x, y };
+    this.prevPosition = { x, y };
     this.radius = r;
     this.rotation = 0;
     this.velocity = { vX: 0, vY: 0 }

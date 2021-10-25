@@ -3,6 +3,7 @@ class Ball {
     constructor(img, x, y, r, selected = false) {
         this.id = Ball.baseId;
         this.position = { x, y };
+        this.prevPosition = { x, y };
         this.radius = r;
         this.rotation = 0;
         this.velocity = { vX: 0, vY: 0 };
@@ -273,6 +274,7 @@ const appProps = {
     appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     setSizes();
+    appProps.canvas.width = 300;
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         draw();
@@ -357,10 +359,11 @@ function draw() {
 function updateBall(ball, ellapsedTime) {
     const { position, selected, velocity } = ball;
     if (!selected) {
+        ball.prevPosition = position;
         const halfGravity = appProps.gravity.value / 2;
-        if (Math.abs(ball.velocity.vX) <= halfGravity)
+        if (Math.abs(ball.velocity.vX) < halfGravity)
             ball.velocity.vX = 0;
-        if (Math.abs(ball.velocity.vY) <= halfGravity)
+        if (Math.abs(ball.velocity.vY) < halfGravity)
             ball.velocity.vY = 0;
         const distX = velocity.vX * ellapsedTime;
         ball.rotation += calcBallRotation(ball, distX);
@@ -386,6 +389,12 @@ function handleBallCollission(ball) {
             const distB = util.distanceBetween2Points(ball.position, b.position);
             return distA - distB;
         });
+        if (ball.position.y + ball.radius >= appProps.canvas.height)
+            ball.velocity.vY = 0;
+        if (collissions[0].position.y + collissions[0].radius >= appProps.canvas.height)
+            collissions[0].velocity.vY = 0;
+        if (ball.prevPosition.x === ball.position.x)
+            console.log('the same');
         ball.reversePosition(ball.getOverlap(collissions[0]));
         ball.ballBounce(collissions[0]);
     }
@@ -404,9 +413,9 @@ function handleWallCollission(ball) {
     }
     if (position.y + radius > canvas.height) {
         position.y = canvas.height - radius;
-        if (velocity.vY < 0.05)
-            velocity.vY = 0;
         velocity.vY < 0 || (ball.velocity.vY *= -1 / wallModifiers['bottom']);
+        if (Math.abs(velocity.vY) < 0.05)
+            velocity.vY = 0;
     }
     if (position.y - radius < 0) {
         position.y = radius;
@@ -416,6 +425,14 @@ function handleWallCollission(ball) {
 function fixBallOverlaps(balls) {
     let sortedBallList = sortBalls(balls);
     sortedBallList.forEach(ball => {
+        !ball.selected && appProps.balls.forEach(ball2 => {
+            if (!ball2.selected && ball.id !== ball2.id) {
+                const overlap = ball.getOverlap(ball2);
+                if (overlap > 0.03) {
+                    console.log(ball.position, ball2.position, ball.velocity, ball2.velocity);
+                }
+            }
+        });
     });
 }
 function sortBalls(balls) {
