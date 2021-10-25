@@ -155,9 +155,9 @@ function draw() {
  * update the ball's state after each frame.
  */
 function updateBall(ball: Ball, ellapsedTime: number) {
-  const { position, selected, velocity } = ball
+  let { position, selected, velocity } = ball;
   if (!selected) {
-    ball.prevPosition = position;
+
     const halfGravity = appProps.gravity.value / 2;
     if (Math.abs(ball.velocity.vX) < halfGravity) ball.velocity.vX = 0;
     if (Math.abs(ball.velocity.vY) < halfGravity) ball.velocity.vY = 0;
@@ -176,28 +176,31 @@ function updateBall(ball: Ball, ellapsedTime: number) {
  * Adjust the position of the ball based on the nearest ball collission
  */
 function handleBallCollission(ball: Ball): void {
-  let collissions = <Ball[]>[];
+  let collisions = <Ball[]>[];
   appProps.balls.forEach(ball2 => {
     if (ball.id !== ball2.id && !ball2.selected) {
-      if (ball.getOverlap(ball2) > 0.03) collissions.push(ball2);
+      if (ball.getOverlap(ball2) > 0.03) collisions.push(ball2);
     }
   })
   //sort collision by distance between balls and then handle them sequentially.
-  if (collissions.length > 0) {
-    collissions.sort((a, b) => {
+  if (collisions.length > 0) {
+    collisions.sort((a, b) => {
       const distA = util.distanceBetween2Points(ball.position, a.position);
       const distB = util.distanceBetween2Points(ball.position, b.position);
       return distA - distB;
     })
     // if (ball.position.y + ball.radius >= appProps.canvas.height) ball.velocity.vY = 0;
-    // if (collissions[0].position.y + collissions[0].radius >= appProps.canvas.height) collissions[0].velocity.vY = 0;
+    // if (collisions[0].position.y + collisions[0].radius >= appProps.canvas.height) collisions[0].velocity.vY = 0;
 
-    let collidingBalls = [ball, collissions[0]];
+    let collidingBalls = [ball, collisions[0]];
 
-    ball.reversePosition(ball.getOverlap(collissions[0]));
-    ball.ballBounce(collissions[0]);
+    collidingBalls.forEach(ball => {
+    })
+
+    ball.reversePosition(ball.getOverlap(collisions[0]));
+    ball.ballBounce(collisions[0]);
   }
-  collissions = [];
+  collisions = [];
 }
 
 /**

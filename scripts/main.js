@@ -3,7 +3,6 @@ class Ball {
     constructor(img, x, y, r, selected = false) {
         this.id = Ball.baseId;
         this.position = { x, y };
-        this.prevPosition = { x, y };
         this.radius = r;
         this.rotation = 0;
         this.velocity = { vX: 0, vY: 0 };
@@ -357,9 +356,8 @@ function draw() {
     window.requestAnimationFrame(() => { draw(); });
 }
 function updateBall(ball, ellapsedTime) {
-    const { position, selected, velocity } = ball;
+    let { position, selected, velocity } = ball;
     if (!selected) {
-        ball.prevPosition = position;
         const halfGravity = appProps.gravity.value / 2;
         if (Math.abs(ball.velocity.vX) < halfGravity)
             ball.velocity.vX = 0;
@@ -376,24 +374,26 @@ function updateBall(ball, ellapsedTime) {
     }
 }
 function handleBallCollission(ball) {
-    let collissions = [];
+    let collisions = [];
     appProps.balls.forEach(ball2 => {
         if (ball.id !== ball2.id && !ball2.selected) {
             if (ball.getOverlap(ball2) > 0.03)
-                collissions.push(ball2);
+                collisions.push(ball2);
         }
     });
-    if (collissions.length > 0) {
-        collissions.sort((a, b) => {
+    if (collisions.length > 0) {
+        collisions.sort((a, b) => {
             const distA = util.distanceBetween2Points(ball.position, a.position);
             const distB = util.distanceBetween2Points(ball.position, b.position);
             return distA - distB;
         });
-        let collidingBalls = [ball, collissions[0]];
-        ball.reversePosition(ball.getOverlap(collissions[0]));
-        ball.ballBounce(collissions[0]);
+        let collidingBalls = [ball, collisions[0]];
+        collidingBalls.forEach(ball => {
+        });
+        ball.reversePosition(ball.getOverlap(collisions[0]));
+        ball.ballBounce(collisions[0]);
     }
-    collissions = [];
+    collisions = [];
 }
 function handleWallCollission(ball) {
     const { position, radius, velocity } = ball;
