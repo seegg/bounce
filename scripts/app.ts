@@ -189,9 +189,10 @@ function handleBallCollission(ball: Ball): void {
       const distB = util.distanceBetween2Points(ball.position, b.position);
       return distA - distB;
     })
-    if (ball.position.y + ball.radius >= appProps.canvas.height) ball.velocity.vY = 0;
-    if (collissions[0].position.y + collissions[0].radius >= appProps.canvas.height) collissions[0].velocity.vY = 0;
-    if (ball.prevPosition.x === ball.position.x) console.log('the same');
+    // if (ball.position.y + ball.radius >= appProps.canvas.height) ball.velocity.vY = 0;
+    // if (collissions[0].position.y + collissions[0].radius >= appProps.canvas.height) collissions[0].velocity.vY = 0;
+
+    let collidingBalls = [ball, collissions[0]];
 
     ball.reversePosition(ball.getOverlap(collissions[0]));
     ball.ballBounce(collissions[0]);
