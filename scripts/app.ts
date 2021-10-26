@@ -167,14 +167,14 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     velocity.vX *= appProps.deceleration;
     appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
 
-    handleBallCollission(ball);
-    handleWallCollission(ball);
+    handleBallCollissions(ball);
+    handleWallCollissions(ball);
   }
 }
 /**
  * Adjust the position of the ball based on the nearest ball collission
  */
-function handleBallCollission(ball: Ball): void {
+function handleBallCollissions(ball: Ball): void {
   let collisions = <Ball[]>[];
   appProps.balls.forEach(ball2 => {
     if (ball.id !== ball2.id && !ball2.selected) {
@@ -200,7 +200,7 @@ function handleBallCollission(ball: Ball): void {
 /**
  * Check to see if a ball collides with a side wall.
  */
-function handleWallCollission(ball: Ball): void {
+function handleWallCollissions(ball: Ball): void {
   const { position, radius, velocity } = ball;
   const { canvas, wallModifiers } = appProps;
   //right

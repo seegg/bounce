@@ -47,11 +47,14 @@ class Ball {
         if (this.selected || ball2.selected)
             return;
         if (this.checkBallCollision(ball2)) {
-            const modifier = 0.85;
+            const modifierY = 0.85;
+            const modifierX = 0.90;
             const velocity1 = util.getBallCollisionVelocity(this, ball2);
             const velocity2 = util.getBallCollisionVelocity(ball2, this);
-            velocity1.vY *= modifier;
-            velocity2.vY *= modifier;
+            velocity1.vX *= modifierX;
+            velocity1.vY *= modifierY;
+            velocity2.vX *= modifierX;
+            velocity2.vY *= modifierY;
             this.velocity = velocity1;
             ball2.velocity = velocity2;
         }
@@ -370,11 +373,11 @@ function updateBall(ball, ellapsedTime) {
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
         appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
-        handleBallCollission(ball);
-        handleWallCollission(ball);
+        handleBallCollissions(ball);
+        handleWallCollissions(ball);
     }
 }
-function handleBallCollission(ball) {
+function handleBallCollissions(ball) {
     let collisions = [];
     appProps.balls.forEach(ball2 => {
         if (ball.id !== ball2.id && !ball2.selected) {
@@ -393,7 +396,7 @@ function handleBallCollission(ball) {
     }
     collisions = [];
 }
-function handleWallCollission(ball) {
+function handleWallCollissions(ball) {
     const { position, radius, velocity } = ball;
     const { canvas, wallModifiers } = appProps;
     if (position.x + radius > canvas.width) {
