@@ -48,7 +48,7 @@ class Ball {
             return;
         if (this.checkBallCollision(ball2)) {
             const modifierY = 0.85;
-            const modifierX = 0.90;
+            const modifierX = 1;
             const velocity1 = util.getBallCollisionVelocity(this, ball2);
             const velocity2 = util.getBallCollisionVelocity(ball2, this);
             velocity1.vX *= modifierX;
@@ -250,7 +250,7 @@ const appProps = {
     count: 0,
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
-    gravity: { value: 0.01, isOn: true },
+    gravity: { value: 0.01, isOn: false },
     balls: [],
     selectedImgEle: null,
     selectedBall: null,
@@ -356,6 +356,7 @@ function draw() {
         }
         updateBall(ball, ellapsedTime);
     });
+    fixBallCollisions(appProps.balls);
     drawBall(ctx, appProps.selectedBall);
     window.requestAnimationFrame(() => { draw(); });
 }
@@ -431,6 +432,35 @@ function sortBalls(balls) {
         listPosition === -1 ? sortedBallList.push(ball) : sortedBallList.splice(listPosition, 0, ball);
     });
     return sortedBallList;
+}
+function fixBallCollisions(balls) {
+    let sortedBallList = sortBalls(balls);
+    sortedBallList.forEach(ball => {
+        !ball.selected && sortedBallList.forEach(ball2 => {
+            if (ball2.selected)
+                return;
+            const overlap = ball.getOverlap(ball2);
+            const distInY = ball.position.y - ball2.position.y;
+            if (ball.id !== ball2.id && overlap > 0.03) {
+                const [x, y] = util.xyDiffBetweenPoints(ball.position, ball2.position);
+                const total = Math.abs(x) + Math.abs(y);
+                const xRatio = (x / total) * overlap;
+                const yRatio = (y / total) * overlap;
+                if (distInY === 0) {
+                    ball.position.x -= 0.5 * overlap;
+                    ball2.position.x += 0.5 * overlap;
+                }
+                else if (distInY > 0) {
+                    ball2.position.x += xRatio;
+                    ball2.position.y += yRatio;
+                }
+                else {
+                    ball.position.x += xRatio;
+                    ball.position.y += yRatio;
+                }
+            }
+        });
+    });
 }
 function drawBall(ctx, ball) {
     if (ball === null)

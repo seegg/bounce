@@ -2,7 +2,7 @@ const appProps = {
   count: 0,
   radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
-  gravity: { value: 0.01, isOn: true },
+  gravity: { value: 0.01, isOn: false },
   balls: <Ball[]>[],
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
@@ -144,6 +144,7 @@ function draw() {
 
   })
 
+  fixBallCollisions(appProps.balls);
   //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
 
@@ -246,6 +247,38 @@ function sortBalls(balls: Ball[]): Ball[] {
   })
 
   return sortedBallList;
+}
+
+
+/**
+ * check and fix any overlaps between balls after 
+ * handling wall and ball collisions
+ */
+function fixBallCollisions(balls: Ball[]) {
+  let sortedBallList = sortBalls(balls);
+  sortedBallList.forEach(ball => {
+    !ball.selected && sortedBallList.forEach(ball2 => {
+      if (ball2.selected) return;
+      const overlap = ball.getOverlap(ball2);
+      const distInY = ball.position.y - ball2.position.y;
+      if (ball.id !== ball2.id && overlap > 0.03) {
+        const [x, y] = util.xyDiffBetweenPoints(ball.position, ball2.position);
+        const total = Math.abs(x) + Math.abs(y);
+        const xRatio = (x / total) * overlap;
+        const yRatio = (y / total) * overlap;
+        if (distInY === 0) {
+          ball.position.x -= 0.5 * overlap;
+          ball2.position.x += 0.5 * overlap;
+        } else if (distInY > 0) {
+          ball2.position.x += xRatio;
+          ball2.position.y += yRatio;
+        } else {
+          ball.position.x += xRatio;
+          ball.position.y += yRatio;
+        }
+      }
+    })
+  })
 }
 
 /**
