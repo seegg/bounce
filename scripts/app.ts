@@ -147,7 +147,7 @@ function draw() {
   fixBallCollisions(appProps.balls);
   appProps.balls.forEach(ball => {
     if (!ball.selected) {
-      ball.rotation += calcBallRotation(ball, 0);
+      ball.rotation += calcBallRotation(ball);
     }
   })
   //draw selected ball last so it shows up on top.
@@ -176,7 +176,6 @@ function updateBall(ball: Ball, ellapsedTime: number) {
 
     handleBallCollissions(ball);
     handleWallCollissions(ball);
-    // ball.rotation += calcBallRotation(ball, distX);
   }
 }
 /**
@@ -309,7 +308,7 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
   ctx.restore();
 }
 
-function calcBallRotation(ball: Ball, distance: number): number {
+function calcBallRotation(ball: Ball): number {
   const parameter = 2 * Math.PI * ball.radius;
   const dist = ball.position.x - ball.prevPosition.x;
   const rotation = dist / parameter;

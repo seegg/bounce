@@ -360,7 +360,7 @@ function draw() {
     fixBallCollisions(appProps.balls);
     appProps.balls.forEach(ball => {
         if (!ball.selected) {
-            ball.rotation += calcBallRotation(ball, 0);
+            ball.rotation += calcBallRotation(ball);
         }
     });
     drawBall(ctx, appProps.selectedBall);
@@ -489,7 +489,7 @@ function drawBall(ctx, ball) {
     }
     ctx.restore();
 }
-function calcBallRotation(ball, distance) {
+function calcBallRotation(ball) {
     const parameter = 2 * Math.PI * ball.radius;
     const dist = ball.position.x - ball.prevPosition.x;
     const rotation = dist / parameter;
