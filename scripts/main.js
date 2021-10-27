@@ -295,6 +295,12 @@ function addEventListeners() {
     appProps.canvas.addEventListener('pointerleave', onMouseLeave);
     (_a = document.getElementById('gravity-btn')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function toggleGravity() {
         appProps.gravity.isOn = !appProps.gravity.isOn;
+        if (appProps.gravity.isOn) {
+            this.classList.add('selected');
+        }
+        else {
+            this.classList.remove('selected');
+        }
     });
 }
 function setSizes() {

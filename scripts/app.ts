@@ -60,6 +60,11 @@ function addEventListeners(): void {
   document.getElementById('gravity-btn')?.addEventListener('click',
     function toggleGravity() {
       appProps.gravity.isOn = !appProps.gravity.isOn;
+      if (appProps.gravity.isOn) {
+        this.classList.add('selected');
+      } else {
+        this.classList.remove('selected');
+      }
     }
   );
 }
