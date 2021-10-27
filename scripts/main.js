@@ -3,6 +3,7 @@ class Ball {
     constructor(img, x, y, r, selected = false) {
         this.id = Ball.baseId;
         this.position = { x, y };
+        this.prevPosition = { x, y };
         this.radius = r;
         this.rotation = 0;
         this.velocity = { vX: 0, vY: 0 };
@@ -47,7 +48,7 @@ class Ball {
         if (this.selected || ball2.selected)
             return;
         if (this.checkBallCollision(ball2)) {
-            const modifierY = 0.85;
+            const modifierY = 0.95;
             const modifierX = 1;
             const velocity1 = util.getBallCollisionVelocity(this, ball2);
             const velocity2 = util.getBallCollisionVelocity(ball2, this);
@@ -357,23 +358,32 @@ function draw() {
         updateBall(ball, ellapsedTime);
     });
     fixBallCollisions(appProps.balls);
+    appProps.balls.forEach(ball => {
+        if (!ball.selected) {
+            ball.rotation += calcBallRotation(ball, 0);
+        }
+    });
     drawBall(ctx, appProps.selectedBall);
     window.requestAnimationFrame(() => { draw(); });
 }
 function updateBall(ball, ellapsedTime) {
     let { position, selected, velocity } = ball;
     if (!selected) {
+        ball.prevPosition = Object.assign({}, position);
         const halfGravity = appProps.gravity.value / 2;
         if (Math.abs(ball.velocity.vX) < halfGravity)
             ball.velocity.vX = 0;
         if (Math.abs(ball.velocity.vY) < halfGravity)
             ball.velocity.vY = 0;
+        appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
         const distX = velocity.vX * ellapsedTime;
-        ball.rotation += calcBallRotation(ball, distX);
         position.x += distX;
         position.y += velocity.vY * ellapsedTime;
         velocity.vX *= appProps.deceleration;
-        appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
+        if (ball.prevPosition.x === ball.position.x)
+            ball.velocity.vX = 0;
+        if (ball.prevPosition.y === ball.position.y)
+            ball.velocity.vY = 0;
         handleBallCollissions(ball);
         handleWallCollissions(ball);
     }
@@ -481,7 +491,8 @@ function drawBall(ctx, ball) {
 }
 function calcBallRotation(ball, distance) {
     const parameter = 2 * Math.PI * ball.radius;
-    const rotation = distance / parameter;
+    const dist = ball.position.x - ball.prevPosition.x;
+    const rotation = dist / parameter;
     return rotation * 360;
 }
 function getRelativeMousePos(evt) {

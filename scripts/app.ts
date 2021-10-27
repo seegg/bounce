@@ -145,6 +145,11 @@ function draw() {
   })
 
   fixBallCollisions(appProps.balls);
+  appProps.balls.forEach(ball => {
+    if (!ball.selected) {
+      ball.rotation += calcBallRotation(ball, 0);
+    }
+  })
   //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
 
@@ -157,19 +162,21 @@ function draw() {
 function updateBall(ball: Ball, ellapsedTime: number) {
   let { position, selected, velocity } = ball;
   if (!selected) {
-
+    ball.prevPosition = { ...position };
     const halfGravity = appProps.gravity.value / 2;
     if (Math.abs(ball.velocity.vX) < halfGravity) ball.velocity.vX = 0;
     if (Math.abs(ball.velocity.vY) < halfGravity) ball.velocity.vY = 0;
+    appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
     const distX = velocity.vX * ellapsedTime;
-    ball.rotation += calcBallRotation(ball, distX);
     position.x += distX;
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
-    appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
+    if (ball.prevPosition.x === ball.position.x) ball.velocity.vX = 0;
+    if (ball.prevPosition.y === ball.position.y) ball.velocity.vY = 0;
 
     handleBallCollissions(ball);
     handleWallCollissions(ball);
+    // ball.rotation += calcBallRotation(ball, distX);
   }
 }
 /**
@@ -304,7 +311,8 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
 
 function calcBallRotation(ball: Ball, distance: number): number {
   const parameter = 2 * Math.PI * ball.radius;
-  const rotation = distance / parameter;
+  const dist = ball.position.x - ball.prevPosition.x;
+  const rotation = dist / parameter;
   return rotation * 360;
 }
 
