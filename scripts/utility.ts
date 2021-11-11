@@ -175,6 +175,18 @@ const util = (function utilityFunctions() {
     return angleBetween2DVector(mid.x - start.x, mid.y - start.y, end.x - mid.x, end.y - mid.y);
   }
 
+
+  /**
+   * Return the longest vertical distance in the intersection between two circles.
+   * Return 0 if no intersection.
+   */
+  function maxYDistBetweenTwoCircleIntersect(circle1: Circle, circle2: Circle): number {
+    const distBetweenCenters = distanceBetween2Points({ x: circle1.x, y: circle1.y }, { x: circle2.x, y: circle2.y });
+    if (distBetweenCenters >= circle1.r + circle2.r) return 0;
+    const midPointBetweenCircles = { x: (circle1.x + circle2.x) / 2, y: (circle1.y + circle2.y) / 2 };
+    return 0;
+  }
+
   return {
     calculateCollisionVelocity,
     createCircleImg,
