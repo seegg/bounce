@@ -34,16 +34,18 @@ const appProps = {
 
   appProps.canvas.width = 300;
 
+  const intersects = util.circleLineIntersect({ x: -2, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1, r: 2 });
+  console.log(intersects, 'stuff');
   //Load all the images in the image list
-  Promise.all(
-    imageList.map(img => addImage(
-      img, imageCache, 50)
-    )
-  ).then(_ => {
-    appProps.currentTime = new Date().getTime();
-    // window.requestAnimationFrame(draw);
-    draw();
-  });
+  // Promise.all(
+  //   imageList.map(img => addImage(
+  //     img, imageCache, 50)
+  //   )
+  // ).then(_ => {
+  //   appProps.currentTime = new Date().getTime();
+  //   // window.requestAnimationFrame(draw);
+  //   draw();
+  // });
 })();
 
 /**

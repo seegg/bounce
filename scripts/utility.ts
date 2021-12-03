@@ -175,16 +175,51 @@ const util = (function utilityFunctions() {
     return angleBetween2DVector(mid.x - start.x, mid.y - start.y, end.x - mid.x, end.y - mid.y);
   }
 
+  //https://mathworld.wolfram.com/Circle-LineIntersection.html
 
   /**
-   * Return the longest vertical distance in the intersection between two circles.
+   * Return the biggest vertical distance in the intersection between two circles.
    * Return 0 if no intersection.
    */
-  function maxYDistBetweenTwoCircleIntersect(circle1: Circle, circle2: Circle): number {
+  function maxIntersectHeight(circle1: Circle, circle2: Circle): number {
     const distBetweenCenters = distanceBetween2Points({ x: circle1.x, y: circle1.y }, { x: circle2.x, y: circle2.y });
     if (distBetweenCenters >= circle1.r + circle2.r) return 0;
     const midPointBetweenCircles = { x: (circle1.x + circle2.x) / 2, y: (circle1.y + circle2.y) / 2 };
     return 0;
+  }
+
+  /**
+   * @returns The number of points and the points themselves where the line intersects with the circle. No intersection 0, tangent 1 else 2.
+   *
+   */
+  function circleLineIntersect(lineStart: Point, lineEnd: Point, circle: Circle): [number, Point | null, Point | null] {
+    //translate the coordinates with the center of the circle as origin.
+
+    const dx = lineEnd.x - lineStart.x;
+    const dy = lineEnd.y - lineStart.y;
+    const dr = distanceBetween2Points(lineStart, lineEnd);
+    const D = (lineStart.x * lineEnd.y) - (lineEnd.x * lineStart.y);
+    const sgnDy = dy < 0 ? -1 : 1;
+    const rSquared = Math.pow(circle.r, 2);
+    const drSquared = Math.pow(dr, 2);
+    const DSquared = Math.pow(D, 2);
+    console.log(dx, dy);
+    const discriminant = rSquared * drSquared - DSquared;
+    const numberOfIntersections = discriminant < 0 ? 0 : discriminant === 0 ? 1 : 2;
+    console.log(discriminant);
+    if (discriminant < 0) return [numberOfIntersections, null, null];
+
+    const sqrtResult = Math.sqrt(discriminant);
+
+    const x1 = ((D * dy) + (sgnDy * dx * sqrtResult)) / drSquared;
+    const y1 = ((-1 * D * dx) + (Math.abs(dy) * sqrtResult)) / drSquared;
+
+    const x2 = ((D * dy) - (sgnDy * dx * sqrtResult)) / drSquared;
+    const y2 = ((-1 * D * dx) - (Math.abs(dy) * sqrtResult)) / drSquared;
+
+    //translate the points back to acutal coordinate system.
+
+    return [numberOfIntersections, { x: x1, y: y1 }, discriminant === 0 ? null : { x: x2, y: y2 }];
   }
 
   return {
@@ -195,6 +230,7 @@ const util = (function utilityFunctions() {
     xyDiffBetweenPoints,
     angleBetween2DVector,
     angleBetween3Points,
-    distanceBetween2Points
+    distanceBetween2Points,
+    circleLineIntersect
   };
 })();
