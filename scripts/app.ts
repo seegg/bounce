@@ -34,7 +34,7 @@ const appProps = {
 
   appProps.canvas.width = 300;
 
-  const intersects = util.circleLineIntersect({ x: -2, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1, r: 2 });
+  const intersects = util.circleLineIntersect({ x: -1, y: 3 }, { x: 1, y: 3 }, { x: 1, y: 1, r: 2 });
   console.log(intersects, 'stuff');
   //Load all the images in the image list
   // Promise.all(

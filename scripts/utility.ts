@@ -193,12 +193,13 @@ const util = (function utilityFunctions() {
    *
    */
   function circleLineIntersect(lineStart: Point, lineEnd: Point, circle: Circle): [number, Point | null, Point | null] {
-    //translate the coordinates with the center of the circle as origin.
-
-    const dx = lineEnd.x - lineStart.x;
-    const dy = lineEnd.y - lineStart.y;
-    const dr = distanceBetween2Points(lineStart, lineEnd);
-    const D = (lineStart.x * lineEnd.y) - (lineEnd.x * lineStart.y);
+    //translate the coordinates of the line with the center of the circle as origin.
+    const translatedStart = { x: lineStart.x - circle.x, y: lineStart.y - circle.y };
+    const translatedEnd = { x: lineEnd.x - circle.y, y: lineEnd.y - circle.y };
+    const dx = translatedEnd.x - translatedStart.x;
+    const dy = translatedEnd.y - translatedStart.y;
+    const dr = distanceBetween2Points(translatedStart, translatedEnd);
+    const D = (translatedStart.x * translatedEnd.y) - (translatedEnd.x * translatedStart.y);
     const sgnDy = dy < 0 ? -1 : 1;
     const rSquared = Math.pow(circle.r, 2);
     const drSquared = Math.pow(dr, 2);
@@ -217,9 +218,10 @@ const util = (function utilityFunctions() {
     const x2 = ((D * dy) - (sgnDy * dx * sqrtResult)) / drSquared;
     const y2 = ((-1 * D * dx) - (Math.abs(dy) * sqrtResult)) / drSquared;
 
-    //translate the points back to acutal coordinate system.
+    //translate the line back to its original coordinates.
 
-    return [numberOfIntersections, { x: x1, y: y1 }, discriminant === 0 ? null : { x: x2, y: y2 }];
+    return [numberOfIntersections, { x: x1 + circle.x, y: y1 + circle.y },
+      discriminant === 0 ? null : { x: x2 + circle.x, y: y2 + circle.y }];
   }
 
   return {

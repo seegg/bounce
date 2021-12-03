@@ -178,10 +178,12 @@ const util = (function utilityFunctions() {
         return 0;
     }
     function circleLineIntersect(lineStart, lineEnd, circle) {
-        const dx = lineEnd.x - lineStart.x;
-        const dy = lineEnd.y - lineStart.y;
-        const dr = distanceBetween2Points(lineStart, lineEnd);
-        const D = (lineStart.x * lineEnd.y) - (lineEnd.x * lineStart.y);
+        const translatedStart = { x: lineStart.x - circle.x, y: lineStart.y - circle.y };
+        const translatedEnd = { x: lineEnd.x - circle.y, y: lineEnd.y - circle.y };
+        const dx = translatedEnd.x - translatedStart.x;
+        const dy = translatedEnd.y - translatedStart.y;
+        const dr = distanceBetween2Points(translatedStart, translatedEnd);
+        const D = (translatedStart.x * translatedEnd.y) - (translatedEnd.x * translatedStart.y);
         const sgnDy = dy < 0 ? -1 : 1;
         const rSquared = Math.pow(circle.r, 2);
         const drSquared = Math.pow(dr, 2);
@@ -197,7 +199,8 @@ const util = (function utilityFunctions() {
         const y1 = ((-1 * D * dx) + (Math.abs(dy) * sqrtResult)) / drSquared;
         const x2 = ((D * dy) - (sgnDy * dx * sqrtResult)) / drSquared;
         const y2 = ((-1 * D * dx) - (Math.abs(dy) * sqrtResult)) / drSquared;
-        return [numberOfIntersections, { x: x1, y: y1 }, discriminant === 0 ? null : { x: x2, y: y2 }];
+        return [numberOfIntersections, { x: x1 + circle.x, y: y1 + circle.y },
+            discriminant === 0 ? null : { x: x2 + circle.x, y: y2 + circle.y }];
     }
     return {
         calculateCollisionVelocity,
@@ -309,7 +312,7 @@ const appProps = {
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     setSizes();
     appProps.canvas.width = 300;
-    const intersects = util.circleLineIntersect({ x: -2, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1, r: 2 });
+    const intersects = util.circleLineIntersect({ x: -1, y: 3 }, { x: 1, y: 3 }, { x: 1, y: 1, r: 2 });
     console.log(intersects, 'stuff');
 })();
 function addEventListeners() {
