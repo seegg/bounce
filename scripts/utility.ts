@@ -175,21 +175,39 @@ const util = (function utilityFunctions() {
     return angleBetween2DVector(mid.x - start.x, mid.y - start.y, end.x - mid.x, end.y - mid.y);
   }
 
-  //https://mathworld.wolfram.com/Circle-LineIntersection.html
-
   /**
-   * Return the biggest vertical distance in the intersection between two circles.
-   * Return 0 if no intersection.
+   * Return the maximum vertical distance within the intersection between two circles
+   * by drawing calculating the intersect of a line down the middle of the intersection with
+   * the two circles.
+   * Return 0 if no intersection or if the circles intersects at only one point.
    */
   function maxIntersectHeight(circle1: Circle, circle2: Circle): number {
     const distBetweenCenters = distanceBetween2Points({ x: circle1.x, y: circle1.y }, { x: circle2.x, y: circle2.y });
-    if (distBetweenCenters >= circle1.r + circle2.r) return 0;
-    const midPointBetweenCircles = { x: (circle1.x + circle2.x) / 2, y: (circle1.y + circle2.y) / 2 };
+    let overlappingDistance = distBetweenCenters - circle1.r - circle2.r;
+    if (overlappingDistance >= 0) return 0;
+
+    //The start and end point of the line use for calculating intersection.
+    //The start point is the mid point of the overlapping region of the two circles.
+    //The end point is created by moving 1 unit on the y axis from the start point.
+    //The line is treated as extending infinitely in either directions for the purpose of the calculation.
+
+    const midIntersectDistance = circle1.r + (overlappingDistance * 0.5);
+    const distRatio = midIntersectDistance / distBetweenCenters;
+    const startPoint = {
+      x: ((1 - distRatio) * circle1.x) + (distRatio * circle2.x),
+      y: ((1 - distRatio) * circle1.y) + (distRatio * circle2.y)
+    };
+
+    const endPoint = { ...startPoint, y: startPoint.y + 1 };
+    const circle1Intersects = circleLineIntersect(startPoint, endPoint, circle1);
+    const circle2Intersects = circleLineIntersect(startPoint, endPoint, circle2);
+
     return 0;
   }
 
   /**
-   * @returns The number of points and the points themselves where the line intersects with the circle. No intersection 0, tangent 1 else 2.
+   * @returns The number of points and the points themselves where the line intersects with the circle. 
+   * No intersection 0, tangent 1 else 2.
    *
    */
   function circleLineIntersect(lineStart: Point, lineEnd: Point, circle: Circle): [number, Point | null, Point | null] {
@@ -233,6 +251,7 @@ const util = (function utilityFunctions() {
     angleBetween2DVector,
     angleBetween3Points,
     distanceBetween2Points,
-    circleLineIntersect
+    circleLineIntersect,
+    maxIntersectHeight
   };
 })();

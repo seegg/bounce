@@ -172,9 +172,18 @@ const util = (function utilityFunctions() {
     }
     function maxIntersectHeight(circle1, circle2) {
         const distBetweenCenters = distanceBetween2Points({ x: circle1.x, y: circle1.y }, { x: circle2.x, y: circle2.y });
-        if (distBetweenCenters >= circle1.r + circle2.r)
+        let overlappingDistance = distBetweenCenters - circle1.r - circle2.r;
+        if (overlappingDistance >= 0)
             return 0;
-        const midPointBetweenCircles = { x: (circle1.x + circle2.x) / 2, y: (circle1.y + circle2.y) / 2 };
+        const midIntersectDistance = circle1.r + (overlappingDistance * 0.5);
+        const distRatio = midIntersectDistance / distBetweenCenters;
+        const startPoint = {
+            x: ((1 - distRatio) * circle1.x) + (distRatio * circle2.x),
+            y: ((1 - distRatio) * circle1.y) + (distRatio * circle2.y)
+        };
+        const endPoint = Object.assign(Object.assign({}, startPoint), { y: startPoint.y + 1 });
+        const circle1Intersects = circleLineIntersect(startPoint, endPoint, circle1);
+        const circle2Intersects = circleLineIntersect(startPoint, endPoint, circle2);
         return 0;
     }
     function circleLineIntersect(lineStart, lineEnd, circle) {
@@ -211,7 +220,8 @@ const util = (function utilityFunctions() {
         angleBetween2DVector,
         angleBetween3Points,
         distanceBetween2Points,
-        circleLineIntersect
+        circleLineIntersect,
+        maxIntersectHeight
     };
 })();
 const imageList = (function () {
@@ -312,8 +322,10 @@ const appProps = {
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     setSizes();
     appProps.canvas.width = 300;
-    const intersects = util.circleLineIntersect({ x: -1, y: 3 }, { x: 1, y: 3 }, { x: 1, y: 1, r: 2 });
-    console.log(intersects, 'stuff');
+    Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
+        appProps.currentTime = new Date().getTime();
+        draw();
+    });
 })();
 function addEventListeners() {
     var _a;
