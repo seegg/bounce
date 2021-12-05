@@ -213,11 +213,14 @@ const util = (function utilityFunctions() {
   function circleLineIntersect(lineStart: Point, lineEnd: Point, circle: Circle): [number, Point | null, Point | null] {
     //translate the coordinates of the line with the center of the circle as origin.
     const translatedStart = { x: lineStart.x - circle.x, y: lineStart.y - circle.y };
-    const translatedEnd = { x: lineEnd.x - circle.y, y: lineEnd.y - circle.y };
+    const translatedEnd = { x: lineEnd.x - circle.x, y: lineEnd.y - circle.y };
+
+    console.log(translatedStart, translatedEnd);
     const dx = translatedEnd.x - translatedStart.x;
     const dy = translatedEnd.y - translatedStart.y;
     const dr = distanceBetween2Points(translatedStart, translatedEnd);
     const D = (translatedStart.x * translatedEnd.y) - (translatedEnd.x * translatedStart.y);
+
     const sgnDy = dy < 0 ? -1 : 1;
     const rSquared = Math.pow(circle.r, 2);
     const drSquared = Math.pow(dr, 2);
@@ -227,19 +230,26 @@ const util = (function utilityFunctions() {
     const numberOfIntersections = discriminant < 0 ? 0 : discriminant === 0 ? 1 : 2;
     console.log(discriminant);
     if (discriminant < 0) return [numberOfIntersections, null, null];
-
+    console.log('what');
     const sqrtResult = Math.sqrt(discriminant);
 
-    const x1 = ((D * dy) + (sgnDy * dx * sqrtResult)) / drSquared;
-    const y1 = ((-1 * D * dx) + (Math.abs(dy) * sqrtResult)) / drSquared;
 
-    const x2 = ((D * dy) - (sgnDy * dx * sqrtResult)) / drSquared;
-    const y2 = ((-1 * D * dx) - (Math.abs(dy) * sqrtResult)) / drSquared;
+    //calculat intersecting points and translate it back to original corrodinates.
+    const x1 = ((D * dy) + (sgnDy * dx * sqrtResult)) / drSquared + circle.x;
+    const y1 = ((-1 * D * dx) + (Math.abs(dy) * sqrtResult)) / drSquared + circle.y;
 
-    //translate the line back to its original coordinates.
+    const x2 = ((D * dy) - (sgnDy * dx * sqrtResult)) / drSquared + circle.x;
+    const y2 = ((-1 * D * dx) - (Math.abs(dy) * sqrtResult)) / drSquared + circle.y;
 
-    return [numberOfIntersections, { x: x1 + circle.x, y: y1 + circle.y },
-      discriminant === 0 ? null : { x: x2 + circle.x, y: y2 + circle.y }];
+    let intersect1 = { x: x1, y: y1 };
+    let intersect2 = { x: x2, y: y2 };
+
+    if (x1 > x2 || (x1 === x2 && y1 > y2)) {
+      intersect2 = { ...intersect1 };
+      intersect1 = { x: x2, y: y2 };
+    }
+
+    return [numberOfIntersections, intersect1, discriminant === 0 ? null : intersect2];
   }
 
   return {

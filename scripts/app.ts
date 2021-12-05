@@ -33,17 +33,18 @@ const appProps = {
   setSizes();
 
   appProps.canvas.width = 300;
-
+  const test = util.circleLineIntersect({ x: 4, y: 3 }, { x: 5, y: 3 }, { x: 6, y: 3, r: 3 });
+  console.log(test);
   //Load all the images in the image list
-  Promise.all(
-    imageList.map(img => addImage(
-      img, imageCache, 50)
-    )
-  ).then(_ => {
-    appProps.currentTime = new Date().getTime();
-    // window.requestAnimationFrame(draw);
-    draw();
-  });
+  // Promise.all(
+  //   imageList.map(img => addImage(
+  //     img, imageCache, 50)
+  //   )
+  // ).then(_ => {
+  //   appProps.currentTime = new Date().getTime();
+  //   // window.requestAnimationFrame(draw);
+  //   draw();
+  // });
 })();
 
 /**
