@@ -176,8 +176,8 @@ const util = (function utilityFunctions() {
   }
 
   /**
-   * Return the maximum vertical distance within the intersection between two circles
-   * by drawing calculating the intersect of a line down the middle of the intersection with
+   * Return the maximum VERTICAL distance within the intersection between two circles
+   * by calculating the intersect of a line down the middle of the intersection with
    * the two circles.
    * Return 0 if no intersection or if the circles intersects at only one point.
    */
@@ -207,6 +207,40 @@ const util = (function utilityFunctions() {
     const yIntersects = [c1Intersect1!.y, c1Intersec2!.y, c2Intersect1!.y, c2Intersect2!.y].sort();
 
     return yIntersects[3] - yIntersects[2];
+  }
+
+  /**
+   * Return the maximum HORIZONTAL distance within the intersection between two circles
+   * by calculating the intersect of a line across the middle of the intersection with
+   * the two circles.
+   * Return 0 if no intersection or if the circles intersects at only one point.
+   */
+  function maxIntersectWidth(circle1: Circle, circle2: Circle): number {
+    const distBetweenCenters = distanceBetween2Points({ x: circle1.x, y: circle1.y }, { x: circle2.x, y: circle2.y });
+    let overlappingDistance = distBetweenCenters - circle1.r - circle2.r;
+    if (overlappingDistance >= 0) return 0;
+
+    //The start and end point of the line use for calculating intersection.
+    //The start point is the mid point of the overlapping region of the two circles.
+    //The end point is created by moving 1 unit on the x axis from the start point.
+    //The line is treated as extending infinitely in either directions for the purpose of the calculation.
+
+    const midIntersectDistance = circle1.r + (overlappingDistance * 0.5);
+    const distRatio = midIntersectDistance / distBetweenCenters;
+    const startPoint = {
+      x: ((1 - distRatio) * circle1.x) + (distRatio * circle2.x),
+      y: ((1 - distRatio) * circle1.y) + (distRatio * circle2.y)
+    };
+
+    const endPoint = { ...startPoint, x: startPoint.x + 1 };
+    const [c1IntersecCount, c1Intersect1, c1Intersec2] = circleLineIntersect(startPoint, endPoint, circle1);
+    const [c2IntersectCount, c2Intersect1, c2Intersect2] = circleLineIntersect(startPoint, endPoint, circle2);
+
+    //sort the x axis positions of intersection and use the 2 middle values to calculate the
+    //max length of the overlap.
+    const xIntersects = [c1Intersect1!.x, c1Intersec2!.x, c2Intersect1!.x, c2Intersect2!.x].sort();
+
+    return xIntersects[3] - xIntersects[2];
   }
 
   /**
@@ -266,6 +300,7 @@ const util = (function utilityFunctions() {
     angleBetween3Points,
     distanceBetween2Points,
     circleLineIntersect,
-    maxIntersectHeight
+    maxIntersectHeight,
+    maxIntersectWidth
   };
 })();

@@ -187,6 +187,23 @@ const util = (function utilityFunctions() {
         const yIntersects = [c1Intersect1.y, c1Intersec2.y, c2Intersect1.y, c2Intersect2.y].sort();
         return yIntersects[3] - yIntersects[2];
     }
+    function maxIntersectWidth(circle1, circle2) {
+        const distBetweenCenters = distanceBetween2Points({ x: circle1.x, y: circle1.y }, { x: circle2.x, y: circle2.y });
+        let overlappingDistance = distBetweenCenters - circle1.r - circle2.r;
+        if (overlappingDistance >= 0)
+            return 0;
+        const midIntersectDistance = circle1.r + (overlappingDistance * 0.5);
+        const distRatio = midIntersectDistance / distBetweenCenters;
+        const startPoint = {
+            x: ((1 - distRatio) * circle1.x) + (distRatio * circle2.x),
+            y: ((1 - distRatio) * circle1.y) + (distRatio * circle2.y)
+        };
+        const endPoint = Object.assign(Object.assign({}, startPoint), { x: startPoint.x + 1 });
+        const [c1IntersecCount, c1Intersect1, c1Intersec2] = circleLineIntersect(startPoint, endPoint, circle1);
+        const [c2IntersectCount, c2Intersect1, c2Intersect2] = circleLineIntersect(startPoint, endPoint, circle2);
+        const xIntersects = [c1Intersect1.x, c1Intersec2.x, c2Intersect1.x, c2Intersect2.x].sort();
+        return xIntersects[3] - xIntersects[2];
+    }
     function circleLineIntersect(lineStart, lineEnd, circle) {
         const translatedStart = { x: lineStart.x - circle.x, y: lineStart.y - circle.y };
         const translatedEnd = { x: lineEnd.x - circle.x, y: lineEnd.y - circle.y };
@@ -229,7 +246,8 @@ const util = (function utilityFunctions() {
         angleBetween3Points,
         distanceBetween2Points,
         circleLineIntersect,
-        maxIntersectHeight
+        maxIntersectHeight,
+        maxIntersectWidth
     };
 })();
 const imageList = (function () {
