@@ -48,7 +48,7 @@ class Ball {
         if (this.selected || ball2.selected)
             return;
         if (this.checkBallCollision(ball2)) {
-            const modifierY = 0.95;
+            const modifierY = 0.90;
             const modifierX = 1;
             const velocity1 = util.getBallCollisionVelocity(this, ball2);
             const velocity2 = util.getBallCollisionVelocity(ball2, this);
@@ -188,7 +188,8 @@ const util = (function utilityFunctions() {
         const [c1IntersecCount, c1Intersect1, c1Intersec2] = circleLineIntersect(startPoint, endPoint, circle1);
         const [c2IntersectCount, c2Intersect1, c2Intersect2] = circleLineIntersect(startPoint, endPoint, circle2);
         const yIntersects = [c1Intersect1.y, c1Intersec2.y, c2Intersect1.y, c2Intersect2.y].sort();
-        return yIntersects[3] - yIntersects[2];
+        console.log(yIntersects);
+        return yIntersects[2] - yIntersects[1];
     }
     function maxIntersectWidth(circle1, circle2) {
         const distBetweenCenters = distanceBetween2Points({ x: circle1.x, y: circle1.y }, { x: circle2.x, y: circle2.y });
@@ -205,12 +206,11 @@ const util = (function utilityFunctions() {
         const [c1IntersecCount, c1Intersect1, c1Intersec2] = circleLineIntersect(startPoint, endPoint, circle1);
         const [c2IntersectCount, c2Intersect1, c2Intersect2] = circleLineIntersect(startPoint, endPoint, circle2);
         const xIntersects = [c1Intersect1.x, c1Intersec2.x, c2Intersect1.x, c2Intersect2.x].sort();
-        return xIntersects[3] - xIntersects[2];
+        return xIntersects[2] - xIntersects[1];
     }
     function circleLineIntersect(lineStart, lineEnd, circle) {
         const translatedStart = { x: lineStart.x - circle.x, y: lineStart.y - circle.y };
         const translatedEnd = { x: lineEnd.x - circle.x, y: lineEnd.y - circle.y };
-        console.log(translatedStart, translatedEnd);
         const dx = translatedEnd.x - translatedStart.x;
         const dy = translatedEnd.y - translatedStart.y;
         const dr = distanceBetween2Points(translatedStart, translatedEnd);
@@ -219,13 +219,10 @@ const util = (function utilityFunctions() {
         const rSquared = Math.pow(circle.r, 2);
         const drSquared = Math.pow(dr, 2);
         const DSquared = Math.pow(D, 2);
-        console.log(dx, dy);
         const discriminant = rSquared * drSquared - DSquared;
         const numberOfIntersections = discriminant < 0 ? 0 : discriminant === 0 ? 1 : 2;
-        console.log(discriminant);
         if (discriminant < 0)
             return [numberOfIntersections, null, null];
-        console.log('what');
         const sqrtResult = Math.sqrt(discriminant);
         const x1 = ((D * dy) + (sgnDy * dx * sqrtResult)) / drSquared + circle.x;
         const y1 = ((-1 * D * dx) + (Math.abs(dy) * sqrtResult)) / drSquared + circle.y;
@@ -323,7 +320,7 @@ const appProps = {
     count: 0,
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
-    gravity: { value: 0.01, isOn: false },
+    gravity: { value: 0.01, isOn: true },
     balls: [],
     selectedImgEle: null,
     selectedBall: null,
@@ -351,6 +348,12 @@ const appProps = {
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     setSizes();
     appProps.canvas.width = 300;
+    const test = util.maxIntersectHeight({ x: 5, y: 5, r: 1 }, { x: 4, y: 4, r: 1 });
+    console.log(test, 'fuck');
+    Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
+        appProps.currentTime = new Date().getTime();
+        draw();
+    });
 })();
 function addEventListeners() {
     var _a;
@@ -524,17 +527,17 @@ function fixBallCollisions(balls) {
             if (ball2.selected)
                 return;
             const overlap = ball.getOverlap(ball2);
-            const distInY = ball.position.y - ball2.position.y;
+            const distanceOnYAxis = ball.position.y - ball2.position.y;
             if (ball.id !== ball2.id && overlap > 0.03) {
                 const [x, y] = util.xyDiffBetweenPoints(ball.position, ball2.position);
                 const total = Math.abs(x) + Math.abs(y);
                 const xRatio = (x / total) * overlap;
                 const yRatio = (y / total) * overlap;
-                if (distInY === 0) {
+                if (distanceOnYAxis === 0) {
                     ball.position.x -= 0.5 * overlap;
                     ball2.position.x += 0.5 * overlap;
                 }
-                else if (distInY > 0) {
+                else if (distanceOnYAxis > 0) {
                     ball2.position.x += xRatio;
                     ball2.position.y += yRatio;
                 }

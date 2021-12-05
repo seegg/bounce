@@ -205,8 +205,8 @@ const util = (function utilityFunctions() {
     //sort the y axis positions of intersection and use the 2 middle values to calculate the
     //max length of the overlap.
     const yIntersects = [c1Intersect1!.y, c1Intersec2!.y, c2Intersect1!.y, c2Intersect2!.y].sort();
-
-    return yIntersects[3] - yIntersects[2];
+    console.log(yIntersects);
+    return yIntersects[2] - yIntersects[1];
   }
 
   /**
@@ -219,7 +219,6 @@ const util = (function utilityFunctions() {
     const distBetweenCenters = distanceBetween2Points({ x: circle1.x, y: circle1.y }, { x: circle2.x, y: circle2.y });
     let overlappingDistance = distBetweenCenters - circle1.r - circle2.r;
     if (overlappingDistance >= 0) return 0;
-
     //The start and end point of the line use for calculating intersection.
     //The start point is the mid point of the overlapping region of the two circles.
     //The end point is created by moving 1 unit on the x axis from the start point.
@@ -239,8 +238,7 @@ const util = (function utilityFunctions() {
     //sort the x axis positions of intersection and use the 2 middle values to calculate the
     //max length of the overlap.
     const xIntersects = [c1Intersect1!.x, c1Intersec2!.x, c2Intersect1!.x, c2Intersect2!.x].sort();
-
-    return xIntersects[3] - xIntersects[2];
+    return xIntersects[2] - xIntersects[1];
   }
 
   /**
@@ -253,7 +251,7 @@ const util = (function utilityFunctions() {
     const translatedStart = { x: lineStart.x - circle.x, y: lineStart.y - circle.y };
     const translatedEnd = { x: lineEnd.x - circle.x, y: lineEnd.y - circle.y };
 
-    console.log(translatedStart, translatedEnd);
+    // console.log(translatedStart, translatedEnd);
     const dx = translatedEnd.x - translatedStart.x;
     const dy = translatedEnd.y - translatedStart.y;
     const dr = distanceBetween2Points(translatedStart, translatedEnd);
@@ -263,12 +261,12 @@ const util = (function utilityFunctions() {
     const rSquared = Math.pow(circle.r, 2);
     const drSquared = Math.pow(dr, 2);
     const DSquared = Math.pow(D, 2);
-    console.log(dx, dy);
+    // console.log(dx, dy);
     const discriminant = rSquared * drSquared - DSquared;
     const numberOfIntersections = discriminant < 0 ? 0 : discriminant === 0 ? 1 : 2;
-    console.log(discriminant);
+    // console.log(discriminant);
     if (discriminant < 0) return [numberOfIntersections, null, null];
-    console.log('what');
+    // console.log('what');
     const sqrtResult = Math.sqrt(discriminant);
 
 
