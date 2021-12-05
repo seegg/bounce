@@ -60,6 +60,9 @@ class Ball {
             ball2.velocity = velocity2;
         }
     }
+    getCircle() {
+        return Object.assign(Object.assign({}, this.position), { r: this.radius });
+    }
 }
 Ball.baseId = 1;
 const util = (function utilityFunctions() {

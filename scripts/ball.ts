@@ -95,4 +95,9 @@ class Ball {
     }
   }
 
+  //return circle representation of the ball.
+  getCircle() {
+    return { ...this.position, r: this.radius };
+  }
+
 }
