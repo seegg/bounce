@@ -199,10 +199,14 @@ const util = (function utilityFunctions() {
     };
 
     const endPoint = { ...startPoint, y: startPoint.y + 1 };
-    const circle1Intersects = circleLineIntersect(startPoint, endPoint, circle1);
-    const circle2Intersects = circleLineIntersect(startPoint, endPoint, circle2);
+    const [c1IntersecCount, c1Intersect1, c1Intersec2] = circleLineIntersect(startPoint, endPoint, circle1);
+    const [c2IntersectCount, c2Intersect1, c2Intersect2] = circleLineIntersect(startPoint, endPoint, circle2);
 
-    return 0;
+    //sort the y axis positions of intersection and use the 2 middle values to calculate the
+    //max length of the overlap.
+    const yIntersects = [c1Intersect1!.y, c1Intersec2!.y, c2Intersect1!.y, c2Intersect2!.y].sort();
+
+    return yIntersects[3] - yIntersects[2];
   }
 
   /**

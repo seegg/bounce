@@ -182,9 +182,10 @@ const util = (function utilityFunctions() {
             y: ((1 - distRatio) * circle1.y) + (distRatio * circle2.y)
         };
         const endPoint = Object.assign(Object.assign({}, startPoint), { y: startPoint.y + 1 });
-        const circle1Intersects = circleLineIntersect(startPoint, endPoint, circle1);
-        const circle2Intersects = circleLineIntersect(startPoint, endPoint, circle2);
-        return 0;
+        const [c1IntersecCount, c1Intersect1, c1Intersec2] = circleLineIntersect(startPoint, endPoint, circle1);
+        const [c2IntersectCount, c2Intersect1, c2Intersect2] = circleLineIntersect(startPoint, endPoint, circle2);
+        const yIntersects = [c1Intersect1.y, c1Intersec2.y, c2Intersect1.y, c2Intersect2.y].sort();
+        return yIntersects[3] - yIntersects[2];
     }
     function circleLineIntersect(lineStart, lineEnd, circle) {
         const translatedStart = { x: lineStart.x - circle.x, y: lineStart.y - circle.y };
@@ -329,8 +330,6 @@ const appProps = {
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     setSizes();
     appProps.canvas.width = 300;
-    const test = util.circleLineIntersect({ x: 4, y: 3 }, { x: 5, y: 3 }, { x: 6, y: 3, r: 3 });
-    console.log(test);
 })();
 function addEventListeners() {
     var _a;
