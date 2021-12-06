@@ -13,6 +13,7 @@ const appProps = {
   },
   selectedAngleThreshold: 10,
   mouseMoveDistThreshold: 10,
+  velocityThreshould: 0.05,
   overlapThreshold: 0.05,
   wallModifiers: { left: 1.1, right: 1.1, top: 1, bottom: 1.8 },
   currentTime: 0,
@@ -165,7 +166,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
   let { position, selected, velocity } = ball;
   if (!selected) {
     ball.prevPosition = { ...position };
-    const halfGravity = appProps.gravity.value / 2;
+    const halfGravity = appProps.gravity.value / 3;
     if (Math.abs(ball.velocity.vX) < halfGravity) ball.velocity.vX = 0;
     if (Math.abs(ball.velocity.vY) < halfGravity) ball.velocity.vY = 0;
     appProps.gravity.isOn && (velocity.vY += appProps.gravity.value);
@@ -173,9 +174,10 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     position.x += distX;
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
-    if (ball.prevPosition.x === ball.position.x) ball.velocity.vX = 0;
-    if (ball.prevPosition.y === ball.position.y) ball.velocity.vY = 0;
-
+    // if (ball.prevPosition.x === ball.position.x) ball.velocity.vX = 0;
+    // if (ball.prevPosition.y === ball.position.y) ball.velocity.vY = 0;
+    // if (Math.abs(ball.prevPosition.x - ball.position.x) < 0.1) ball.velocity.vX = 0;
+    // if (Math.abs(ball.prevPosition.y - ball.position.y) < 0.1) ball.velocity.vY = 0;
     handleBallCollissions(ball);
     handleWallCollissions(ball);
   }
