@@ -28,14 +28,10 @@ const appProps = {
 (function init(): void {
   addEventListeners();
   //set initial canvas dimensions
-  appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
+  appProps.canvas.width = Math.min(320, window.innerWidth - appProps.canvasHorizontalGap);
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-  setSizes();
-
-  appProps.canvas.width = 300;
+  // setSizes();
   // Load all the images in the image list
-  const test = util.maxIntersectHeight({ x: 5, y: 5, r: 1 }, { x: 4, y: 4, r: 1 });
-  console.log(test, 'fuck');
   Promise.all(
     imageList.map(img => addImage(
       img, imageCache, 50)
@@ -220,12 +216,14 @@ function handleWallCollissions(ball: Ball): void {
   if (position.x + radius > canvas.width) {
     position.x = canvas.width - radius;
     velocity.vX < 0 || (ball.velocity.vX *= -1 / wallModifiers['right']);
+    if (Math.abs(velocity.vX) < 0.05) velocity.vX = 0;
   }
 
   //left
   if (position.x - radius < 0) {
     position.x = radius;
     velocity.vX > 0 || (ball.velocity.vX *= -1 / wallModifiers['left']);
+    if (Math.abs(velocity.vX) < 0.05) velocity.vX = 0;
   }
 
   //bottom
@@ -272,6 +270,7 @@ function fixBallCollisions(balls: Ball[]) {
     !ball.selected && sortedBallList.forEach(ball2 => {
       if (ball2.selected) return;
       const overlap = ball.getOverlap(ball2);
+      if (overlap < appProps.overlapThreshold) return;
       const distanceOnYAxis = ball.position.y - ball2.position.y;
       if (ball.id !== ball2.id && overlap > 0.03) {
         const [x, y] = util.xyDiffBetweenPoints(ball.position, ball2.position);
@@ -281,16 +280,12 @@ function fixBallCollisions(balls: Ball[]) {
         if (distanceOnYAxis === 0) {
           ball.position.x -= 0.5 * overlap;
           ball2.position.x += 0.5 * overlap;
-
-        } else if (distanceOnYAxis > 0) {
-          ball2.position.x += xRatio;
-          ball2.position.y += yRatio;
         } else {
-          ball.position.x += xRatio;
-          ball.position.y += yRatio;
-
-          // const intersectHeight = util.maxIntersectHeight(ball.getCircle(), ball2.getCircle());
-          // distanceOnYAxis > 0 ? ball2.position.y += intersectHeight : ball.position.y += intersectHeight;
+          distanceOnYAxis > 0 ?
+            (ball2.position.x += xRatio,
+              ball2.position.y += yRatio) :
+            (ball.position.x += xRatio,
+              ball.position.y += yRatio);
         }
       }
     })

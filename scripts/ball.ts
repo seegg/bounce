@@ -82,7 +82,7 @@ class Ball {
   ballBounce(ball2: Ball): void {
     if (this.selected || ball2.selected) return;
     if (this.checkBallCollision(ball2)) {
-      const modifierY = 0.90;
+      const modifierY = 1;
       const modifierX = 1;
       const velocity1 = util.getBallCollisionVelocity(this, ball2);
       const velocity2 = util.getBallCollisionVelocity(ball2, this);

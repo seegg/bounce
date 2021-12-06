@@ -45,7 +45,8 @@ const util = (function utilityFunctions() {
   }
   /**
    * returns the difference between x and y axis of two points
-   * from origin to destination
+   * from origin to destination.
+   * Will return negative values depenping on the orientation of the points.
    */
   function xyDiffBetweenPoints(origin: Point, destination: Point): [number, number] {
     return [destination.x - origin.x, destination.y - origin.y];
@@ -205,7 +206,6 @@ const util = (function utilityFunctions() {
     //sort the y axis positions of intersection and use the 2 middle values to calculate the
     //max length of the overlap.
     const yIntersects = [c1Intersect1!.y, c1Intersec2!.y, c2Intersect1!.y, c2Intersect2!.y].sort();
-    console.log(yIntersects);
     return yIntersects[2] - yIntersects[1];
   }
 

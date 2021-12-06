@@ -48,7 +48,7 @@ class Ball {
         if (this.selected || ball2.selected)
             return;
         if (this.checkBallCollision(ball2)) {
-            const modifierY = 0.90;
+            const modifierY = 1;
             const modifierX = 1;
             const velocity1 = util.getBallCollisionVelocity(this, ball2);
             const velocity2 = util.getBallCollisionVelocity(ball2, this);
@@ -188,7 +188,6 @@ const util = (function utilityFunctions() {
         const [c1IntersecCount, c1Intersect1, c1Intersec2] = circleLineIntersect(startPoint, endPoint, circle1);
         const [c2IntersectCount, c2Intersect1, c2Intersect2] = circleLineIntersect(startPoint, endPoint, circle2);
         const yIntersects = [c1Intersect1.y, c1Intersec2.y, c2Intersect1.y, c2Intersect2.y].sort();
-        console.log(yIntersects);
         return yIntersects[2] - yIntersects[1];
     }
     function maxIntersectWidth(circle1, circle2) {
@@ -344,12 +343,8 @@ const appProps = {
 };
 (function init() {
     addEventListeners();
-    appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
+    appProps.canvas.width = Math.min(320, window.innerWidth - appProps.canvasHorizontalGap);
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-    setSizes();
-    appProps.canvas.width = 300;
-    const test = util.maxIntersectHeight({ x: 5, y: 5, r: 1 }, { x: 4, y: 4, r: 1 });
-    console.log(test, 'fuck');
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         draw();
@@ -490,10 +485,14 @@ function handleWallCollissions(ball) {
     if (position.x + radius > canvas.width) {
         position.x = canvas.width - radius;
         velocity.vX < 0 || (ball.velocity.vX *= -1 / wallModifiers['right']);
+        if (Math.abs(velocity.vX) < 0.05)
+            velocity.vX = 0;
     }
     if (position.x - radius < 0) {
         position.x = radius;
         velocity.vX > 0 || (ball.velocity.vX *= -1 / wallModifiers['left']);
+        if (Math.abs(velocity.vX) < 0.05)
+            velocity.vX = 0;
     }
     if (position.y + radius > canvas.height) {
         position.y = canvas.height - radius;
@@ -527,6 +526,8 @@ function fixBallCollisions(balls) {
             if (ball2.selected)
                 return;
             const overlap = ball.getOverlap(ball2);
+            if (overlap < appProps.overlapThreshold)
+                return;
             const distanceOnYAxis = ball.position.y - ball2.position.y;
             if (ball.id !== ball2.id && overlap > 0.03) {
                 const [x, y] = util.xyDiffBetweenPoints(ball.position, ball2.position);
@@ -537,13 +538,12 @@ function fixBallCollisions(balls) {
                     ball.position.x -= 0.5 * overlap;
                     ball2.position.x += 0.5 * overlap;
                 }
-                else if (distanceOnYAxis > 0) {
-                    ball2.position.x += xRatio;
-                    ball2.position.y += yRatio;
-                }
                 else {
-                    ball.position.x += xRatio;
-                    ball.position.y += yRatio;
+                    distanceOnYAxis > 0 ?
+                        (ball2.position.x += xRatio,
+                            ball2.position.y += yRatio) :
+                        (ball.position.x += xRatio,
+                            ball.position.y += yRatio);
                 }
             }
         });
