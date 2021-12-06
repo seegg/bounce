@@ -29,7 +29,7 @@ const appProps = {
 (function init(): void {
   addEventListeners();
   //set initial canvas dimensions
-  appProps.canvas.width = Math.min(320, window.innerWidth - appProps.canvasHorizontalGap);
+  appProps.canvas.width = Math.min(300, window.innerWidth - appProps.canvasHorizontalGap);
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   // setSizes();
   // Load all the images in the image list
@@ -174,10 +174,6 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     position.x += distX;
     position.y += velocity.vY * ellapsedTime;
     velocity.vX *= appProps.deceleration;
-    // if (ball.prevPosition.x === ball.position.x) ball.velocity.vX = 0;
-    // if (ball.prevPosition.y === ball.position.y) ball.velocity.vY = 0;
-    // if (Math.abs(ball.prevPosition.x - ball.position.x) < 0.1) ball.velocity.vX = 0;
-    // if (Math.abs(ball.prevPosition.y - ball.position.y) < 0.1) ball.velocity.vY = 0;
     handleBallCollissions(ball);
     handleWallCollissions(ball);
   }
