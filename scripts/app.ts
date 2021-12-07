@@ -29,7 +29,7 @@ const appProps = {
 (function init(): void {
   addEventListeners();
   //set initial canvas dimensions
-  appProps.canvas.width = Math.min(300, window.innerWidth - appProps.canvasHorizontalGap);
+  appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
   appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   // setSizes();
   // Load all the images in the image list
@@ -147,7 +147,7 @@ function draw() {
 
   })
 
-  fixBallCollisions(appProps.balls);
+  fixBallOverlaps(appProps.balls);
   appProps.balls.forEach(ball => {
     if (!ball.selected) {
       ball.rotation += calcBallRotation(ball);
@@ -262,7 +262,7 @@ function sortBalls(balls: Ball[]): Ball[] {
  * check and fix any overlaps between balls after 
  * handling wall and ball collisions
  */
-function fixBallCollisions(balls: Ball[]) {
+function fixBallOverlaps(balls: Ball[]) {
   let sortedBallList = sortBalls(balls);
   sortedBallList.forEach(ball => {
     !ball.selected && sortedBallList.forEach(ball2 => {

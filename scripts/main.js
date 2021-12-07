@@ -344,7 +344,7 @@ const appProps = {
 };
 (function init() {
     addEventListeners();
-    appProps.canvas.width = Math.min(300, window.innerWidth - appProps.canvasHorizontalGap);
+    appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
     appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
@@ -430,7 +430,7 @@ function draw() {
         }
         updateBall(ball, ellapsedTime);
     });
-    fixBallCollisions(appProps.balls);
+    fixBallOverlaps(appProps.balls);
     appProps.balls.forEach(ball => {
         if (!ball.selected) {
             ball.rotation += calcBallRotation(ball);
@@ -516,7 +516,7 @@ function sortBalls(balls) {
     });
     return sortedBallList;
 }
-function fixBallCollisions(balls) {
+function fixBallOverlaps(balls) {
     let sortedBallList = sortBalls(balls);
     sortedBallList.forEach(ball => {
         !ball.selected && sortedBallList.forEach(ball2 => {
