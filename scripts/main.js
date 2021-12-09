@@ -256,9 +256,8 @@ const imageList = (function () {
     return imageFiles.map(img => path + img).concat(imageUrls);
 })();
 let imageCache = [];
-function addImage(imgSrc, imgArr, radius) {
+function addImage(imgSrc, imgArr, radius, imgContainer = document.getElementById('img-container')) {
     const classList = ['img-thumb', 'grayscale'];
-    const imgContainer = document.getElementById('img-container');
     const loadingPlaceholder = document.createElement('img');
     loadingPlaceholder.classList.add('img-thumb');
     loadingPlaceholder.src = 'images/spinner.gif';
@@ -314,6 +313,15 @@ function scrollToImgElement(imgEle) {
     const container = document.getElementById('img-container');
     const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scroll(0, scrollDistance);
+}
+function imgContainerScrollUpDown(evt, imgContainer) {
+    evt.preventDefault();
+    switch (evt.target.id) {
+        case 'img-up':
+            break;
+        case 'img-down':
+            break;
+    }
 }
 const appProps = {
     count: 0,
