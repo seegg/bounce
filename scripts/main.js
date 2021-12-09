@@ -698,3 +698,11 @@ const imageForm = {
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
 imageForm.imgFileInput.addEventListener('change', imageForm.handleFileChange);
 (_d = imageForm.cancelButton) === null || _d === void 0 ? void 0 : _d.addEventListener('click', imageForm.handleCancel);
+document.addEventListener('keydown', function closeModal(evt) {
+    var _a;
+    if ((_a = imageUploadModal.modal) === null || _a === void 0 ? void 0 : _a.classList.contains('close'))
+        return;
+    if (evt.key === 'Escape') {
+        imageUploadModal.toggle();
+    }
+});
