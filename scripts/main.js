@@ -249,6 +249,7 @@ const util = (function utilityFunctions() {
         maxIntersectWidth
     };
 })();
+var _a;
 const imageList = (function () {
     const imageFiles = ["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp", "pepper.png"];
     const imageUrls = [];
@@ -256,6 +257,7 @@ const imageList = (function () {
     return imageFiles.map(img => path + img).concat(imageUrls);
 })();
 const container = document.getElementById('img-container');
+(_a = document.getElementById('ball-scroll-controls')) === null || _a === void 0 ? void 0 : _a.addEventListener('pointerdown', imgContainerScrollUpDown);
 let imageCache = [];
 function addImage(imgSrc, imgArr, radius, imgContainer = container) {
     const classList = ['img-thumb', 'grayscale'];
@@ -315,7 +317,7 @@ function scrollToImgElement(imgEle) {
     const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scroll(0, scrollDistance);
 }
-function imgContainerScrollUpDown(evt, imgContainer = container, imgThumbnailSize) {
+function imgContainerScrollUpDown(evt, imgContainer = container, imgThumbnailSize = 48) {
     evt.preventDefault();
     const remainder = imgContainer.scrollTop % imgThumbnailSize;
     switch (evt.target.id) {

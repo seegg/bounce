@@ -8,7 +8,11 @@ const imageList = (function () {
 
 })();
 
+//image thumbnail container
 const container = <HTMLElement>document.getElementById('img-container');
+
+//set up image scroll controls
+document.getElementById('ball-scroll-controls')?.addEventListener('pointerdown', imgContainerScrollUpDown);
 
 //Keeps track of the bitmaps created from imageList and input image url and image files.
 let imageCache = <ImageBitmap[]>[];
@@ -83,8 +87,6 @@ function createImgEleWithIndex(
   return imgEle;
 }
 
-//Image container controls
-
 /**
  * Toggle/Select the img elements 
  * in the img container
@@ -107,7 +109,7 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
   container.scroll(0, scrollDistance);
 }
 
-function imgContainerScrollUpDown(evt: Event, imgContainer: HTMLElement = container, imgThumbnailSize: number) {
+function imgContainerScrollUpDown(evt: Event, imgContainer: HTMLElement = container, imgThumbnailSize: number = 48) {
   evt.preventDefault();
 
   /**
