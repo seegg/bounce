@@ -65,6 +65,7 @@ imageForm.form?.addEventListener('submit', imageForm.handleSubmit);
 imageForm.imgFileDisplayButton.addEventListener('click', imageForm.handleFileDisplayClick);
 imageForm.imgFileInput.addEventListener('change', imageForm.handleFileChange);
 imageForm.cancelButton?.addEventListener('click', imageForm.handleCancel);
+//close modal on esc
 document.addEventListener('keydown',
   function closeModal(evt: KeyboardEvent) {
     if (imageUploadModal.modal?.classList.contains('close')) return;
