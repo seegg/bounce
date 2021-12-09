@@ -8,6 +8,8 @@ const imageList = (function () {
 
 })();
 
+const container = <HTMLElement>document.getElementById('img-container');
+
 //Keeps track of the bitmaps created from imageList and input image url and image files.
 let imageCache = <ImageBitmap[]>[];
 
@@ -24,7 +26,7 @@ function addImage(
   imgSrc: string,
   imgArr: ImageBitmap[],
   radius: number,
-  imgContainer: HTMLElement = <HTMLElement>document.getElementById('img-container')
+  imgContainer: HTMLElement = container
 ) {
   // const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
   const classList = ['img-thumb', 'grayscale'];
@@ -105,12 +107,24 @@ function scrollToImgElement(imgEle: HTMLImageElement) {
   container.scroll(0, scrollDistance);
 }
 
-function imgContainerScrollUpDown(evt: Event, imgContainer: HTMLElement) {
+function imgContainerScrollUpDown(evt: Event, imgContainer: HTMLElement = container, imgThumbnailSize: number) {
   evt.preventDefault();
+
+  /**
+   * Get the mod of the scroll position against the thumbnail size.
+   * On scroll up, set the scroll position to the current position minus the thumbnail size
+   * and minus any remainders from the mod operation.
+   * On scroll down, add thumbnail size to the current position and then
+   * minus the remainder from the new position.
+   * The remainder helps to line up image thumbnails in the image container.
+   */
+  const remainder = imgContainer.scrollTop % imgThumbnailSize;
   switch ((<HTMLElement>evt.target).id) {
     case 'img-up':
+      imgContainer.scroll(0, remainder === 0 ? imgContainer.scrollTop - imgThumbnailSize : imgContainer.scrollTop - remainder)
       break;
     case 'img-down':
+      imgContainer.scroll(0, imgContainer.scrollTop + imgThumbnailSize - remainder)
       break;
   }
 }

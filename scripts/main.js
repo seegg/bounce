@@ -255,8 +255,9 @@ const imageList = (function () {
     const path = "images/";
     return imageFiles.map(img => path + img).concat(imageUrls);
 })();
+const container = document.getElementById('img-container');
 let imageCache = [];
-function addImage(imgSrc, imgArr, radius, imgContainer = document.getElementById('img-container')) {
+function addImage(imgSrc, imgArr, radius, imgContainer = container) {
     const classList = ['img-thumb', 'grayscale'];
     const loadingPlaceholder = document.createElement('img');
     loadingPlaceholder.classList.add('img-thumb');
@@ -314,12 +315,15 @@ function scrollToImgElement(imgEle) {
     const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scroll(0, scrollDistance);
 }
-function imgContainerScrollUpDown(evt, imgContainer) {
+function imgContainerScrollUpDown(evt, imgContainer = container, imgThumbnailSize) {
     evt.preventDefault();
+    const remainder = imgContainer.scrollTop % imgThumbnailSize;
     switch (evt.target.id) {
         case 'img-up':
+            imgContainer.scroll(0, remainder === 0 ? imgContainer.scrollTop - imgThumbnailSize : imgContainer.scrollTop - remainder);
             break;
         case 'img-down':
+            imgContainer.scroll(0, imgContainer.scrollTop + imgThumbnailSize - remainder);
             break;
     }
 }
