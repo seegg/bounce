@@ -456,6 +456,11 @@ function draw() {
             appProps.wallModifiers = Object.assign({}, appProps.party.wallModRef);
             appProps.gravity.isOn = appProps.party.gravityRef;
         }
+        else {
+            appProps.party.colourRef.forEach(val => {
+                val = Math.floor(val + ellapsedPartyTime) % appProps.rainBow.length;
+            });
+        }
     }
     else {
         ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);

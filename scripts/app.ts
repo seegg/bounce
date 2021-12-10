@@ -151,7 +151,7 @@ function draw() {
   const ellapsedTime = new Date().getTime() - appProps.currentTime;
   appProps.currentTime = new Date().getTime();
 
-  //Check the party conditions.
+  //Check and update the party conditions.
   if (appProps.party.isActive) {
     ctx.fillStyle = 'rgba(220, 219, 6, 0.1)';
     ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
@@ -160,6 +160,11 @@ function draw() {
       appProps.party.isActive = false;
       appProps.wallModifiers = { ...appProps.party.wallModRef };
       appProps.gravity.isOn = appProps.party.gravityRef;
+    } else {
+      //update the ball border colours after each second.
+      appProps.party.colourRef.forEach(val => {
+        val = Math.floor(val + ellapsedPartyTime) % appProps.rainBow.length;
+      })
     }
 
   } else {
@@ -330,7 +335,6 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
   ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
 
   if (appProps.party.isActive) {
-
   }
 
   if (selected) {
