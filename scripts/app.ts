@@ -163,6 +163,8 @@ function draw() {
       appProps.party.isActive = false;
       appProps.wallModifiers = { ...appProps.party.wallModRef };
       appProps.gravity.isOn = appProps.party.gravityRef;
+      toggleGravityBtn(appProps.gravity.isOn);
+      appProps.party.colourRef = [];
     } else {
       //update the ball border colours after each second.
       appProps.party.colourRef.forEach((val, idx) => {
@@ -339,7 +341,7 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
   ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
 
   if (appProps.party.isActive) {
-    ctx.lineWidth = Math.floor(radius / 10);
+    ctx.lineWidth = 6;
     ctx.strokeStyle = appProps.rainBow[(appProps.party.colourRef[id][0]
       + Math.floor(appProps.party.colourRef[id][1] / 1000)) % appProps.rainBow.length];
     ctx.beginPath();
