@@ -603,7 +603,7 @@ function drawBall(ctx, ball) {
     ctx.rotate(Math.PI / 180 * rotation);
     ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
     if (appProps.party.isActive) {
-        ctx.lineWidth = 6;
+        ctx.lineWidth = Math.round(radius / 10) + 1;
         ctx.strokeStyle = appProps.rainBow[(appProps.party.colourRef[id][0]
             + Math.floor(appProps.party.colourRef[id][1] / 1000)) % appProps.rainBow.length];
         ctx.beginPath();
