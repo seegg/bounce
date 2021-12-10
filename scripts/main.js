@@ -462,7 +462,7 @@ function draw() {
         }
         else {
             appProps.party.colourRef.forEach((val, idx) => {
-                appProps.party.colourRef[idx] = Math.round(val + (ellapsedPartyTime % 1000)) % appProps.rainBow.length;
+                appProps.party.colourRef[idx] = [val[0], ellapsedPartyTime];
             });
             console.log(ellapsedPartyTime);
         }
@@ -602,7 +602,8 @@ function drawBall(ctx, ball) {
     ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
     if (appProps.party.isActive) {
         ctx.lineWidth = Math.floor(radius / 10);
-        ctx.strokeStyle = appProps.rainBow[appProps.party.colourRef[id]];
+        ctx.strokeStyle = appProps.rainBow[(appProps.party.colourRef[id][0]
+            + Math.floor(appProps.party.colourRef[id][1] / 1000)) % appProps.rainBow.length];
         ctx.beginPath();
         ctx.arc(0, 0, radius, 0, Math.PI * 2);
         ctx.stroke();
@@ -634,7 +635,7 @@ function party() {
     appProps.wallModifiers = { left: 1, right: 1, top: 1, bottom: 1 };
     appProps.party.isActive = true;
     appProps.balls.forEach(ball => {
-        appProps.party.colourRef[ball.id] = Math.floor(Math.random() * appProps.rainBow.length);
+        appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
         let sign = -1;
         if (Math.random() > 0.5) {
             sign *= 1;

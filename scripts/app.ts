@@ -166,7 +166,7 @@ function draw() {
     } else {
       //update the ball border colours after each second.
       appProps.party.colourRef.forEach((val, idx) => {
-        appProps.party.colourRef[idx] = Math.round(val + (ellapsedPartyTime % 1000)) % appProps.rainBow.length;
+        appProps.party.colourRef[idx] = [val[0], ellapsedPartyTime];
       })
       console.log(ellapsedPartyTime);
     }
@@ -340,7 +340,8 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
 
   if (appProps.party.isActive) {
     ctx.lineWidth = Math.floor(radius / 10);
-    ctx.strokeStyle = appProps.rainBow[appProps.party.colourRef[id]];
+    ctx.strokeStyle = appProps.rainBow[(appProps.party.colourRef[id][0]
+      + Math.floor(appProps.party.colourRef[id][1] / 1000)) % appProps.rainBow.length];
     ctx.beginPath();
     ctx.arc(0, 0, radius, 0, Math.PI * 2);
     ctx.stroke();
@@ -377,7 +378,7 @@ function party() {
   appProps.party.isActive = true;
   appProps.balls.forEach(ball => {
     //randomly assign one of the rainbow colours to a ball at the start.
-    appProps.party.colourRef[ball.id] = Math.floor(Math.random() * appProps.rainBow.length);
+    appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
     let sign = -1;
     if (Math.random() > 0.5) {
       sign *= 1;
