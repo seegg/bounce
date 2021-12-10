@@ -328,6 +328,10 @@ function calcBallRotation(ball: Ball): number {
   return rotation * 360;
 }
 
+function party() {
+
+}
+
 /**
  * Get the position of the mouse click 
  * relative to the canvas

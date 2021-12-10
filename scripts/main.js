@@ -591,6 +591,8 @@ function calcBallRotation(ball) {
     const rotation = dist / parameter;
     return rotation * 360;
 }
+function party() {
+}
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();
     return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];
