@@ -353,7 +353,7 @@ const appProps = {
     canvas: document.getElementById('canvas'),
     canvasHorizontalGap: 5 * 2,
     canvasTopOffset: 70,
-    party: { active: true, start: 0, duration: 10, gravityRef: true, colourRef: [] },
+    party: { isActive: true, start: 0, duration: 10, gravityRef: true, colourRef: [] },
     rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
 (function init() {
@@ -437,7 +437,7 @@ function draw() {
     const ctx = appProps.canvas.getContext('2d');
     const ellapsedTime = new Date().getTime() - appProps.currentTime;
     appProps.currentTime = new Date().getTime();
-    if (appProps.party.active) {
+    if (appProps.party.isActive) {
         ctx.fillStyle = 'rgba(220, 219, 6, 0.1)';
         ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
     }
@@ -574,7 +574,7 @@ function drawBall(ctx, ball) {
     ctx.translate(position.x, position.y);
     ctx.rotate(Math.PI / 180 * rotation);
     ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
-    if (appProps.party.active) {
+    if (appProps.party.isActive) {
     }
     if (selected) {
         ctx.lineWidth = 4;
@@ -592,6 +592,15 @@ function calcBallRotation(ball) {
     return rotation * 360;
 }
 function party() {
+    if (appProps.party.isActive) {
+        appProps.party.start = new Date().getTime();
+        return;
+    }
+    appProps.party.gravityRef = appProps.gravity.isOn;
+    appProps.gravity.isOn = false;
+    appProps.balls.forEach(ball => {
+        appProps.party.colourRef[ball.id] = appProps.rainBow[Math.floor(Math.random() * appProps.rainBow.length)];
+    });
 }
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();

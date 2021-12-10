@@ -22,7 +22,7 @@ const appProps = {
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
-  party: { active: true, start: 0, duration: 10, gravityRef: true, colourRef: <string[]>[] },
+  party: { isActive: true, start: 0, duration: 10, gravityRef: true, colourRef: <string[]>[] },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
@@ -137,7 +137,7 @@ function draw() {
   const ellapsedTime = new Date().getTime() - appProps.currentTime;
   appProps.currentTime = new Date().getTime();
 
-  if (appProps.party.active) {
+  if (appProps.party.isActive) {
     ctx.fillStyle = 'rgba(220, 219, 6, 0.1)';
     ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
   } else {
@@ -307,7 +307,7 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
   ctx.rotate(Math.PI / 180 * rotation);
   ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
 
-  if (appProps.party.active) {
+  if (appProps.party.isActive) {
 
   }
 
@@ -329,7 +329,18 @@ function calcBallRotation(ball: Ball): number {
 }
 
 function party() {
+  //if party is active just reset the duration.
+  if (appProps.party.isActive) {
+    appProps.party.start = new Date().getTime();
+    return;
+  }
 
+  appProps.party.gravityRef = appProps.gravity.isOn;
+  appProps.gravity.isOn = false;
+  appProps.balls.forEach(ball => {
+    //randomly assign one of the rainbow colours to a ball at the start.
+    appProps.party.colourRef[ball.id] = appProps.rainBow[Math.floor(Math.random() * appProps.rainBow.length)];
+  })
 }
 
 /**
