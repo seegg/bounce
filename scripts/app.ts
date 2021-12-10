@@ -22,7 +22,7 @@ const appProps = {
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
-  party: { isActive: false, start: 0, duration: 10, maxVelocity: 4, gravityRef: true, colourRef: <number[]>[] },
+  party: { isActive: false, start: 0, duration: 10, maxVelocity: 4, wallModRef: {}, gravityRef: true, colourRef: <number[]>[] },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
@@ -351,6 +351,8 @@ function party() {
   appProps.party.gravityRef = appProps.gravity.isOn;
   appProps.gravity.isOn = false;
   toggleGravityBtn(appProps.gravity.isOn);
+  appProps.party.wallModRef = { ...appProps.wallModifiers };
+  appProps.wallModifiers = { left: 1, top: 1, bottom: 1, right: 1 };
   appProps.party.isActive = true;
   appProps.balls.forEach(ball => {
     //randomly assign one of the rainbow colours to a ball at the start.
