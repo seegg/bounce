@@ -22,7 +22,7 @@ const appProps = {
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
-  party: { active: false, start: 0, duration: 10, gravity: true },
+  party: { active: true, start: 0, duration: 10, gravity: true },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
@@ -136,7 +136,13 @@ function draw() {
   const ctx = appProps.canvas.getContext('2d')!;
   const ellapsedTime = new Date().getTime() - appProps.currentTime;
   appProps.currentTime = new Date().getTime();
-  ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
+
+  if (appProps.party.active) {
+    ctx.fillStyle = 'rgba(220, 219, 6, 0.1)';
+    ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
+  } else {
+    ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
+  }
 
   //draw each of the balls and then update its position.
   appProps.balls.forEach(ball => {
