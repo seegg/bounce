@@ -22,7 +22,7 @@ const appProps = {
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
-  party: { isActive: false, start: 0, duration: 10, maxVelocity: 4, wallModRef: {}, gravityRef: true, colourRef: <number[]>[] },
+  party: { isActive: false, start: 0, duration: 10000, maxVelocity: 4, wallModRef: { left: 1, right: 1, top: 1, bottom: 1 }, gravityRef: true, colourRef: <number[]>[] },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
@@ -61,6 +61,7 @@ function addEventListeners(): void {
   //toggle the colour of the text on the gravity button.
   gravityBtn?.addEventListener('click',
     function toggleGravity() {
+      if (appProps.party.isActive) return;
       appProps.gravity.isOn = !appProps.gravity.isOn;
       toggleGravityBtn(appProps.gravity.isOn);
     }
@@ -150,9 +151,17 @@ function draw() {
   const ellapsedTime = new Date().getTime() - appProps.currentTime;
   appProps.currentTime = new Date().getTime();
 
+  //Check the party conditions.
   if (appProps.party.isActive) {
     ctx.fillStyle = 'rgba(220, 219, 6, 0.1)';
     ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
+    const ellapsedPartyTime = new Date().getTime() - appProps.party.start;
+    if (ellapsedPartyTime > appProps.party.duration) {
+      appProps.party.isActive = false;
+      appProps.wallModifiers = { ...appProps.party.wallModRef };
+      appProps.gravity.isOn = appProps.party.gravityRef;
+    }
+
   } else {
     ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
   }
@@ -342,17 +351,15 @@ function calcBallRotation(ball: Ball): number {
 }
 
 function party() {
-  //if party is active just reset the duration.
-  if (appProps.party.isActive) {
-    appProps.party.start = new Date().getTime();
-    return;
-  }
+  appProps.party.start = new Date().getTime();
+
+  if (appProps.party.isActive) return;
 
   appProps.party.gravityRef = appProps.gravity.isOn;
   appProps.gravity.isOn = false;
   toggleGravityBtn(appProps.gravity.isOn);
   appProps.party.wallModRef = { ...appProps.wallModifiers };
-  appProps.wallModifiers = { left: 1, top: 1, bottom: 1, right: 1 };
+  appProps.wallModifiers = { left: 1, right: 1, top: 1, bottom: 1 };
   appProps.party.isActive = true;
   appProps.balls.forEach(ball => {
     //randomly assign one of the rainbow colours to a ball at the start.
@@ -361,12 +368,13 @@ function party() {
     if (Math.random() > 0.5) {
       sign *= 1;
     }
-    ball.velocity.vX = Math.random() * appProps.party.maxVelocity * sign;
+    //randomise the velocity of each ball with a mininum value of 2.
+    ball.velocity.vX = Math.max(Math.random() * appProps.party.maxVelocity, 2) * sign;
     sign = -1;
     if (Math.random() > 0.5) {
       sign = 1;
     }
-    ball.velocity.vY = Math.random() * appProps.party.maxVelocity * sign;
+    ball.velocity.vY = Math.max(Math.random() * appProps.party.maxVelocity, 2) * sign;
   })
 }
 
