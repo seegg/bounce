@@ -333,7 +333,7 @@ const appProps = {
     count: 0,
     radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
-    gravity: { value: 0.01, isOn: true },
+    gravity: { value: 0.01, isOn: true, btn: document.getElementById('gravity-btn') },
     balls: [],
     selectedImgEle: null,
     selectedBall: null,
@@ -353,7 +353,7 @@ const appProps = {
     canvas: document.getElementById('canvas'),
     canvasHorizontalGap: 5 * 2,
     canvasTopOffset: 70,
-    party: { isActive: true, start: 0, duration: 10, gravityRef: true, colourRef: [] },
+    party: { isActive: false, start: 0, duration: 10, maxVelocity: 4, gravityRef: true, colourRef: [] },
     rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
 (function init() {
@@ -374,15 +374,23 @@ function addEventListeners() {
     appProps.canvas.addEventListener('pointermove', onMouseMove);
     appProps.canvas.addEventListener('pointerup', onMouseUp);
     appProps.canvas.addEventListener('pointerleave', onMouseLeave);
-    (_a = document.getElementById('gravity-btn')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function toggleGravity() {
+    const gravityBtn = document.getElementById('gravity-btn');
+    gravityBtn === null || gravityBtn === void 0 ? void 0 : gravityBtn.addEventListener('click', function toggleGravity() {
         appProps.gravity.isOn = !appProps.gravity.isOn;
-        if (appProps.gravity.isOn) {
-            this.classList.add('selected');
-        }
-        else {
-            this.classList.remove('selected');
-        }
+        toggleGravityBtn(appProps.gravity.isOn);
     });
+    (_a = document.getElementById('party-btn')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
+        party();
+    });
+}
+function toggleGravityBtn(isOn) {
+    var _a, _b;
+    if (isOn) {
+        (_a = appProps.gravity.btn) === null || _a === void 0 ? void 0 : _a.classList.add('selected');
+    }
+    else {
+        (_b = appProps.gravity.btn) === null || _b === void 0 ? void 0 : _b.classList.remove('selected');
+    }
 }
 function setSizes() {
     try {
@@ -598,8 +606,20 @@ function party() {
     }
     appProps.party.gravityRef = appProps.gravity.isOn;
     appProps.gravity.isOn = false;
+    toggleGravityBtn(appProps.gravity.isOn);
+    appProps.party.isActive = true;
     appProps.balls.forEach(ball => {
         appProps.party.colourRef[ball.id] = Math.floor(Math.random() * appProps.rainBow.length);
+        let sign = -1;
+        if (Math.random() > 0.5) {
+            sign *= 1;
+        }
+        ball.velocity.vX = Math.random() * appProps.party.maxVelocity * sign;
+        sign = -1;
+        if (Math.random() > 0.5) {
+            sign = 1;
+        }
+        ball.velocity.vY = Math.random() * appProps.party.maxVelocity * sign;
     });
 }
 function getRelativeMousePos(evt) {

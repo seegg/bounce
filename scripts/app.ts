@@ -2,7 +2,7 @@ const appProps = {
   count: 0,
   radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
-  gravity: { value: 0.01, isOn: true },
+  gravity: { value: 0.01, isOn: true, btn: document.getElementById('gravity-btn') },
   balls: <Ball[]>[],
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
@@ -22,7 +22,7 @@ const appProps = {
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
-  party: { isActive: true, start: 0, duration: 10, gravityRef: true, colourRef: <number[]>[] },
+  party: { isActive: false, start: 0, duration: 10, maxVelocity: 4, gravityRef: true, colourRef: <number[]>[] },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
@@ -39,6 +39,7 @@ const appProps = {
     )
   ).then(_ => {
     appProps.currentTime = new Date().getTime();
+    // party();
     // window.requestAnimationFrame(draw);
     draw();
   });
@@ -55,16 +56,28 @@ function addEventListeners(): void {
   appProps.canvas.addEventListener('pointermove', onMouseMove);
   appProps.canvas.addEventListener('pointerup', onMouseUp);
   appProps.canvas.addEventListener('pointerleave', onMouseLeave);
-  document.getElementById('gravity-btn')?.addEventListener('click',
+
+  const gravityBtn = document.getElementById('gravity-btn');
+  //toggle the colour of the text on the gravity button.
+  gravityBtn?.addEventListener('click',
     function toggleGravity() {
       appProps.gravity.isOn = !appProps.gravity.isOn;
-      if (appProps.gravity.isOn) {
-        this.classList.add('selected');
-      } else {
-        this.classList.remove('selected');
-      }
+      toggleGravityBtn(appProps.gravity.isOn);
     }
   );
+  //start the party.
+  document.getElementById('party-btn')?.addEventListener('click', () => {
+
+    party();
+  })
+}
+
+function toggleGravityBtn(isOn: boolean) {
+  if (isOn) {
+    appProps.gravity.btn?.classList.add('selected');
+  } else {
+    appProps.gravity.btn?.classList.remove('selected');
+  }
 }
 
 /**
@@ -337,9 +350,21 @@ function party() {
 
   appProps.party.gravityRef = appProps.gravity.isOn;
   appProps.gravity.isOn = false;
+  toggleGravityBtn(appProps.gravity.isOn);
+  appProps.party.isActive = true;
   appProps.balls.forEach(ball => {
     //randomly assign one of the rainbow colours to a ball at the start.
     appProps.party.colourRef[ball.id] = Math.floor(Math.random() * appProps.rainBow.length);
+    let sign = -1;
+    if (Math.random() > 0.5) {
+      sign *= 1;
+    }
+    ball.velocity.vX = Math.random() * appProps.party.maxVelocity * sign;
+    sign = -1;
+    if (Math.random() > 0.5) {
+      sign = 1;
+    }
+    ball.velocity.vY = Math.random() * appProps.party.maxVelocity * sign;
   })
 }
 
