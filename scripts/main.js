@@ -599,7 +599,7 @@ function party() {
     appProps.party.gravityRef = appProps.gravity.isOn;
     appProps.gravity.isOn = false;
     appProps.balls.forEach(ball => {
-        appProps.party.colourRef[ball.id] = appProps.rainBow[Math.floor(Math.random() * appProps.rainBow.length)];
+        appProps.party.colourRef[ball.id] = Math.floor(Math.random() * appProps.rainBow.length);
     });
 }
 function getRelativeMousePos(evt) {
