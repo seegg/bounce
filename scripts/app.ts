@@ -22,7 +22,10 @@ const appProps = {
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
-  party: { isActive: false, start: 0, duration: 10000, maxVelocity: 4, wallModRef: { left: 1, right: 1, top: 1, bottom: 1 }, gravityRef: true, colourRef: <number[]>[] },
+  party: {
+    isActive: false, start: 0, duration: 10000, maxVelocity: 2, wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
+    gravityRef: true, colourRef: <[number, number][]>[]
+  },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
@@ -162,9 +165,10 @@ function draw() {
       appProps.gravity.isOn = appProps.party.gravityRef;
     } else {
       //update the ball border colours after each second.
-      appProps.party.colourRef.forEach(val => {
-        val = Math.floor(val + ellapsedPartyTime) % appProps.rainBow.length;
+      appProps.party.colourRef.forEach((val, idx) => {
+        appProps.party.colourRef[idx] = Math.round(val + (ellapsedPartyTime % 1000)) % appProps.rainBow.length;
       })
+      console.log(ellapsedPartyTime);
     }
 
   } else {
@@ -328,13 +332,19 @@ function fixBallOverlaps(balls: Ball[]) {
  */
 function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
   if (ball === null) return;
-  const { position, radius, selected, rotation, img } = ball;
+  const { id, position, radius, selected, rotation, img } = ball;
   ctx.save();
   ctx.translate(position.x, position.y);
   ctx.rotate(Math.PI / 180 * rotation);
   ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
 
   if (appProps.party.isActive) {
+    ctx.lineWidth = Math.floor(radius / 10);
+    ctx.strokeStyle = appProps.rainBow[appProps.party.colourRef[id]];
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.stroke();
+    console.log(appProps.party.colourRef[id]);
   }
 
   if (selected) {
@@ -373,12 +383,12 @@ function party() {
       sign *= 1;
     }
     //randomise the velocity of each ball with a mininum value of 2.
-    ball.velocity.vX = Math.max(Math.random() * appProps.party.maxVelocity, 2) * sign;
+    ball.velocity.vX = Math.max(Math.random() * appProps.party.maxVelocity, 0.5) * sign;
     sign = -1;
     if (Math.random() > 0.5) {
       sign = 1;
     }
-    ball.velocity.vY = Math.max(Math.random() * appProps.party.maxVelocity, 2) * sign;
+    ball.velocity.vY = Math.max(Math.random() * appProps.party.maxVelocity, 0.5) * sign;
   })
 }
 
