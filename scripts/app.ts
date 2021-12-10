@@ -22,7 +22,7 @@ const appProps = {
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
-  party: { active: true, start: 0, duration: 10, gravity: true },
+  party: { active: true, start: 0, duration: 10, gravityRef: true, colourRef: <string[]>[] },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
@@ -306,6 +306,10 @@ function drawBall(ctx: CanvasRenderingContext2D, ball: Ball | null) {
   ctx.translate(position.x, position.y);
   ctx.rotate(Math.PI / 180 * rotation);
   ctx.drawImage(img, -radius, -radius, radius * 2, radius * 2);
+
+  if (appProps.party.active) {
+
+  }
 
   if (selected) {
     ctx.lineWidth = 4
