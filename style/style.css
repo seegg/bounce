@@ -105,6 +105,15 @@ input[type=text]:focus{
   display: none;
 }
 
+@keyframes progress-bar-btn {
+  0%{
+    background-position: 0% 50%;
+  }
+  100%{
+    background-position: 100% 50%;
+  }
+}
+
 .btn-ctrl{
   height: 2.75rem;
   min-width: 2.75rem;
@@ -112,10 +121,16 @@ input[type=text]:focus{
   padding: 0.25rem;
   margin-right: 0.25rem;
   background-color: var(--btn-bg);
+  background-size: 200% 100%;
 }
 
 .btn-ctrl:hover{
   background-color: var(--btn-hover-bg);
+}
+
+.btn-progress-bar{
+  background: linear-gradient(to right, var(--btn-bg) 50%, black 50%, black);
+  animation: progress-bar-btn 2s ease;
 }
 
 .btn-container{

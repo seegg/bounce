@@ -72,7 +72,6 @@ function addEventListeners(): void {
   );
   //start the party.
   document.getElementById('party-btn')?.addEventListener('click', () => {
-
     party();
   })
 }
