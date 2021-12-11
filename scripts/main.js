@@ -632,8 +632,12 @@ function calcBallRotation(ball) {
 }
 function party() {
     appProps.party.start = new Date().getTime();
-    if (appProps.party.isActive)
+    if (appProps.party.isActive) {
+        appProps.balls.forEach(ball => {
+            ball.velocity = partyBallVelocity();
+        });
         return;
+    }
     appProps.party.gravityRef = appProps.gravity.isOn;
     appProps.gravity.isOn = false;
     toggleGravityBtn(appProps.gravity.isOn);
@@ -642,7 +646,7 @@ function party() {
     appProps.party.isActive = true;
     appProps.balls.forEach(ball => {
         appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
-        ball.velocity = partyBallVelocity(appProps.party.maxVelocity, appProps.party.minVelocity);
+        ball.velocity = partyBallVelocity();
     });
 }
 function partyBallVelocity(min = appProps.party.maxVelocity, max = appProps.party.minVelocity) {

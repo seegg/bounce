@@ -375,7 +375,12 @@ function calcBallRotation(ball: Ball): number {
 function party() {
   appProps.party.start = new Date().getTime();
 
-  if (appProps.party.isActive) return;
+  if (appProps.party.isActive) {
+    appProps.balls.forEach(ball => {
+      ball.velocity = partyBallVelocity();
+    });
+    return;
+  }
 
   appProps.party.gravityRef = appProps.gravity.isOn;
   appProps.gravity.isOn = false;
@@ -386,7 +391,7 @@ function party() {
   appProps.balls.forEach(ball => {
     //randomly assign one of the rainbow colours to a ball at the start.
     appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
-    ball.velocity = partyBallVelocity(appProps.party.maxVelocity, appProps.party.minVelocity);
+    ball.velocity = partyBallVelocity();
   })
 }
 
