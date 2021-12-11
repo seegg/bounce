@@ -662,6 +662,9 @@ function partyBallVelocity(min = appProps.party.maxVelocity, max = appProps.part
         vY: Math.max((Math.random() * max), min) * signY
     };
 }
+function animatePartyBtn() {
+    document.getElementById('party-btn').style.backgroundPosition = 'stuff';
+}
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();
     return [evt.clientX - boundingRect.x, evt.clientY - boundingRect.y];

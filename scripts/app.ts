@@ -405,6 +405,10 @@ function partyBallVelocity(min: number = appProps.party.maxVelocity, max: number
   };
 }
 
+function animatePartyBtn() {
+  document.getElementById('party-btn')!.style.backgroundPosition = 'stuff';
+}
+
 /**
  * Get the position of the mouse click 
  * relative to the canvas

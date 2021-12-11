@@ -2,7 +2,9 @@
   --canvas-bg: rgba(245, 158, 11, 1);
   --main-bg: rgba(254, 226, 226, 1);
   --btn-bg: rgba(209, 213, 219, 1);
-  --btn-hover-bg: rgba(243, 244, 246, 1);
+  --btn-bg2: rgba(119, 213, 119, 1);
+  --btn-hover-bg: rgba(249, 253, 249, 1);
+  --btn-hover-bg2: rgba(159, 253, 159, 1);
   --balls-bg: rgba(252, 165, 165, 1);
   --border-radius: 0.25rem;
 }
@@ -124,23 +126,17 @@ input[type=text]:focus{
 }
 
 .btn-ctrl#party-btn{
-  background: linear-gradient(to right, var(--btn-bg) 50%, black 50%, black);
+  background: linear-gradient(to right, var(--btn-bg) 50%, var(--btn-bg2) 50%, var(--btn-bg2));
   background-size: 200% 100%;
 }
 
 .btn-ctrl#party-btn:hover{
-  background: linear-gradient(to right, var(--btn-hover-bg) 50%, black 50%, black);
+  background: linear-gradient(to right, var(--btn-hover-bg) 50%, var(--btn-hover-bg2) 50%, var(--btn-hover-bg2));
   background-size: 200% 100%;
 }
 
 .btn-ctrl:hover{
   background-color: var(--btn-hover-bg);
-}
-
-.btn-progress-bar{
-  background: linear-gradient(to right, var(--btn-bg) 50%, black 50%, black);
-  background-size: 200% 100%;
-  animation: progress-bar-btn 2s linear;
 }
 
 .btn-container{
