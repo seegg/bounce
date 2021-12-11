@@ -23,7 +23,7 @@ const appProps = {
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
   party: {
-    isActive: false, start: 0, duration: 10000, maxVelocity: 2,
+    isActive: false, start: 0, duration: 10000, maxVelocity: 2, minVelocity: 0.5,
     wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
     gravityRef: true, colourRef: <[number, number][]>[]
   },
@@ -385,12 +385,12 @@ function party() {
   appProps.balls.forEach(ball => {
     //randomly assign one of the rainbow colours to a ball at the start.
     appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
-    ball.velocity = partyBallVelocity(appProps.party.maxVelocity, 0.5);
+    ball.velocity = partyBallVelocity(appProps.party.maxVelocity, appProps.party.minVelocity);
   })
 }
 
 //randomise velocity for party balls.
-function partyBallVelocity(min: number, max: number): Velocity {
+function partyBallVelocity(min: number = appProps.party.maxVelocity, max: number = appProps.party.minVelocity): Velocity {
   let signX = -1, signY = -1;
   if (Math.random() > 0.5) signX = 1;
   if (Math.random() > 0.5) signY = 1;
