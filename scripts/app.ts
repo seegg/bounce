@@ -26,7 +26,7 @@ const appProps = {
     isActive: false, start: 0, duration: 10000, maxVelocity: 2, minVelocity: 0.5,
     wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
     gravityRef: true, colourRef: <[number, number][]>[],
-    partyBtn: document.getElementById('party-btn')
+    partyBtn: document.getElementById('party-btn')!
   },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
@@ -164,7 +164,10 @@ function draw() {
     ctx.fillStyle = 'rgba(220, 219, 6, 0.1)';
     ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
     const ellapsedPartyTime = new Date().getTime() - appProps.party.start;
+    //party btn backgroup position as percentage value
+    let partyBtnBGPos = ellapsedPartyTime / appProps.party.duration * 100;
     if (ellapsedPartyTime > appProps.party.duration) {
+      partyBtnBGPos = 0;
       appProps.party.isActive = false;
       appProps.wallModifiers = { ...appProps.party.wallModRef };
       appProps.gravity.isOn = appProps.party.gravityRef;
@@ -175,9 +178,8 @@ function draw() {
       appProps.party.colourRef.forEach((val, idx) => {
         appProps.party.colourRef[idx] = [val[0], ellapsedPartyTime];
       })
-      console.log(ellapsedPartyTime);
     }
-
+    setEleBackGroundPosition(appProps.party.partyBtn, partyBtnBGPos);
   } else {
     ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
   }
@@ -409,7 +411,7 @@ function partyBallVelocity(min: number = appProps.party.maxVelocity, max: number
 /**
  * Set the x position of the Element's backgroup position property as a percentage.
  */
-function setBackGroundPosition(ele: HTMLElement, pos: number) {
+function setEleBackGroundPosition(ele: HTMLElement, pos: number) {
   ele.style.backgroundPosition = `${pos}% 100%`;
 }
 

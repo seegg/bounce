@@ -460,7 +460,9 @@ function draw() {
         ctx.fillStyle = 'rgba(220, 219, 6, 0.1)';
         ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
         const ellapsedPartyTime = new Date().getTime() - appProps.party.start;
+        let partyBtnBGPos = ellapsedPartyTime / appProps.party.duration * 100;
         if (ellapsedPartyTime > appProps.party.duration) {
+            partyBtnBGPos = 0;
             appProps.party.isActive = false;
             appProps.wallModifiers = Object.assign({}, appProps.party.wallModRef);
             appProps.gravity.isOn = appProps.party.gravityRef;
@@ -471,8 +473,8 @@ function draw() {
             appProps.party.colourRef.forEach((val, idx) => {
                 appProps.party.colourRef[idx] = [val[0], ellapsedPartyTime];
             });
-            console.log(ellapsedPartyTime);
         }
+        setEleBackGroundPosition(appProps.party.partyBtn, partyBtnBGPos);
     }
     else {
         ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
@@ -663,7 +665,7 @@ function partyBallVelocity(min = appProps.party.maxVelocity, max = appProps.part
         vY: Math.max((Math.random() * max), min) * signY
     };
 }
-function setBackGroundPosition(ele, pos) {
+function setEleBackGroundPosition(ele, pos) {
     ele.style.backgroundPosition = `${pos}% 100%`;
 }
 function getRelativeMousePos(evt) {
