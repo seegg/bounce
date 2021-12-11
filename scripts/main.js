@@ -331,7 +331,7 @@ function imgContainerScrollUpDown(evt, imgContainer = container, imgThumbnailSiz
 }
 const appProps = {
     count: 0,
-    radiusSizes: { s: 20, m: 35, l: 50, current: 50 },
+    radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
     screenBreakPoints: { l: 1280, m: 768 },
     gravity: { value: 0.01, isOn: true, btn: document.getElementById('gravity-btn') },
     balls: [],
