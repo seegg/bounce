@@ -23,7 +23,8 @@ const appProps = {
   canvasHorizontalGap: 5 * 2,
   canvasTopOffset: 70,
   party: {
-    isActive: false, start: 0, duration: 10000, maxVelocity: 2, wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
+    isActive: false, start: 0, duration: 10000, maxVelocity: 2,
+    wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
     gravityRef: true, colourRef: <[number, number][]>[]
   },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
@@ -140,6 +141,9 @@ function createAndStoreBall(
     const ball = new Ball(imageCache[imgIndex], x, y, radius, selected);
     appProps.balls.push(ball);
     appProps.count++;
+    if (appProps.party) {
+
+    }
     return ball;
   } catch (err) {
     console.error(err);
@@ -381,18 +385,19 @@ function party() {
   appProps.balls.forEach(ball => {
     //randomly assign one of the rainbow colours to a ball at the start.
     appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
-    let sign = -1;
-    if (Math.random() > 0.5) {
-      sign *= 1;
-    }
-    //randomise the velocity of each ball with a mininum value of 2.
-    ball.velocity.vX = Math.max(Math.random() * appProps.party.maxVelocity, 0.5) * sign;
-    sign = -1;
-    if (Math.random() > 0.5) {
-      sign = 1;
-    }
-    ball.velocity.vY = Math.max(Math.random() * appProps.party.maxVelocity, 0.5) * sign;
+    ball.velocity = partyBallVelocity(appProps.party.maxVelocity, 0.5);
   })
+}
+
+//randomise velocity for party balls.
+function partyBallVelocity(min: number, max: number): Velocity {
+  let signX = -1, signY = -1;
+  if (Math.random() > 0.5) signX = 1;
+  if (Math.random() > 0.5) signY = 1;
+  return {
+    vX: Math.max((Math.random() * max), min) * signX,
+    vY: Math.max((Math.random() * max), min) * signY
+  };
 }
 
 /**
