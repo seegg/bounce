@@ -1,11 +1,11 @@
 :root{
-  --canvas-bg: rgba(245, 158, 11, 1);
-  --main-bg: rgba(254, 226, 226, 1);
-  --btn-bg: rgba(209, 213, 219, 1);
-  --btn-bg2: rgba(119, 213, 119, 1);
-  --btn-hover-bg: rgba(249, 253, 249, 1);
-  --btn-hover-bg2: rgba(159, 253, 159, 1);
-  --balls-bg: rgba(252, 165, 165, 1);
+  --canvas-bg: hsl(38, 92%, 50%);
+  --main-bg: hsl(0, 93%, 94%);
+  --btn-bg: hsl(216, 12%, 84%);
+  --btn-bg2: hsl(120, 53%, 65%);
+  --btn-hover-bg: hsl(120, 50%, 98%);
+  --btn-hover-bg2: hsl(120, 96%, 81%);
+  --balls-bg: hsl(0, 94%, 82%);
   --border-radius: 0.25rem;
 }
 
