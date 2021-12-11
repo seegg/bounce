@@ -357,7 +357,8 @@ const appProps = {
         isActive: false, start: 0, duration: 10000, maxVelocity: 2, minVelocity: 0.5,
         wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
         gravityRef: true,
-        colourRef: []
+        colourRef: [],
+        partyBtn: document.getElementById('party-btn')
     },
     rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
 };
@@ -662,8 +663,8 @@ function partyBallVelocity(min = appProps.party.maxVelocity, max = appProps.part
         vY: Math.max((Math.random() * max), min) * signY
     };
 }
-function animatePartyBtn() {
-    document.getElementById('party-btn').style.backgroundPosition = 'stuff';
+function setBackGroundPosition(ele, pos) {
+    ele.style.backgroundPosition = `${pos}% 100%`;
 }
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();

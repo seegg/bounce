@@ -25,7 +25,8 @@ const appProps = {
   party: {
     isActive: false, start: 0, duration: 10000, maxVelocity: 2, minVelocity: 0.5,
     wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
-    gravityRef: true, colourRef: <[number, number][]>[]
+    gravityRef: true, colourRef: <[number, number][]>[],
+    partyBtn: document.getElementById('party-btn')
   },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
@@ -405,8 +406,11 @@ function partyBallVelocity(min: number = appProps.party.maxVelocity, max: number
   };
 }
 
-function animatePartyBtn() {
-  document.getElementById('party-btn')!.style.backgroundPosition = 'stuff';
+/**
+ * Set the x position of the Element's backgroup position property as a percentage.
+ */
+function setBackGroundPosition(ele: HTMLElement, pos: number) {
+  ele.style.backgroundPosition = `${pos}% 100%`;
 }
 
 /**
