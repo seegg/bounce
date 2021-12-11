@@ -354,7 +354,8 @@ const appProps = {
     canvasHorizontalGap: 5 * 2,
     canvasTopOffset: 70,
     party: {
-        isActive: false, start: 0, duration: 10000, maxVelocity: 2, wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
+        isActive: false, start: 0, duration: 10000, maxVelocity: 2, minVelocity: 0.5,
+        wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
         gravityRef: true,
         colourRef: []
     },
@@ -421,7 +422,7 @@ function setSizes() {
         console.error(err);
     }
 }
-function removeBall(ballToDelete) {
+function deleteBall(ballToDelete) {
     try {
         const index = appProps.balls.findIndex(ball => ball.id === ballToDelete.id);
         if (index === -1) {
@@ -441,6 +442,9 @@ function createAndStoreBall(imgEle, x, y, radius = appProps.radiusSizes.current,
         const ball = new Ball(imageCache[imgIndex], x, y, radius, selected);
         appProps.balls.push(ball);
         appProps.count++;
+        if (appProps.party) {
+            appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
+        }
         return ball;
     }
     catch (err) {
@@ -638,17 +642,19 @@ function party() {
     appProps.party.isActive = true;
     appProps.balls.forEach(ball => {
         appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
-        let sign = -1;
-        if (Math.random() > 0.5) {
-            sign *= 1;
-        }
-        ball.velocity.vX = Math.max(Math.random() * appProps.party.maxVelocity, 0.5) * sign;
-        sign = -1;
-        if (Math.random() > 0.5) {
-            sign = 1;
-        }
-        ball.velocity.vY = Math.max(Math.random() * appProps.party.maxVelocity, 0.5) * sign;
+        ball.velocity = partyBallVelocity(appProps.party.maxVelocity, appProps.party.minVelocity);
     });
+}
+function partyBallVelocity(min = appProps.party.maxVelocity, max = appProps.party.minVelocity) {
+    let signX = -1, signY = -1;
+    if (Math.random() > 0.5)
+        signX = 1;
+    if (Math.random() > 0.5)
+        signY = 1;
+    return {
+        vX: Math.max((Math.random() * max), min) * signX,
+        vY: Math.max((Math.random() * max), min) * signY
+    };
 }
 function getRelativeMousePos(evt) {
     const boundingRect = evt.target.getBoundingClientRect();

@@ -104,7 +104,7 @@ function setSizes(): void {
     }
 
     appProps.canvas.width = width - appProps.canvasHorizontalGap;
-    appProps.canvas.height = height - appProps.canvasTopOffset; c
+    appProps.canvas.height = height - appProps.canvasTopOffset;
 
     appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
   } catch (err) {
@@ -141,8 +141,9 @@ function createAndStoreBall(
     const ball = new Ball(imageCache[imgIndex], x, y, radius, selected);
     appProps.balls.push(ball);
     appProps.count++;
+    //Update colour reference if created during party mode.
     if (appProps.party) {
-
+      appProps.party.colourRef[ball.id] = [Math.floor(Math.random() * appProps.rainBow.length), 0];
     }
     return ball;
   } catch (err) {
