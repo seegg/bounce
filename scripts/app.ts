@@ -104,7 +104,7 @@ function setSizes(): void {
     }
 
     appProps.canvas.width = width - appProps.canvasHorizontalGap;
-    appProps.canvas.height = height - appProps.canvasTopOffset;
+    appProps.canvas.height = height - appProps.canvasTopOffset; c
 
     appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
   } catch (err) {
@@ -116,7 +116,7 @@ function setSizes(): void {
 /**
  * Remove the selected ball from the ball array
  */
-function removeBall(ballToDelete: Ball) {
+function deleteBall(ballToDelete: Ball) {
   try {
     const index = appProps.balls.findIndex(ball => ball.id === ballToDelete.id);
     if (index === -1) {
