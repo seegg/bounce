@@ -373,7 +373,7 @@ function calcBallRotation(ball: Ball): number {
 
 function party() {
   appProps.party.start = new Date().getTime();
-
+  document.getElementById('party-btn')?.classList.add('btn-progress-bar')
   if (appProps.party.isActive) {
     appProps.balls.forEach(ball => {
       ball.velocity = partyBallVelocity();

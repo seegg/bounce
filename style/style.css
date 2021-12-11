@@ -121,6 +121,15 @@ input[type=text]:focus{
   padding: 0.25rem;
   margin-right: 0.25rem;
   background-color: var(--btn-bg);
+}
+
+.btn-ctrl#party-btn{
+  background: linear-gradient(to right, var(--btn-bg) 50%, black 50%, black);
+  background-size: 200% 100%;
+}
+
+.btn-ctrl#party-btn:hover{
+  background: linear-gradient(to right, var(--btn-hover-bg) 50%, black 50%, black);
   background-size: 200% 100%;
 }
 
@@ -130,7 +139,8 @@ input[type=text]:focus{
 
 .btn-progress-bar{
   background: linear-gradient(to right, var(--btn-bg) 50%, black 50%, black);
-  animation: progress-bar-btn 2s ease;
+  background-size: 200% 100%;
+  animation: progress-bar-btn 2s linear;
 }
 
 .btn-container{

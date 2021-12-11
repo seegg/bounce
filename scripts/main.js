@@ -631,7 +631,9 @@ function calcBallRotation(ball) {
     return rotation * 360;
 }
 function party() {
+    var _a;
     appProps.party.start = new Date().getTime();
+    (_a = document.getElementById('party-btn')) === null || _a === void 0 ? void 0 : _a.classList.add('btn-progress-bar');
     if (appProps.party.isActive) {
         appProps.balls.forEach(ball => {
             ball.velocity = partyBallVelocity();
