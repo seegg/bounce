@@ -8,3 +8,5 @@
 ##### Click the + button to upload an image or link to an existing image online.
 
 ##### Any image that is not a square will have the larger dimension cropped.
+
+##### Hit the party button.
