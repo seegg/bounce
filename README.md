@@ -11,4 +11,4 @@
 
 #### Hit the 'G' button.
 
-##### Hit the party button.
+##### Hit the party button(G button disabled during party mode).
