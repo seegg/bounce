@@ -260,7 +260,7 @@ input[type=text]{
 }
 
 @media(hover :hover){
- all:hover{
+ *:hover{
   background-color: initial;
  }
 }
