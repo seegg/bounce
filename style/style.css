@@ -7,6 +7,7 @@
   --btn-hover-bg2: hsl(120, 96%, 81%);
   --balls-bg: hsl(0, 94%, 82%);
   --border-radius: 0.25rem;
+  touch-action: none;
 }
 
 
