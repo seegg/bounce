@@ -9,4 +9,6 @@
 
 ##### Any image that is not a square will have the larger dimension cropped.
 
+#### Hit the 'G' button.
+
 ##### Hit the party button.
