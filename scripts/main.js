@@ -616,7 +616,6 @@ function drawBall(ctx, ball) {
         ctx.beginPath();
         ctx.arc(0, 0, radius, 0, Math.PI * 2);
         ctx.stroke();
-        console.log(appProps.party.colourRef[id]);
     }
     if (selected) {
         ctx.lineWidth = 4;
