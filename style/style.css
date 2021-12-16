@@ -258,3 +258,9 @@ input[type=text]{
   margin: 0 auto;
   display: block;
 }
+
+@media(hover :hover){
+ all:hover{
+  background-color: initial;
+ }
+}
