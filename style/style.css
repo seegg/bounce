@@ -130,14 +130,15 @@ input[type=text]:focus{
   background: linear-gradient(to right, var(--btn-bg) 50%, var(--btn-bg2) 50%, var(--btn-bg2));
   background-size: 200% 100%;
 }
+@media (hover :hover){
+  .btn-ctrl#party-btn:hover{
+    background: linear-gradient(to right, var(--btn-hover-bg) 50%, var(--btn-hover-bg2) 50%, var(--btn-hover-bg2));
+    background-size: 200% 100%;
+  }
 
-.btn-ctrl#party-btn:hover{
-  background: linear-gradient(to right, var(--btn-hover-bg) 50%, var(--btn-hover-bg2) 50%, var(--btn-hover-bg2));
-  background-size: 200% 100%;
-}
-
-.btn-ctrl:hover{
-  background-color: var(--btn-hover-bg);
+  .btn-ctrl:hover{
+    background-color: var(--btn-hover-bg);
+  }
 }
 
 .btn-container{
@@ -257,10 +258,4 @@ input[type=text]{
 .size{
   margin: 0 auto;
   display: block;
-}
-
-@media(hover :hover){
- *:hover{
-  background-color: initial;
- }
 }
