@@ -44,22 +44,6 @@ class Ball {
         }
         return false;
     }
-    ballBounce(ball2) {
-        if (this.selected || ball2.selected)
-            return;
-        if (this.checkBallCollision(ball2)) {
-            const modifierY = 1;
-            const modifierX = 1;
-            const velocity1 = util.getBallCollisionVelocity(this, ball2);
-            const velocity2 = util.getBallCollisionVelocity(ball2, this);
-            velocity1.vX *= modifierX;
-            velocity1.vY *= modifierY;
-            velocity2.vX *= modifierX;
-            velocity2.vY *= modifierY;
-            this.velocity = velocity1;
-            ball2.velocity = velocity2;
-        }
-    }
     getCircle() {
         return Object.assign(Object.assign({}, this.position), { r: this.radius });
     }
@@ -527,9 +511,20 @@ function handleBallCollissions(ball) {
             return distA - distB;
         });
         ball.reversePosition(ball.getOverlap(collisions[0]));
-        ball.ballBounce(collisions[0]);
+        const [v1, v2] = ballsBounce(ball, collisions[0]);
+        ball.velocity = v1;
+        collisions[0].velocity = v2;
     }
     collisions = [];
+}
+function ballsBounce(ball1, ball2) {
+    let ball1V = Object.assign({}, ball1.velocity);
+    let ball2V = Object.assign({}, ball2.velocity);
+    if (ball1.checkBallCollision(ball2)) {
+        ball1V = util.getBallCollisionVelocity(ball1, ball2);
+        ball2V = util.getBallCollisionVelocity(ball2, ball1);
+    }
+    return [ball1V, ball2V];
 }
 function handleWallCollissions(ball) {
     const { position, radius, velocity } = ball;

@@ -63,9 +63,10 @@ class Ball {
   }
 
   /**
-   * Check if this ball is touching a certain ball
-   * and check if they're colliding or moving away
-   * by comparing the angles between the two.
+   * Check if this ball is colliding against another ball
+   * It's consider colliding if the overlap between the two balls is
+   * greater than or equal to 0 and the angle between the velocity vectors is less 
+   * than 90 degrees.
    */
   checkBallCollision(ball2: Ball): boolean {
     if (this.getOverlap(ball2) >= 0) {
@@ -74,25 +75,6 @@ class Ball {
       return angle <= 90;
     }
     return false;
-  }
-
-  /**
-   * Bounce this against another ball.
-   */
-  ballBounce(ball2: Ball): void {
-    if (this.selected || ball2.selected) return;
-    if (this.checkBallCollision(ball2)) {
-      const modifierY = 1;
-      const modifierX = 1;
-      const velocity1 = util.getBallCollisionVelocity(this, ball2);
-      const velocity2 = util.getBallCollisionVelocity(ball2, this);
-      velocity1.vX *= modifierX;
-      velocity1.vY *= modifierY;
-      velocity2.vX *= modifierX;
-      velocity2.vY *= modifierY;
-      this.velocity = velocity1;
-      ball2.velocity = velocity2;
-    }
   }
 
   //return circle representation of the ball.
