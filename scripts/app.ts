@@ -34,9 +34,9 @@ const appProps = {
 (function init(): void {
   addEventListeners();
   //set initial canvas dimensions
-  appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
-  appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
-  // setSizes();
+  // appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
+  // appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
+  setSizes();
   // Load all the images in the image list
   Promise.all(
     imageList.map(img => addImage(

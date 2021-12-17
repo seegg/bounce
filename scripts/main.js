@@ -348,8 +348,7 @@ const appProps = {
 };
 (function init() {
     addEventListeners();
-    appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
-    appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
+    setSizes();
     Promise.all(imageList.map(img => addImage(img, imageCache, 50))).then(_ => {
         appProps.currentTime = new Date().getTime();
         draw();
