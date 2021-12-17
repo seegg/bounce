@@ -251,6 +251,19 @@ function handleBallCollissions(ball: Ball): void {
 }
 
 /**
+ * calculate the velocity after two balls collide.
+ */
+function ballsBounce(ball1: Ball, ball2: Ball): [Velocity, Velocity] {
+  let ball1V = { ...ball1.velocity };
+  let ball2V = { ...ball2.velocity };
+  if (ball1.checkBallCollision(ball2)) {
+    ball1V = util.getBallCollisionVelocity(ball1, ball2);
+    ball2V = util.getBallCollisionVelocity(ball2, ball1);
+  }
+  return [ball1V, ball2V];
+}
+
+/**
  * Check to see if a ball collides with a side wall.
  */
 function handleWallCollissions(ball: Ball): void {
