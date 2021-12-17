@@ -77,19 +77,6 @@ class Ball {
     return false;
   }
 
-  /**
-   * Bounce this against another ball.
-   */
-  ballBounce(ball2: Ball): void {
-    if (this.selected || ball2.selected) return;
-    if (this.checkBallCollision(ball2)) {
-      const velocity1 = util.getBallCollisionVelocity(this, ball2);
-      const velocity2 = util.getBallCollisionVelocity(ball2, this);
-      this.velocity = velocity1;
-      ball2.velocity = velocity2;
-    }
-  }
-
   //return circle representation of the ball.
   getCircle() {
     return { ...this.position, r: this.radius };

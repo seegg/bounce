@@ -44,16 +44,6 @@ class Ball {
         }
         return false;
     }
-    ballBounce(ball2) {
-        if (this.selected || ball2.selected)
-            return;
-        if (this.checkBallCollision(ball2)) {
-            const velocity1 = util.getBallCollisionVelocity(this, ball2);
-            const velocity2 = util.getBallCollisionVelocity(ball2, this);
-            this.velocity = velocity1;
-            ball2.velocity = velocity2;
-        }
-    }
     getCircle() {
         return Object.assign(Object.assign({}, this.position), { r: this.radius });
     }
