@@ -521,7 +521,9 @@ function handleBallCollissions(ball) {
             return distA - distB;
         });
         ball.reversePosition(ball.getOverlap(collisions[0]));
-        ball.ballBounce(collisions[0]);
+        const [v1, v2] = ballsBounce(ball, collisions[0]);
+        ball.velocity = v1;
+        collisions[0].velocity = v2;
     }
     collisions = [];
 }
