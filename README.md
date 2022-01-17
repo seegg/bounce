@@ -13,4 +13,4 @@
 
 ##### Hit the party button(gravity disabled during party mode).
 
-##### the scripts are bundled using the tsconfig file, which means order is important.
+##### the scripts are bundled into main.js using the tsconfig file, which means order is important.
