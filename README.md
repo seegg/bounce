@@ -9,6 +9,8 @@
 
 ##### Any image that is not a square will have the larger dimension cropped.
 
-#### Hit the 'G' button.
+##### Hit the 'G' button to toggle gravity.
 
-##### Hit the party button(G button disabled during party mode).
+##### Hit the party button(gravity disabled during party mode).
+
+##### the scripts are bundled using the tsconfig file, which means order is important.
