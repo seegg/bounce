@@ -20,7 +20,9 @@ const controlHtml =
 const canvasHtml =
   '<canvas id="canvas" class="bounce-canvas">' +
   "Your browser doesn't support canvas." +
-  '</canvas>';
+  '</canvas>' +
+  '<div class="canvas-instructions"><p>To add a ball, select an image and then click/fling it on the canvas.</p>' +
+  '<p>Upload an image to create a ball with that image.</p>';
 
 export const insertBounceElements = () => {
   const container = document.querySelector('.bounce-container') || document.querySelector('.intro');

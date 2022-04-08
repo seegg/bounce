@@ -56,6 +56,7 @@ export function addImage(
     .catch(err => {
       imgContainer?.removeChild(loadingPlaceholder);
       console.error(err);
+      throw err;
     })
 }
 

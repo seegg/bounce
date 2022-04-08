@@ -20,7 +20,7 @@ export const appProps = {
   mouseMoveDistThreshold: 10,
   velocityThreshould: 0.05,
   overlapThreshold: 0.05,
-  wallModifiers: { left: 1.1, right: 1.1, top: 1, bottom: 1.8 },
+  wallModifiers: { left: 1, right: 1, top: 1, bottom: 1 },
   currentTime: 0,
   selectedTime: 0,
   deceleration: 0.995,
@@ -29,8 +29,8 @@ export const appProps = {
   canvasTopOffset: 70,
   party: {
     isActive: false, start: 0, duration: 10000, maxVelocity: 2, minVelocity: 0.5,
-    wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
-    gravityRef: true, colourRef: <[number, number][]>[],
+    wallModRef: { left: 1.1, right: 1.1, top: 1, bottom: 1.8 },
+    gravityRef: false, colourRef: <[number, number][]>[],
     partyBtn: document.getElementById('party-btn')
   },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
@@ -44,15 +44,32 @@ export function init(): void {
   //set initial canvas dimensions
   setSizes();
   // Load all the images in the image list
+  if (localStorage.getItem('ballImgSrcs')) {
+    imageList.push(...localStorage.getItem('ballImgSrcs')!.split(','));
+  }
   Promise.all(
     imageList.map(img => addImage(
       img, imageCache, 50)
     )
   ).then(_ => {
+    createBalls();
     appProps.currentTime = new Date().getTime();
     window.requestAnimationFrame(draw);
   });
+  document.addEventListener('click', () => { console.log(appProps.wallModifiers) });
 };
+
+const createBalls = () => {
+  const number = Math.ceil(Math.random() * 3) + 2;
+  for (let i = 0; i < number; i++) {
+    const ball = new Ball(imageCache[Math.floor(Math.random() * imageCache.length)],
+      Math.random() * appProps.canvas.width, Math.random() * appProps.canvas.height, appProps.radiusSizes.current
+    )
+    ball.velocity.vX = Math.random() * 1;
+    ball.velocity.vY = Math.random() * 1;
+    appProps.balls.push(ball);
+  }
+}
 
 /**
  * Add event handlers for the canvas.
@@ -86,6 +103,15 @@ function toggleGravityBtn(isOn: boolean) {
     appProps.gravity.btn?.classList.add('bounce-selected');
   } else {
     appProps.gravity.btn?.classList.remove('bounce-selected');
+  }
+  if (appProps.gravity.isOn) {
+    const temp = appProps.party.wallModRef;
+    appProps.party.wallModRef = { ...appProps.wallModifiers };
+    appProps.wallModifiers = { ...temp };
+  } else {
+    const temp = appProps.wallModifiers;
+    appProps.wallModifiers = { ...appProps.party.wallModRef };
+    appProps.party.wallModRef = { ...temp };
   }
 }
 
@@ -173,9 +199,11 @@ function draw() {
     if (ellapsedPartyTime > appProps.party.duration) {
       partyBtnBGPos = 0;
       appProps.party.isActive = false;
-      appProps.wallModifiers = { ...appProps.party.wallModRef };
+      // appProps.wallModifiers = { ...appProps.party.wallModRef };
+      if (appProps.gravity.isOn != appProps.party.gravityRef) {
+        toggleGravityBtn(appProps.party.gravityRef);
+      }
       appProps.gravity.isOn = appProps.party.gravityRef;
-      toggleGravityBtn(appProps.gravity.isOn);
       appProps.party.colourRef = [];
     } else {
       //update the ball border colours after each second.
@@ -223,7 +251,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     const distX = velocity.vX * ellapsedTime;
     position.x += distX;
     position.y += velocity.vY * ellapsedTime;
-    velocity.vX *= appProps.deceleration;
+    if (appProps.gravity.isOn) velocity.vX *= appProps.deceleration;
     handleBallCollissions(ball);
     handleWallCollissions(ball);
   }
@@ -404,10 +432,8 @@ function party() {
   }
 
   appProps.party.gravityRef = appProps.gravity.isOn;
+  if (appProps.gravity.isOn) toggleGravityBtn(appProps.gravity.isOn);
   appProps.gravity.isOn = false;
-  toggleGravityBtn(appProps.gravity.isOn);
-  appProps.party.wallModRef = { ...appProps.wallModifiers };
-  appProps.wallModifiers = { left: 1, right: 1, top: 1, bottom: 1 };
   appProps.party.isActive = true;
   appProps.balls.forEach(ball => {
     //randomly assign one of the rainbow colours to a ball at the start.

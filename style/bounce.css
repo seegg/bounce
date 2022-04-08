@@ -13,6 +13,7 @@
 .bounce-container {
   display: flex;
   flex-direction: column;
+  background-color: black;
 }
 
 .bounce-button {
@@ -205,10 +206,26 @@
 
 .canvas-container {
   /* background-color: var(--canvas-bg); */
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 10px;
+}
+
+.canvas-instructions {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+  color: white;
 }
 
 .bounce-img-thumb {

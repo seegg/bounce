@@ -15,6 +15,8 @@ export const modalInit = () => {
     toggle: () => {
       imageUploadModal.modal?.classList.toggle('close');
       imageUploadModal.overlay?.classList.toggle('close');
+      imageForm.imgFileInput.files = null;
+      imageForm.imgURLInput.value = '';
     }
   }
 
@@ -39,6 +41,7 @@ export const modalInit = () => {
     handleSubmit: (evt: Event) => {
       evt.preventDefault();
       let imgSrc = ''
+      let isUrl = false;
       if (imageForm.imgFileInput.files?.item(0)) {
         try {
           imgSrc = URL.createObjectURL(imageForm.imgFileInput.files[0]);
@@ -47,11 +50,29 @@ export const modalInit = () => {
         }
       } else {
         imgSrc = imageForm.imgURLInput.value;
+        isUrl = true;
       }
 
       addImage(imgSrc, imageCache, appProps.radiusSizes.current)
         .then(_ => {
-          console.log('whatever');
+          if (isUrl) {
+            let key = 'ballImgSrcs';
+            let ballImgSrcs = '';
+            if (localStorage.getItem(key)) {
+              ballImgSrcs = localStorage.getItem(key)!;
+            }
+
+            if (!ballImgSrcs.split(',').includes(imgSrc)) {
+              if (localStorage.getItem(key)) {
+                ballImgSrcs += `,${imgSrc}`;
+              } else {
+                ballImgSrcs = imgSrc;
+              }
+              localStorage.setItem(key, ballImgSrcs);
+            }
+
+          }
+
           imageUploadModal.toggle();
         })
         .catch(err => {
