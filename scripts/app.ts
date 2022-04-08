@@ -1,4 +1,9 @@
-const appProps = {
+import { Ball } from "./ball";
+import { imageList, addImage, imageCache } from "./images";
+import { Velocity } from "./types";
+import { util } from "./utility";
+
+export const appProps = {
   count: 0,
   radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
@@ -31,7 +36,7 @@ const appProps = {
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
-(function init(): void {
+export function init(): void {
   addEventListeners();
   //set initial canvas dimensions
   setSizes();
@@ -44,7 +49,7 @@ const appProps = {
     appProps.currentTime = new Date().getTime();
     window.requestAnimationFrame(draw);
   });
-})();
+};
 
 /**
  * Add event handlers for the canvas.
