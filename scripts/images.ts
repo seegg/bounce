@@ -11,10 +11,13 @@ export const imageList = (function () {
 })();
 
 //image thumbnail container
-const container = <HTMLElement>document.getElementById('bounce-img-container');
+let container = <HTMLElement>document.getElementById('bounce-img-container');
 
 //set up image scroll controls
-document.getElementById('ball-scroll-controls')?.addEventListener('pointerdown', imgContainerScrollUpDown);
+export const setUpImages = () => {
+  container = <HTMLElement>document.getElementById('bounce-img-container');
+  document.getElementById('ball-scroll-controls')?.addEventListener('pointerdown', imgContainerScrollUpDown);
+}
 
 //Keeps track of the bitmaps created from imageList and input image url and image files.
 export let imageCache = <ImageBitmap[]>[];
@@ -106,7 +109,7 @@ export function toggleSelectedImgElement(imgEle: HTMLImageElement) {
 }
 
 export function scrollToImgElement(imgEle: HTMLImageElement) {
-  const container = document.getElementById('img-container')!;
+  const container = document.getElementById('bounce-img-container')!;
   const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
   container.scroll(0, scrollDistance);
 }

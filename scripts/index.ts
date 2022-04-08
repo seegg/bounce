@@ -1,5 +1,11 @@
 import { init } from "./app";
+import { setUpImages } from "./images";
 import { modalInit } from "./modal";
+import { insertBounceElements } from './add-controls';
 
-init();
+insertBounceElements();
+
+
+setUpImages();
 modalInit();
+init();

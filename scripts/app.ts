@@ -37,6 +37,8 @@ export const appProps = {
 };
 
 export function init(): void {
+  appProps.canvas = <HTMLCanvasElement>document.getElementById('canvas');
+  appProps.gravity.btn = document.getElementById('gravity-btn');
   addEventListeners();
   //set initial canvas dimensions
   setSizes();
