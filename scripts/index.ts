@@ -4,8 +4,6 @@ import { modalInit } from "./modal";
 import { insertBounceElements } from './add-controls';
 
 insertBounceElements();
-
-
 setUpImages();
 modalInit();
 init();

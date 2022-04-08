@@ -1,3 +1,4 @@
+import { addModal } from "./modal";
 const controlHtml =
   '<!-- Thumbnail container -->' +
   '<section id="ball-select" class="balls-container">' +
@@ -32,5 +33,7 @@ export const insertBounceElements = () => {
   canvasELement.classList.add('canvas-container');
   canvasELement.innerHTML = canvasHtml;
 
-  container?.append(controlElement, canvasELement);
+  const modal = addModal();
+
+  container?.append(controlElement, canvasELement, modal);
 }
