@@ -13,7 +13,6 @@
 .bounce-container {
   display: flex;
   flex-direction: column;
-  background-color: black;
 }
 
 .bounce-button {
