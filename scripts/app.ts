@@ -56,11 +56,10 @@ export function init(): void {
     appProps.currentTime = new Date().getTime();
     window.requestAnimationFrame(draw);
   });
-  document.addEventListener('click', () => { console.log(appProps.wallModifiers) });
 };
 
 const createBalls = () => {
-  const number = Math.ceil(Math.random() * 3) + 2;
+  const number = Math.ceil(Math.random() * 3) + 4;
   for (let i = 0; i < number; i++) {
     const ball = new Ball(imageCache[Math.floor(Math.random() * imageCache.length)],
       Math.random() * appProps.canvas.width, Math.random() * appProps.canvas.height, appProps.radiusSizes.current
@@ -82,6 +81,7 @@ function addEventListeners(): void {
   appProps.canvas.addEventListener('pointermove', onMouseMove);
   appProps.canvas.addEventListener('pointerup', onMouseUp);
   appProps.canvas.addEventListener('pointerleave', onMouseLeave);
+  appProps.canvas.addEventListener('contextmenu', (evt) => { evt.preventDefault(); handleContextMenu(evt) });
 
   const gravityBtn = document.getElementById('gravity-btn');
   //toggle the colour of the text on the gravity button.
@@ -146,14 +146,9 @@ function setSizes(): void {
 /**
  * Remove the selected ball from the ball array
  */
-function deleteBall(ballToDelete: Ball) {
+function deleteBall(index: number) {
   try {
-    const index = appProps.balls.findIndex(ball => ball.id === ballToDelete.id);
-    if (index === -1) {
-      throw new Error(`ball of id:${ballToDelete.id} could not be found.`);
-    } else {
-      appProps.balls.splice(index, 1);
-    }
+    appProps.balls.splice(index, 1);
   } catch (err) {
     console.error(err);
   }
@@ -546,4 +541,10 @@ function onMouseLeave(evt: MouseEvent) {
     appProps.selectedBall.velocity = { vX: 0, vY: 0 };
     appProps.selectedBall = null;
   }
+}
+
+function handleContextMenu(evt: MouseEvent) {
+  const [x, y] = getRelativeMousePos(evt);
+  const index = appProps.balls.findIndex(ball => ball.containsPoint(x, y));
+  if (index >= 0) deleteBall(index);
 }

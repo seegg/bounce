@@ -22,6 +22,8 @@ const canvasHtml =
   "Your browser doesn't support canvas." +
   '</canvas>' +
   '<div class="canvas-instructions"><p>To add a ball, select an image and then click/fling it on the canvas.</p>' +
+  '<p>To grab a ball, unselect all images and click on a ball in the canvas.</p>' +
+  '<p>Delete balls in the canvas with right click.</p>' +
   '<p>Upload an image to create a ball with that image.</p>';
 
 export const insertBounceElements = () => {
