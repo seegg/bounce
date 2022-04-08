@@ -31,7 +31,7 @@ export const appProps = {
     isActive: false, start: 0, duration: 10000, maxVelocity: 2, minVelocity: 0.5,
     wallModRef: { left: 1, right: 1, top: 1, bottom: 1 },
     gravityRef: true, colourRef: <[number, number][]>[],
-    partyBtn: document.getElementById('party-btn')!
+    partyBtn: document.getElementById('party-btn')
   },
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
@@ -39,6 +39,7 @@ export const appProps = {
 export function init(): void {
   appProps.canvas = <HTMLCanvasElement>document.getElementById('canvas');
   appProps.gravity.btn = document.getElementById('gravity-btn');
+  appProps.party.partyBtn = document.getElementById('party-btn');
   addEventListeners();
   //set initial canvas dimensions
   setSizes();

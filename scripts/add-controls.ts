@@ -23,7 +23,7 @@ const canvasHtml =
   '</canvas>';
 
 export const insertBounceElements = () => {
-  const container = document.querySelector('.bounce-container');
+  const container = document.querySelector('.bounce-container') || document.querySelector('.intro');
   const controlElement = document.createElement('section');
   controlElement.id = 'app-controls';
   controlElement.classList.add('controls');

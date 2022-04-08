@@ -7,7 +7,7 @@ module.exports = {
   entry: ['./scripts/index.ts'],
   output: {
     path: path.join(__dirname, 'scripts'),
-    filename: 'main.bundle.js'
+    filename: 'bounce.bundle.js'
   },
   mode: 'development',
   module: {
