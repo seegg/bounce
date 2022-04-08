@@ -11,7 +11,7 @@ export const imageList = (function () {
 })();
 
 //image thumbnail container
-const container = <HTMLElement>document.getElementById('img-container');
+const container = <HTMLElement>document.getElementById('bounce-img-container');
 
 //set up image scroll controls
 document.getElementById('ball-scroll-controls')?.addEventListener('pointerdown', imgContainerScrollUpDown);
@@ -35,10 +35,10 @@ export function addImage(
   imgContainer: HTMLElement = container
 ) {
   // const classList = ['img-thumb', 'rounded-full', 'filter', 'object-contain', 'h-12', 'w-12', 'filter', 'grayscale'];
-  const classList = ['img-thumb', 'grayscale'];
+  const classList = ['bounce-img-thumb', 'grayscale'];
   // const imgContainer = document.getElementById('img-container');
   const loadingPlaceholder = document.createElement('img');
-  loadingPlaceholder.classList.add('img-thumb');
+  loadingPlaceholder.classList.add('bounce-img-thumb');
   loadingPlaceholder.src = 'images/spinner.gif';
   imgContainer?.appendChild(loadingPlaceholder);
   return util.createCircleImg(imgSrc, radius)

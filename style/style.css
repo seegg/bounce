@@ -38,7 +38,7 @@
   outline: none;
 }
 
-.title {
+.bounce-title {
   font-size: 2.25rem;
   font-weight: 700;
   line-height: 2.5rem;
@@ -169,12 +169,13 @@
   background-color: var(--balls-bg);
 }
 
-.img-container {
+.bounce-img-container {
   border-radius: var(--border-radius);
   display: flex;
   flex-wrap: wrap;
   height: 3rem;
   overflow-y: auto;
+  column-gap: 5px;
   width: 100%;
 }
 
@@ -210,7 +211,7 @@
   margin: 10px;
 }
 
-.img-thumb {
+.bounce-img-thumb {
   display: block;
   border-radius: 50%;
   height: 3rem;
