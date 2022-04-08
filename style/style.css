@@ -1,23 +1,13 @@
 :root {
-  --canvas-bg: hsl(38, 92%, 50%);
+  --canvas-bg: hsla(38, 92%, 50%, 0.1);
   --main-bg: hsl(0, 93%, 94%);
   --btn-bg: hsl(216, 12%, 84%);
   --btn-bg2: hsl(120, 53%, 65%);
-  --btn-hover-bg: hsl(120, 50%, 98%);
+  --btn-hover-bg: hsl(120, 00%, 98%);
   --btn-hover-bg2: hsl(120, 96%, 81%);
-  --balls-bg: hsl(0, 94%, 82%);
+  --balls-bg: hsla(0, 94%, 82%, 0.5);
   --border-radius: 0.25rem;
   touch-action: none;
-}
-
-html,
-body {
-  margin: 0;
-  background-color: var(--main-bg);
-}
-
-#bounce {
-  background-color: var(--main-bg);
 }
 
 .bounce-container {
@@ -25,17 +15,17 @@ body {
   flex-direction: column;
 }
 
-button {
+.bounce-button {
   background: none;
   box-shadow: none;
   border: none;
 }
 
-button:focus {
+.bounce-button:focus {
   outline: none;
 }
 
-input[type=text] {
+.bounce-input[type=text] {
   box-sizing: border-box;
   border-radius: var(--border-radius);
   border: none;
@@ -44,7 +34,7 @@ input[type=text] {
   width: 100%;
 }
 
-input[type=text]:focus {
+.bounce-input[type=text]:focus {
   outline: none;
 }
 
@@ -165,6 +155,11 @@ input[type=text]:focus {
   white-space: nowrap;
 }
 
+.btn-gravity {
+  font-weight: bold;
+  font-size: large;
+}
+
 .balls-container {
   display: flex;
   border-radius: var(--border-radius);
@@ -208,6 +203,7 @@ input[type=text]:focus {
 }
 
 .canvas-container {
+  /* background-color: var(--canvas-bg); */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -248,12 +244,47 @@ input[type=text]:focus {
   cursor: default;
 }
 
-input[type=text] {
+.bounce-input[type=text] {
   height: 2.5rem;
   padding-left: 0.5rem;
   padding-right: 00.5rem;
 }
 
-.selected {
-  color: greenyellow;
+.bounce-selected {
+  color: red;
+}
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 {
+  font-size: 18px;
+}
+
+.material-icons.md-24 {
+  font-size: 24px;
+}
+
+.material-icons.md-36 {
+  font-size: 36px;
+}
+
+.material-icons.md-48 {
+  font-size: 48px;
+}
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.material-icons.md-dark.md-inactive {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light {
+  color: rgba(255, 255, 255, 1);
+}
+
+.material-icons.md-light.md-inactive {
+  color: rgba(255, 255, 255, 0.3);
 }

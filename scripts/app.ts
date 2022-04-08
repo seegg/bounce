@@ -7,7 +7,7 @@ export const appProps = {
   count: 0,
   radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
-  gravity: { value: 0.01, isOn: true, btn: document.getElementById('gravity-btn') },
+  gravity: { value: 0.01, isOn: false, btn: document.getElementById('gravity-btn') },
   balls: <Ball[]>[],
   selectedImgEle: <HTMLImageElement | null>null,
   selectedBall: <Ball | null>null,
@@ -80,9 +80,9 @@ function addEventListeners(): void {
 
 function toggleGravityBtn(isOn: boolean) {
   if (isOn) {
-    appProps.gravity.btn?.classList.add('selected');
+    appProps.gravity.btn?.classList.add('bounce-selected');
   } else {
-    appProps.gravity.btn?.classList.remove('selected');
+    appProps.gravity.btn?.classList.remove('bounce-selected');
   }
 }
 

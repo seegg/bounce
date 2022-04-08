@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script defer src="scripts/main.bundle.js"></script>
   <link rel="stylesheet" href="style/style.css">
   <title>Bounce</title>
@@ -17,16 +18,19 @@
         <!-- Thumbnail container -->
         <section id="ball-select" class="balls-container">
           <section id="ball-scroll-controls" class="btn-scroll-container">
-            <button id="img-up" class="btn-scroll">&#9650;</button>
-            <button id="img-down" class="btn-scroll">&#9660;</button>
+            <button id="img-up" class="btn-scroll bounce-button">&#9650;</button>
+            <button id="img-down" class="btn-scroll bounce-button">&#9660;</button>
           </section>
           <section id="img-container" class="img-container"></section>
         </section>
         <!-- Button controls -->
         <section id="button-controls" class="btn-container">
-          <button id="image-upload-btn" class="btn-ctrl">&plus;</button>
-          <button id="party-btn" class="btn-ctrl"> &#127881;</button>
-          <button id="gravity-btn" class="btn-ctrl selected">G</button>
+          <button id="image-upload-btn" class="btn-ctrl bounce-button"><span
+              class="material-icons">add_photo_alternate</span></button>
+          <button id="party-btn" class="btn-ctrl bounce-button"> <span class="material-icons">
+              celebration
+            </span></button>
+          <button id="gravity-btn" class="btn-ctrl btn-gravity bounce-button">G</button>
         </section>
       </section>
 
@@ -42,14 +46,15 @@
   <section class="upload-modal close" id="modal">
     <form id="image-upload-form" class="upload-form">
       <h2 class="title">Upload Image</h2>
-      <input hidden type="file" id="img-file" name="imgFile" accept="image/*">
+      <input class="bounce-input" hidden type="file" id="img-file" name="imgFile" accept="image/*">
 
       <section>
         <section class="img-upload">
           <label for="fileName" class="font-bold">Image File:</label>
           <section class="img-file-display">
-            <input readonly type="text" name="fileName" placeholder="No file selected" id="file-name">
-            <button type="button" class="btn-file" id='upload-button'>Select Image</button>
+            <input class="bounce-input" readonly type="text" name="fileName" placeholder="No file selected"
+              id="file-name">
+            <button type="button" class="btn-file bounce-button" id='upload-button'>Select Image</button>
           </section>
         </section>
       </section>
@@ -57,13 +62,17 @@
       <section class="img-upload">
         <label for="imgUrl" class="font-bold">Image URL:</label>
         <section>
-          <input type="text" name="imgURL" id="img-URL" placeholder="Image URL">
+          <input class="bounce-input" type="text" name="imgURL" id="img-URL" placeholder="Image URL">
         </section>
       </section>
 
       <section class="upload-controls">
-        <button type="submit" class="mx-1 btn-ctrl" id="form-ok-btn">Ok</button>
-        <button type="button" class="mx-1 btn-ctrl" id="form-cancel-btn">Cancel</button>
+        <button type="submit" class="mx-1 bounce-button btn-ctrl" id="form-ok-btn"><span class="material-icons">
+            check
+          </span></button>
+        <button type="button" class="mx-1 bounce-button btn-ctrl " id="form-cancel-btn"><span class="material-icons">
+            close
+          </span></button>
       </section>
 
     </form>
