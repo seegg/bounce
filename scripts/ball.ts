@@ -1,4 +1,7 @@
-class Ball {
+import { Point, Velocity } from "./types";
+import { util } from "./utility";
+
+export class Ball {
   private static baseId = 1;
   readonly id: number;
   position: Point;

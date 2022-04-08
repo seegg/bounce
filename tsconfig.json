@@ -1,20 +1,17 @@
 {
   "include": [
-    "scripts/types.ts",
-    "scripts/ball.ts",
-    "scripts/utility.ts",
-    "scripts/images.ts",
-    "scripts/app.ts",
-    "scripts/modal.ts",
+    "scripts/*"
   ],
   "compilerOptions": {
-    "lib": [
-      "es2016",
-      "DOM",
-    ],
-    "target": "ES6",
-    "outFile": "scripts/main.js",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
     "removeComments": true,
-    "strict": true
+    "lib": [
+      "DOM",
+      "ES2020"
+    ],
+    "target": "ES6"
   }
 }

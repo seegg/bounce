@@ -1,5 +1,5 @@
-type Point = { x: number, y: number };
-type MouseClickCallback = (e: MouseEvent) => any;
-type Wall = 'top' | 'bottom' | 'left' | 'right';
-type Velocity = { vX: number, vY: number };
-type Circle = Point & { r: number };
+export type Point = { x: number, y: number };
+export type MouseClickCallback = (e: MouseEvent) => any;
+export type Wall = 'top' | 'bottom' | 'left' | 'right';
+export type Velocity = { vX: number, vY: number };
+export type Circle = Point & { r: number };

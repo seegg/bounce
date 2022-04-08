@@ -1,8 +1,10 @@
-const imageList = (function () {
+import { appProps } from "./app";
+import { util } from "./utility";
+export const imageList = (function () {
 
   const imageFiles = <string[]>["me.jpeg", "grumpy.webp", "smileface.webp", "spongebob.webp", "pepper.png"];
   const imageUrls = <string[]>[];
-  const path = "images/";
+  const path = "https://raw.githubusercontent.com/seegg/bounce/main/images/";
 
   return imageFiles.map(img => path + img).concat(imageUrls);
 
@@ -15,7 +17,7 @@ const container = <HTMLElement>document.getElementById('img-container');
 document.getElementById('ball-scroll-controls')?.addEventListener('pointerdown', imgContainerScrollUpDown);
 
 //Keeps track of the bitmaps created from imageList and input image url and image files.
-let imageCache = <ImageBitmap[]>[];
+export let imageCache = <ImageBitmap[]>[];
 
 /**
  * Add an image base on a input url. create a bitmap and HTMLImageElement base on this image.
@@ -26,7 +28,7 @@ let imageCache = <ImageBitmap[]>[];
  * @param imgContainer The HTMLElement containing the image selection.
  * @param callback event handler for click event on the img element
  */
-function addImage(
+export function addImage(
   imgSrc: string,
   imgArr: ImageBitmap[],
   radius: number,
@@ -58,7 +60,7 @@ function addImage(
  * Append a HTMLImageELement to a parent container
  * optional loading placeholder.
  */
-function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLElement, loadingImg?: HTMLImageElement): void {
+export function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLElement, loadingImg?: HTMLImageElement): void {
   if (loadingImg) {
     imgContainer.replaceChild(imgEle, loadingImg);
   } else {
@@ -71,7 +73,7 @@ function appendImgElemToContainer(imgEle: HTMLImageElement, imgContainer: HTMLEl
  *assign an index number from the bitmap image array associated with 
  *the src.
  */
-function createImgEleWithIndex(
+export function createImgEleWithIndex(
   src: string,
   imgIndex: number,
   classList: string[]
@@ -91,7 +93,7 @@ function createImgEleWithIndex(
  * Toggle/Select the img elements 
  * in the img container
  */
-function toggleSelectedImgElement(imgEle: HTMLImageElement) {
+export function toggleSelectedImgElement(imgEle: HTMLImageElement) {
   const grayscale = 'grayscale';
   appProps.selectedImgEle?.classList.toggle(grayscale);
   if (imgEle === appProps.selectedImgEle) {
@@ -103,13 +105,13 @@ function toggleSelectedImgElement(imgEle: HTMLImageElement) {
   scrollToImgElement(imgEle);
 }
 
-function scrollToImgElement(imgEle: HTMLImageElement) {
+export function scrollToImgElement(imgEle: HTMLImageElement) {
   const container = document.getElementById('img-container')!;
   const scrollDistance = imgEle.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
   container.scroll(0, scrollDistance);
 }
 
-function imgContainerScrollUpDown(evt: Event, imgContainer: HTMLElement = container, imgThumbnailSize: number = 48) {
+export function imgContainerScrollUpDown(evt: Event, imgContainer: HTMLElement = container, imgThumbnailSize: number = 48) {
   evt.preventDefault();
 
   /**

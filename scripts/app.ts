@@ -1,4 +1,9 @@
-const appProps = {
+import { Ball } from "./ball";
+import { imageList, addImage, imageCache } from "./images";
+import { Velocity } from "./types";
+import { util } from "./utility";
+
+export const appProps = {
   count: 0,
   radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
@@ -31,11 +36,9 @@ const appProps = {
   rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
 };
 
-(function init(): void {
+export function init(): void {
   addEventListeners();
   //set initial canvas dimensions
-  // appProps.canvas.width = window.innerWidth - appProps.canvasHorizontalGap;
-  // appProps.canvas.height = window.innerHeight - appProps.canvasTopOffset;
   setSizes();
   // Load all the images in the image list
   Promise.all(
@@ -44,11 +47,9 @@ const appProps = {
     )
   ).then(_ => {
     appProps.currentTime = new Date().getTime();
-    // party();
-    // window.requestAnimationFrame(draw);
-    draw();
+    window.requestAnimationFrame(draw);
   });
-})();
+};
 
 /**
  * Add event handlers for the canvas.
@@ -92,8 +93,8 @@ function toggleGravityBtn(isOn: boolean) {
 function setSizes(): void {
   try {
     if (appProps.canvas === null) throw new Error('canvas is null');
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = window.innerWidth - 50;
+    const height = window.innerHeight - 30;
 
     if (width < appProps.screenBreakPoints.m) {
       appProps.radiusSizes.current = appProps.radiusSizes.s;
