@@ -183,7 +183,7 @@ function draw() {
         appProps.party.colourRef[idx] = [val[0], ellapsedPartyTime];
       })
     }
-    setEleBackGroundPosition(appProps.party.partyBtn, partyBtnBGPos);
+    setEleBackGroundPosition(appProps.party.partyBtn!, partyBtnBGPos);
   } else {
     ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
   }
