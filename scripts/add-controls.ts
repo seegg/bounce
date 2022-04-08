@@ -1,5 +1,6 @@
 import { addModal } from "./modal";
 const controlHtml =
+  '<section id="app-controls" class="controls">' +
   '<!-- Thumbnail container -->' +
   '<section id="ball-select" class="balls-container">' +
   '<section id="ball-scroll-controls" class="btn-scroll-container">' +
@@ -15,6 +16,7 @@ const controlHtml =
   '<button id="party-btn" class="btn-ctrl bounce-button">' +
   '<span class="material-icons">celebration</span></button>' +
   '<button id="gravity-btn" class="btn-ctrl btn-gravity bounce-button">G</button>' +
+  '</section>' +
   '</section>';
 
 const canvasHtml =
@@ -27,10 +29,10 @@ const canvasHtml =
   '<p>Upload an image to create a ball with that image.</p>';
 
 export const insertBounceElements = () => {
-  const container = document.querySelector('.bounce-container') || document.querySelector('.intro');
+  const container = document.querySelector('.bounce-app') || document.querySelector('.intro');
   const controlElement = document.createElement('section');
-  controlElement.id = 'app-controls';
-  controlElement.classList.add('controls');
+  controlElement.id = 'bounce';
+  controlElement.classList.add('bounce-container');
   controlElement.innerHTML = controlHtml;
 
   const canvasELement = document.createElement('section');
@@ -38,6 +40,7 @@ export const insertBounceElements = () => {
   canvasELement.innerHTML = canvasHtml;
 
   const modal = addModal();
+  controlElement.append(canvasELement, modal);
 
-  container?.append(controlElement, canvasELement, modal);
+  container?.append(controlElement);
 }

@@ -5,6 +5,8 @@ import { util } from "./utility";
 
 export const appProps = {
   count: 0,
+  isRunning: true,
+  isRunningW: true,
   radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
   gravity: { value: 0.01, isOn: false, btn: document.getElementById('gravity-btn') },
@@ -54,18 +56,18 @@ export function init(): void {
   ).then(_ => {
     createBalls();
     appProps.currentTime = new Date().getTime();
-    window.requestAnimationFrame(draw);
+    draw();
   });
 };
 
 const createBalls = () => {
-  const number = Math.ceil(Math.random() * 3) + 4;
+  const number = Math.ceil(Math.random() * 3) + 2;
   for (let i = 0; i < number; i++) {
     const ball = new Ball(imageCache[Math.floor(Math.random() * imageCache.length)],
       Math.random() * appProps.canvas.width, Math.random() * appProps.canvas.height, appProps.radiusSizes.current
     )
-    ball.velocity.vX = Math.random() * 1;
-    ball.velocity.vY = Math.random() * 1;
+    ball.velocity.vX = Math.random() * 0.8;
+    ball.velocity.vY = Math.random() * 0.8;
     appProps.balls.push(ball);
   }
 }
@@ -76,6 +78,11 @@ const createBalls = () => {
 function addEventListeners(): void {
   window.onresize = () => {
     setSizes();
+    if (window.innerWidth < 570) {
+      if (appProps.isRunningW) toggleStartW();
+    } else {
+      if (!appProps.isRunningW) toggleStartW();
+    }
   };
   appProps.canvas.addEventListener('pointerdown', onMouseDown);
   appProps.canvas.addEventListener('pointermove', onMouseMove);
@@ -96,7 +103,26 @@ function addEventListeners(): void {
   document.getElementById('party-btn')?.addEventListener('click', () => {
     party();
   })
-}
+
+  const container = document.querySelector('.bounce-container')?.parentElement;
+
+  const options = {
+    rootMargin: '0px',
+    threshold: 0.5
+  }
+
+  new IntersectionObserver((entries) => {
+    const { isIntersecting } = entries[0];
+    if (isIntersecting) {
+      container?.children[0].classList.remove('bounce-hide');
+      if (!appProps.isRunning) toggleStart();
+    } else {
+      container?.children[0].classList.add('bounce-hide');
+      if (appProps.isRunning) toggleStart();
+    }
+  }, options).observe(container!);
+
+};
 
 function toggleGravityBtn(isOn: boolean) {
   if (isOn) {
@@ -139,6 +165,20 @@ function setSizes(): void {
     appProps.balls.forEach(ball => ball.radius = appProps.radiusSizes.current);
   } catch (err) {
     console.error(err);
+  }
+}
+
+function toggleStart() {
+  appProps.isRunning = !appProps.isRunning;
+  if (appProps.isRunning && appProps.isRunningW) {
+    draw();
+  }
+}
+
+function toggleStartW() {
+  appProps.isRunningW = !appProps.isRunningW;
+  if (appProps.isRunning && appProps.isRunningW) {
+    draw();
   }
 }
 
@@ -186,13 +226,13 @@ function draw() {
 
   //Check and update the party conditions.
   if (appProps.party.isActive) {
-    ctx.fillStyle = 'rgba(220, 219, 6, 0.1)';
+    ctx.fillStyle = 'rgba(220, 219, 60, 0.05)';
     ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
     const ellapsedPartyTime = new Date().getTime() - appProps.party.start;
     //party btn backgroup position as percentage value
     let partyBtnBGPos = ellapsedPartyTime / appProps.party.duration * 100;
     if (ellapsedPartyTime > appProps.party.duration) {
-      partyBtnBGPos = 0;
+      partyBtnBGPos = 0; () => { draw }
       appProps.party.isActive = false;
       // appProps.wallModifiers = { ...appProps.party.wallModRef };
       if (appProps.gravity.isOn != appProps.party.gravityRef) {
@@ -228,8 +268,9 @@ function draw() {
   })
   //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
-
-  window.requestAnimationFrame(() => { draw() });
+  if (appProps.isRunning && appProps.isRunningW) {
+    window.requestAnimationFrame(() => { draw() });
+  }
 }
 
 /**

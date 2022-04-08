@@ -42,7 +42,7 @@ export function addImage(
   // const imgContainer = document.getElementById('img-container');
   const loadingPlaceholder = document.createElement('img');
   loadingPlaceholder.classList.add('bounce-img-thumb');
-  loadingPlaceholder.src = 'images/spinner.gif';
+  loadingPlaceholder.src = 'https://raw.githubusercontent.com/seegg/bounce/main/images/spinner.gif';
   imgContainer?.appendChild(loadingPlaceholder);
   return util.createCircleImg(imgSrc, radius)
     .then(bitmapImg => {
