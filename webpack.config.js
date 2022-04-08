@@ -16,7 +16,19 @@ module.exports = {
         test: /\.(j|t)sx?$/i,
         loader: 'babel-loader',
         exclude: /node_modules/,
-      }
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: false
+            }
+          }
+        ],
+      },
     ]
   },
   optimization: {

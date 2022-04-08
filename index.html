@@ -12,66 +12,63 @@
 
 <body>
   <main>
-    <div id="bounce">
-      <div class="size">
-      </div>
-      <div id="app-controls" class="controls">
+    <section id="bounce" class="bounce-container">
+      <section id="app-controls" class="controls">
         <!-- Thumbnail container -->
-        <div id="ball-select" class="balls-container">
-          <div id="ball-scroll-controls" class="btn-scroll-container">
+        <section id="ball-select" class="balls-container">
+          <section id="ball-scroll-controls" class="btn-scroll-container">
             <button id="img-up" class="btn-scroll">&#9650;</button>
             <button id="img-down" class="btn-scroll">&#9660;</button>
-          </div>
-          <div id="img-container" class="img-container"></div>
-        </div>
+          </section>
+          <section id="img-container" class="img-container"></section>
+        </section>
         <!-- Button controls -->
-        <div id="button-controls" class="btn-container">
+        <section id="button-controls" class="btn-container">
           <button id="image-upload-btn" class="btn-ctrl">&plus;</button>
           <button id="party-btn" class="btn-ctrl"> &#127881;</button>
           <button id="gravity-btn" class="btn-ctrl selected">G</button>
-        </div>
+        </section>
+      </section>
 
-      </div>
+      <section class="canvas-container">
+        <canvas id="canvas" class="bounce-canvas">
+          Your browser doesn't support canvas.
+        </canvas>
+      </section>
 
-      <canvas id="canvas">
-        Your browser doesn't support canvas.
-      </canvas>
-
-    </div>
+    </section>
   </main>
   <!-- modal for adding new images -->
-  <div class="upload-modal close" id="modal">
+  <section class="upload-modal close" id="modal">
     <form id="image-upload-form" class="upload-form">
       <h2 class="title">Upload Image</h2>
       <input hidden type="file" id="img-file" name="imgFile" accept="image/*">
 
-      <div>
-        <div class="img-upload">
+      <section>
+        <section class="img-upload">
           <label for="fileName" class="font-bold">Image File:</label>
-          <div class="img-file-display">
+          <section class="img-file-display">
             <input readonly type="text" name="fileName" placeholder="No file selected" id="file-name">
             <button type="button" class="btn-file" id='upload-button'>Select Image</button>
-          </div>
-        </div>
-      </div>
+          </section>
+        </section>
+      </section>
 
-      <div class="img-upload">
+      <section class="img-upload">
         <label for="imgUrl" class="font-bold">Image URL:</label>
-        <div>
+        <section>
           <input type="text" name="imgURL" id="img-URL" placeholder="Image URL">
-        </div>
-      </div>
+        </section>
+      </section>
 
-      <div class="upload-controls">
+      <section class="upload-controls">
         <button type="submit" class="mx-1 btn-ctrl" id="form-ok-btn">Ok</button>
         <button type="button" class="mx-1 btn-ctrl" id="form-cancel-btn">Cancel</button>
-      </div>
+      </section>
 
     </form>
-  </div>
-  <div class="modal-overlay close" id="modal-overlay">
-
-  </div>
+  </section>
+  <div class="modal-overlay close" id="modal-overlay"></div>
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 :root {
-  --canvas-bg: hsla(38, 92%, 50%, 0.5);
+  --canvas-bg: hsl(38, 92%, 50%);
   --main-bg: hsl(0, 93%, 94%);
   --btn-bg: hsl(216, 12%, 84%);
   --btn-bg2: hsl(120, 53%, 65%);
@@ -10,14 +10,19 @@
   touch-action: none;
 }
 
-
-* {
+html,
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  max-width: 100%;
-  font-family: monospace, monospace;
-  font-size: 1rem;
+  background-color: var(--main-bg);
+}
+
+#bounce {
+  background-color: var(--main-bg);
+}
+
+.bounce-container {
+  display: flex;
+  flex-direction: column;
 }
 
 button {
@@ -30,14 +35,8 @@ button:focus {
   outline: none;
 }
 
-body {
-  /* background-color: var(--main-bg); */
-  box-sizing: border-box;
-  font-family: inherit;
-  line-height: inherit;
-}
-
 input[type=text] {
+  box-sizing: border-box;
   border-radius: var(--border-radius);
   border: none;
   background-color: white;
@@ -47,12 +46,6 @@ input[type=text] {
 
 input[type=text]:focus {
   outline: none;
-}
-
-#app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .title {
@@ -198,7 +191,7 @@ input[type=text]:focus {
   padding-right: 0.5rem;
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
-  width: 100%;
+  /* width: 100%; */
 }
 
 @media screen and (min-width: 640px) {
@@ -208,9 +201,17 @@ input[type=text]:focus {
   }
 }
 
-canvas {
+#canvas {
   background-color: var(--canvas-bg);
   border-radius: var(--border-radius);
+  flex: 0 0;
+}
+
+.canvas-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
 }
 
 .img-thumb {
@@ -255,9 +256,4 @@ input[type=text] {
 
 .selected {
   color: greenyellow;
-}
-
-.size {
-  margin: 0 auto;
-  display: block;
 }
