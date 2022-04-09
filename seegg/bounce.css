@@ -1,22 +1,17 @@
 :root {
   --canvas-bg: hsla(38, 92%, 50%, 0.1);
   --main-bg: hsl(0, 93%, 94%);
-  --btn-bg: hsl(216, 12%, 84%);
-  --btn-bg2: hsl(120, 53%, 65%);
-  --btn-hover-bg: hsl(120, 00%, 98%);
-  --btn-hover-bg2: hsl(120, 96%, 81%);
-  --balls-bg: hsla(0, 94%, 82%, 0.5);
+  --btn-bg: hsla(216, 12%, 84%, 0.5);
+  --btn-bg2: hsla(120, 53%, 65%, 0.5);
+  --btn-hover-bg: hsla(120, 00%, 98%, 0.5);
+  --btn-hover-bg2: hsla(120, 96%, 81%, 0.5);
+  --balls-bg: hsla(0, 94%, 82%, 0.2);
   --border-radius: 0.25rem;
-  touch-action: none;
-}
-
-body {
-  background-color: var(--main-bg);
-  margin: 0;
 }
 
 .bounce-container {
-  display: flex;
+  box-sizing: border-box;
+  display: none;
   flex-direction: column;
 }
 
@@ -43,12 +38,13 @@ body {
   outline: none;
 }
 
-.bounce-title {
+.-bounce-title {
   font-size: 2.25rem;
   font-weight: 700;
   line-height: 2.5rem;
   margin-left: auto;
   margin-right: auto;
+  color: black;
 }
 
 .upload-form {
@@ -59,6 +55,7 @@ body {
 }
 
 .upload-modal {
+  color: black;
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -214,22 +211,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px;
-}
-
-.canvas-instructions {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-  user-select: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-wrap: wrap;
-  color: white;
 }
 
 .bounce-img-thumb {
@@ -276,37 +257,15 @@ body {
   color: red;
 }
 
-/* Rules for sizing the icon. */
-.material-icons.md-18 {
-  font-size: 18px;
-}
+@media screen and (min-width: 570px) {
+  .bounce-container {
+    display: flex;
+    opacity: 1;
+    transition: opacity 1s linear;
+  }
 
-.material-icons.md-24 {
-  font-size: 24px;
-}
-
-.material-icons.md-36 {
-  font-size: 36px;
-}
-
-.material-icons.md-48 {
-  font-size: 48px;
-}
-
-/* Rules for using icons as black on a light background. */
-.material-icons.md-dark {
-  color: rgba(0, 0, 0, 0.54);
-}
-
-.material-icons.md-dark.md-inactive {
-  color: rgba(0, 0, 0, 0.26);
-}
-
-/* Rules for using icons as white on a dark background. */
-.material-icons.md-light {
-  color: rgba(255, 255, 255, 1);
-}
-
-.material-icons.md-light.md-inactive {
-  color: rgba(255, 255, 255, 0.3);
+  .bounce-hide {
+    opacity: 0;
+    pointer-events: none;
+  }
 }

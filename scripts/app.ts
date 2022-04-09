@@ -78,11 +78,11 @@ const createBalls = () => {
 function addEventListeners(): void {
   window.onresize = () => {
     setSizes();
-    if (window.innerWidth < 570) {
-      if (appProps.isRunningW) toggleStartW();
-    } else {
-      if (!appProps.isRunningW) toggleStartW();
-    }
+    // if (window.innerWidth < 570) {
+    //   if (appProps.isRunningW) toggleStartW();
+    // } else {
+    //   if (!appProps.isRunningW) toggleStartW();
+    // }
   };
   appProps.canvas.addEventListener('pointerdown', onMouseDown);
   appProps.canvas.addEventListener('pointermove', onMouseMove);
@@ -148,8 +148,8 @@ function toggleGravityBtn(isOn: boolean) {
 function setSizes(): void {
   try {
     if (appProps.canvas === null) throw new Error('canvas is null');
-    const width = window.innerWidth - 50;
-    const height = window.innerHeight - 30;
+    const width = window.innerWidth - 20;
+    const height = window.innerHeight - 10;
 
     if (width < appProps.screenBreakPoints.m) {
       appProps.radiusSizes.current = appProps.radiusSizes.s;
