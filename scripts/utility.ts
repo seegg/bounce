@@ -166,10 +166,22 @@ function distanceBetween2Points(point1: Point, point2: Point): number {
 
 function angleBetween2DVector(vx1: number, vy1: number, vx2: number, vy2: number): number {
 
-  const dotProduct = (vx1 * vx2) + (vy1 * vy2);
-  const magnitude1 = Math.sqrt(Math.pow(vx1, 2) + Math.pow(vy1, 2));
-  const magnitude2 = Math.sqrt(Math.pow(vx2, 2) + Math.pow(vy2, 2));
-  return Math.acos(dotProduct / (magnitude1 * magnitude2)) * (180 / Math.PI);
+  try {
+
+    if ((vx1 === 0 && vy1 === 0) || (vx2 === 0 && vy2 === 0)) return -1;
+
+    const dotProduct = (vx1 * vx2) + (vy1 * vy2);
+    const magnitude1 = Math.sqrt(Math.pow(vx1, 2) + Math.pow(vy1, 2));
+    const magnitude2 = Math.sqrt(Math.pow(vx2, 2) + Math.pow(vy2, 2));
+    const angle = Math.acos(dotProduct / (magnitude1 * magnitude2)) * (180 / Math.PI);
+    if (isNaN(angle)) {
+      return -1;
+    } else {
+      return angle;
+    }
+  } catch (err) {
+    return -1;
+  }
 }
 
 function angleBetween3Points(start: Point, mid: Point, end: Point): number {
@@ -288,6 +300,20 @@ function circleLineIntersect(lineStart: Point, lineEnd: Point, circle: Circle): 
   return [numberOfIntersections, intersect1, discriminant === 0 ? null : intersect2];
 }
 
+function xProduct2D(x1: number, y1: number, x2: number, y2: number) {
+  return (x1 * y2) - (y1 * x2)
+}
+
+function xProduc2DPoints(v1: Point, v2: Point) {
+  return xProduct2D(v1.x, v1.y, v2.x, v2.y);
+}
+
+function rotateVector(vector: { vX: number, vY: number }, angle: number) {
+  const vX = vector.vX * Math.cos(angle) - (vector.vY * Math.sin(angle));
+  const vY = vector.vX * Math.sin(angle) - (vector.vY * Math.cos(angle));
+  return { vX, vY };
+}
+
 export const util = {
   calculateCollisionVelocity,
   createCircleImg,
@@ -299,5 +325,8 @@ export const util = {
   distanceBetween2Points,
   circleLineIntersect,
   maxIntersectHeight,
-  maxIntersectWidth
+  maxIntersectWidth,
+  xProduc2DPoints,
+  xProduct2D,
+  rotateVector
 };

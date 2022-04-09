@@ -7,6 +7,11 @@ export const appProps = {
   count: 0,
   isRunning: true,
   isRunningW: true,
+  isSucking: false,
+  currentSuckingDistance: 50,
+  maxSuckingDistance: 200,
+  suckingPosition: { x: 0, y: 0 },
+  suckingPower: 0.05,
   radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
   gravity: { value: 0.01, isOn: false, btn: document.getElementById('gravity-btn') },
@@ -251,6 +256,14 @@ function draw() {
     ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
   }
 
+  if (appProps.isSucking) {
+    ctx.beginPath();
+    ctx.strokeStyle = 'rbg(0,0,0)';
+    ctx.arc(appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance - appProps.radiusSizes.current, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+
+
   //draw each of the balls and then update its position.
   appProps.balls.forEach(ball => {
     if (!ball.selected) {
@@ -290,6 +303,32 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     if (appProps.gravity.isOn) velocity.vX *= appProps.deceleration;
     handleBallCollissions(ball);
     handleWallCollissions(ball);
+
+    if (appProps.isSucking) {
+      applySucking(ball);
+    }
+  }
+}
+
+function applySucking(ball: Ball) {
+  const distance = util.distanceBetween2Points(appProps.suckingPosition, ball.position)
+  if (appProps.currentSuckingDistance < appProps.maxSuckingDistance) {
+    appProps.currentSuckingDistance = Math.min(appProps.maxSuckingDistance, appProps.currentSuckingDistance + 0.5);
+
+  }
+  if (distance <= appProps.currentSuckingDistance) {
+    const suckingPower = 0.105;
+    if (ball.position.x > appProps.suckingPosition.x) {
+      ball.velocity.vX -= appProps.suckingPower;
+    } else if (ball.position.x < appProps.suckingPosition.x) {
+      ball.velocity.vX += appProps.suckingPower;
+    }
+
+    if (ball.position.y > appProps.suckingPosition.y) {
+      ball.velocity.vY -= appProps.suckingPower;
+    } else if ((ball.position.y < appProps.suckingPosition.y)) {
+      ball.velocity.vY += appProps.suckingPower;
+    }
   }
 }
 /**
@@ -527,28 +566,37 @@ function onMouseDown(evt: MouseEvent) {
     appProps.selectedPositions.current = { x, y };
     appProps.selectedPositions.prev = { x, y };
     appProps.selectedPositions.reference = { x, y };
+  } else {
+    appProps.isSucking = true;
+    [appProps.suckingPosition.x, appProps.suckingPosition.y] = [x, y];
   }
 }
 
 function onMouseMove(evt: MouseEvent) {
-  if (appProps.selectedBall) {
+  if (appProps.selectedBall || appProps.isSucking) {
     const [x, y] = getRelativeMousePos(evt);
-    const [moveX, moveY] = util.xyDiffBetweenPoints(appProps.selectedPositions.current, { x, y });
-    appProps.selectedBall.move(moveX, moveY);
-    appProps.selectedPositions.current = { x, y };
+    if (appProps.selectedBall) {
+      const [moveX, moveY] = util.xyDiffBetweenPoints(appProps.selectedPositions.current, { x, y });
+      appProps.selectedBall.move(moveX, moveY);
+      appProps.selectedPositions.current = { x, y };
 
-    const distance = util.distanceBetween2Points({ x, y }, appProps.selectedPositions.prev);
+      const distance = util.distanceBetween2Points({ x, y }, appProps.selectedPositions.prev);
 
-    //if the angle between the 3 points is greater than a certain amount
-    //assign the current position as the new reference point for velocity.
-    if (distance > appProps.mouseMoveDistThreshold) {
-      const { reference, prev, current } = appProps.selectedPositions;
-      const angle = util.angleBetween3Points(reference, prev, current) || 0;
-      if (angle > appProps.selectedAngleThreshold) {
-        appProps.selectedPositions.reference = { x, y };
-        appProps.selectedTime = new Date().getTime();
+      //if the angle between the 3 points is greater than a certain amount
+      //assign the current position as the new reference point for velocity.
+      if (distance > appProps.mouseMoveDistThreshold) {
+        const { reference, prev, current } = appProps.selectedPositions;
+        const angle = util.angleBetween3Points(reference, prev, current) || 0;
+        if (angle > appProps.selectedAngleThreshold) {
+          appProps.selectedPositions.reference = { x, y };
+          appProps.selectedTime = new Date().getTime();
+        }
+        appProps.selectedPositions.prev = { x, y };
       }
-      appProps.selectedPositions.prev = { x, y };
+    }
+
+    if (appProps.isSucking) {
+      appProps.suckingPosition = { x, y };
     }
   }
 }
@@ -574,6 +622,8 @@ function onMouseUp(evt: MouseEvent) {
     appProps.selectedBall.selected = false;
     appProps.selectedBall = null;
   }
+  appProps.isSucking = false;
+  appProps.currentSuckingDistance = appProps.radiusSizes.current;
 }
 
 function onMouseLeave(evt: MouseEvent) {
@@ -582,6 +632,8 @@ function onMouseLeave(evt: MouseEvent) {
     appProps.selectedBall.velocity = { vX: 0, vY: 0 };
     appProps.selectedBall = null;
   }
+  appProps.isSucking = false;
+  appProps.currentSuckingDistance = appProps.radiusSizes.current;
 }
 
 function handleContextMenu(evt: MouseEvent) {
