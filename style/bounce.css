@@ -233,15 +233,19 @@ body {
 }
 
 .bounce-img-thumb {
+  box-sizing: border-box;
+  border: 3px dotted green;
   display: block;
-  border-radius: 50%;
+  border-radius: 50px;
   height: 3rem;
   width: 3rem;
   object-fit: contain;
+  transition: border-color 0.5s ease-in;
 }
 
 .grayscale {
   filter: grayscale(100%);
+  border-color: transparent;
 }
 
 .img-upload {
