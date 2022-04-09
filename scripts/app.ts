@@ -9,7 +9,7 @@ export const appProps = {
   isRunningW: true,
   isSucking: false,
   currentSuckingDistance: 50,
-  maxSuckingDistance: 200,
+  maxSuckingDistance: 300,
   suckingPosition: { x: 0, y: 0 },
   suckingPower: 0.05,
   radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
@@ -258,7 +258,9 @@ function draw() {
 
   if (appProps.isSucking) {
     ctx.beginPath();
-    ctx.strokeStyle = 'rbg(0,0,0)';
+    // ctx.strokeStyle = 'blanchedalmond';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
     ctx.arc(appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance - appProps.radiusSizes.current, 0, 2 * Math.PI);
     ctx.stroke();
   }
@@ -313,7 +315,7 @@ function updateBall(ball: Ball, ellapsedTime: number) {
 function applySucking(ball: Ball) {
   const distance = util.distanceBetween2Points(appProps.suckingPosition, ball.position)
   if (appProps.currentSuckingDistance < appProps.maxSuckingDistance) {
-    appProps.currentSuckingDistance = Math.min(appProps.maxSuckingDistance, appProps.currentSuckingDistance + 0.5);
+    appProps.currentSuckingDistance = Math.min(appProps.maxSuckingDistance, appProps.currentSuckingDistance + 0.8);
 
   }
   if (distance <= appProps.currentSuckingDistance) {
