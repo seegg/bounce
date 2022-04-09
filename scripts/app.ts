@@ -66,8 +66,8 @@ const createBalls = () => {
     const ball = new Ball(imageCache[Math.floor(Math.random() * imageCache.length)],
       Math.random() * appProps.canvas.width, Math.random() * appProps.canvas.height, appProps.radiusSizes.current
     )
-    ball.velocity.vX = Math.random() * 0.8;
-    ball.velocity.vY = Math.random() * 0.8;
+    ball.velocity.vX = Math.random() * 0.5;
+    ball.velocity.vY = Math.random() * 0.5;
     appProps.balls.push(ball);
   }
 }

@@ -15,8 +15,9 @@ export const modalInit = () => {
     toggle: () => {
       imageUploadModal.modal?.classList.toggle('close');
       imageUploadModal.overlay?.classList.toggle('close');
-      imageForm.imgFileInput.files = null;
+      imageForm.imgFileInput.value = '';
       imageForm.imgURLInput.value = '';
+      imageForm.imgFileDisplay.value = '';
     }
   }
 
@@ -106,7 +107,7 @@ export const modalInit = () => {
 export const addModal = () => {
   const modalHtml =
     '<form id="image-upload-form" class="upload-form">' +
-    '<h2 class="-bounce-title">Upload Image</h2>' +
+    '<h2 class="bounce-title">Upload Image</h2>' +
     '<input class="bounce-input" hidden type="file" id="img-file" name="imgFile" accept="image/*">' +
 
     '<section class="img-upload">' +
