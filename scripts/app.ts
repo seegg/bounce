@@ -148,8 +148,8 @@ function toggleGravityBtn(isOn: boolean) {
 function setSizes(): void {
   try {
     if (appProps.canvas === null) throw new Error('canvas is null');
-    const width = window.innerWidth - 20;
-    const height = window.innerHeight - 10;
+    const width = window.innerWidth;
+    const height = window.innerHeight - 20;
 
     if (width < appProps.screenBreakPoints.m) {
       appProps.radiusSizes.current = appProps.radiusSizes.s;
