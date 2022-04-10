@@ -372,7 +372,7 @@ function updateAllSuck() {
     suck.curr -= 0.1;
   });
 
-  appProps.suckingArr = appProps.suckingArr.filter(suck => suck.curr >= 50);
+  appProps.suckingArr = appProps.suckingArr.filter(suck => suck.curr >= appProps.radiusSizes.current);
 }
 
 /**
