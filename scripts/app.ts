@@ -97,7 +97,7 @@ function addEventListeners(): void {
   appProps.canvas.addEventListener('pointermove', onMouseMove);
   appProps.canvas.addEventListener('pointerup', onMouseUp);
   appProps.canvas.addEventListener('pointerleave', onMouseLeave);
-  appProps.canvas.addEventListener('contextmenu', (evt) => { evt.preventDefault(); toggleStart(); handleContextMenu(evt) });
+  appProps.canvas.addEventListener('contextmenu', (evt) => { evt.preventDefault(); handleContextMenu(evt) });
   appProps.canvas.addEventListener('touchstart', (evt) => { evt.preventDefault(); });
 
   const gravityBtn = document.getElementById('gravity-btn');

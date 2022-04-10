@@ -57,12 +57,23 @@ export const insertBounceElements = () => {
   controlElement.append(canvasELement, modal);
 
   const canvasInstructions = canvasELement.querySelector('.canvas-instructions');
-  const toggleInstructions = () => {
+  const toggleInstructions = (state: boolean | null = null) => {
+    if (state !== null) {
+      canvasInstructions?.classList[state ? 'add' : 'remove']('instructions-active');
+      canvasInstructions?.querySelector('.instructions-container')?.classList[state ? 'add' : 'remove']('close');
+      return;
+    }
     canvasInstructions?.classList.toggle('instructions-active');
     canvasInstructions?.querySelector('.instructions-container')?.classList.toggle('close');
   }
   canvasInstructions?.addEventListener('click', () => {
     toggleInstructions();
+  })
+
+  document.addEventListener('keydown', (evt) => {
+    if (evt.code === 'Escape') {
+      toggleInstructions(false);
+    }
   })
 
   container?.append(controlElement);
