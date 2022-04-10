@@ -24,6 +24,21 @@ const canvasHtml =
   "Your browser doesn't support canvas." +
   '</canvas>';
 
+const instructions =
+  '<section class="canvas-instructions">' +
+  '<span class="material-icons md-light">help</span>' +
+  '<section class="instructions-container close">' +
+  '<h3>With no image icons selected</h3>' +
+  '<ul>' +
+  '<li>Click on a balla to select it.</li>' +
+  '<li>Click and hold on the canvas to create zones that repel and attract.</li>' +
+  '</ul><h3>With an image icon selected</h3><ul>' +
+  '<li>Click and fling pointer on the canvas to create a new ball with the desired velocity.</li>' +
+  '</ul>' +
+  '</section>' +
+  '</section>'
+
+
 export const insertBounceElements = () => {
   const container = document.querySelector('.bounce-app') || document.querySelector('.intro');
   const controlElement = document.createElement('section');
@@ -33,10 +48,20 @@ export const insertBounceElements = () => {
 
   const canvasELement = document.createElement('section');
   canvasELement.classList.add('canvas-container');
-  canvasELement.innerHTML = canvasHtml;
+  canvasELement.innerHTML = canvasHtml + instructions;
 
   const modal = addModal();
   controlElement.append(canvasELement, modal);
 
+  const canvasInstructions = canvasELement.querySelector('.canvas-instructions');
+  const toggleInstructions = () => {
+    canvasInstructions?.classList.toggle('instructions-active');
+    canvasInstructions?.querySelector('.instructions-container')?.classList.toggle('close');
+  }
+  canvasInstructions?.addEventListener('click', () => {
+    toggleInstructions();
+  })
+
   container?.append(controlElement);
 }
+
