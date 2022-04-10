@@ -256,16 +256,15 @@ body {
 .instructions-container::after {
   position: absolute;
   content: '';
-  right: 0;
-  top: 0;
-  width: 20px;
-  height: 30px;
-  border-right: 3px dotted green;
-  border-top: 3px solid green;
-  border-left: none;
-  border-bottom: none;
-  border-top-left-radius: 20px;
-  border-bottom-right-radius: 50px;
+  right: -21px;
+  top: -21px;
+  /* width: 30px;
+  height: 30px; */
+  border-right: 20px solid var(--canvas-bg);
+  border-top: 20px solid transparent;
+  border-left: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  transform: rotate(135deg);
 }
 
 .bounce-img-thumb {
