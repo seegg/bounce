@@ -249,6 +249,21 @@
   user-select: none;
 }
 
+.instructions-container::after {
+  position: absolute;
+  content: '';
+  right: 0;
+  top: 0;
+  width: 20px;
+  height: 30px;
+  border-right: 3px dotted green;
+  border-top: 3px solid green;
+  border-left: none;
+  border-bottom: none;
+  border-top-left-radius: 20px;
+  border-bottom-right-radius: 50px;
+}
+
 .bounce-img-thumb {
   box-sizing: border-box;
   border: 3px dotted green;
