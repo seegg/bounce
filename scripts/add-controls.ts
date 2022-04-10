@@ -60,7 +60,7 @@ export const insertBounceElements = () => {
   const toggleInstructions = (state: boolean | null = null) => {
     if (state !== null) {
       canvasInstructions?.classList[state ? 'add' : 'remove']('instructions-active');
-      canvasInstructions?.querySelector('.instructions-container')?.classList[state ? 'add' : 'remove']('close');
+      canvasInstructions?.querySelector('.instructions-container')?.classList[state ? 'remove' : 'add']('close');
       return;
     }
     canvasInstructions?.classList.toggle('instructions-active');
