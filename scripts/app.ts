@@ -8,10 +8,13 @@ export const appProps = {
   isRunning: true,
   isRunningW: true,
   isSucking: false,
+  isBlowing: false,
+  suckingArr: <{ pos: { x: number, y: number }, curr: number, isBlow: boolean }[]>[],
   currentSuckingDistance: 50,
   maxSuckingDistance: 300,
   suckingPosition: { x: 0, y: 0 },
-  suckingPower: 0.05,
+  suckingPower: 0.1,
+  lesserSuckingPower: 0.05,
   radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
   gravity: { value: 0.01, isOn: false, btn: document.getElementById('gravity-btn') },
@@ -40,7 +43,8 @@ export const appProps = {
     gravityRef: false, colourRef: <[number, number][]>[],
     partyBtn: document.getElementById('party-btn')
   },
-  rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'] //rainbow colours
+  rainBow: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee'], //rainbow colours
+  latestFrame: 0,
 };
 
 export function init(): void {
@@ -83,17 +87,17 @@ const createBalls = () => {
 function addEventListeners(): void {
   window.onresize = () => {
     setSizes();
-    // if (window.innerWidth < 570) {
-    //   if (appProps.isRunningW) toggleStartW();
-    // } else {
-    //   if (!appProps.isRunningW) toggleStartW();
-    // }
+    if (window.innerWidth < 570) {
+      if (appProps.isRunningW) toggleStartW();
+    } else {
+      if (!appProps.isRunningW) toggleStartW();
+    }
   };
   appProps.canvas.addEventListener('pointerdown', onMouseDown);
   appProps.canvas.addEventListener('pointermove', onMouseMove);
   appProps.canvas.addEventListener('pointerup', onMouseUp);
   appProps.canvas.addEventListener('pointerleave', onMouseLeave);
-  appProps.canvas.addEventListener('contextmenu', (evt) => { evt.preventDefault(); handleContextMenu(evt) });
+  appProps.canvas.addEventListener('contextmenu', (evt) => { evt.preventDefault(); toggleStart(); handleContextMenu(evt) });
   appProps.canvas.addEventListener('touchstart', (evt) => { evt.preventDefault(); });
 
   const gravityBtn = document.getElementById('gravity-btn');
@@ -154,7 +158,7 @@ function toggleGravityBtn(isOn: boolean) {
 function setSizes(): void {
   try {
     if (appProps.canvas === null) throw new Error('canvas is null');
-    const width = window.innerWidth;
+    const width = window.innerWidth - 10;
     const height = window.innerHeight - 20;
 
     if (width < appProps.screenBreakPoints.m) {
@@ -177,6 +181,7 @@ function setSizes(): void {
 function toggleStart() {
   appProps.isRunning = !appProps.isRunning;
   if (appProps.isRunning && appProps.isRunningW) {
+    appProps.currentTime = new Date().getTime();
     draw();
   }
 }
@@ -184,6 +189,7 @@ function toggleStart() {
 function toggleStartW() {
   appProps.isRunningW = !appProps.isRunningW;
   if (appProps.isRunning && appProps.isRunningW) {
+    appProps.currentTime = new Date().getTime();
     draw();
   }
 }
@@ -258,13 +264,17 @@ function draw() {
   }
 
   if (appProps.isSucking) {
-    ctx.beginPath();
-    // ctx.strokeStyle = 'blanchedalmond';
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
-    ctx.arc(appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance - appProps.radiusSizes.current, 0, 2 * Math.PI);
-    ctx.stroke();
+    // // ctx.strokeStyle = 'blanchedalmond';
+    if (appProps.currentSuckingDistance < appProps.maxSuckingDistance) {
+      appProps.currentSuckingDistance = Math.min(appProps.maxSuckingDistance, appProps.currentSuckingDistance + 5);
+
+    }
+    drawCircle(ctx, appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance - appProps.radiusSizes.current, appProps.isBlowing);
   }
+
+  appProps.suckingArr.forEach(suck => {
+    drawCircle(ctx, suck.pos.x, suck.pos.y, suck.curr - appProps.radiusSizes.current, suck.isBlow);
+  })
 
 
   //draw each of the balls and then update its position.
@@ -285,8 +295,22 @@ function draw() {
   //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
   if (appProps.isRunning && appProps.isRunningW) {
-    window.requestAnimationFrame(() => { draw() });
+    appProps.latestFrame = window.requestAnimationFrame(() => { draw() });
+  } else {
+    window.cancelAnimationFrame(appProps.latestFrame);
   }
+
+  updateAllSuck();
+}
+
+const drawCircle = (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, isBlow: boolean, width = 2, style = 'blanchedalmond',) => {
+  if (r <= 0) return;
+  if (isBlow) style = 'red';
+  ctx.beginPath();
+  ctx.strokeStyle = style;
+  ctx.lineWidth = width;
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.stroke();
 }
 
 /**
@@ -308,32 +332,49 @@ function updateBall(ball: Ball, ellapsedTime: number) {
     handleWallCollissions(ball);
 
     if (appProps.isSucking) {
-      applySucking(ball);
+      suction(ball, appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance, appProps.suckingPower, appProps.isBlowing)
+    }
+    applyAllSuck(ball);
+  }
+}
+
+/**
+ * attract balls to the specified position based on power.
+ */
+function suction(ball: Ball, x: number, y: number, suckingDistance: number, suckingPower: number, isBlow: boolean) {
+  const distance = util.distanceBetween2Points({ x, y }, ball.position);
+  if (distance <= suckingDistance) {
+    //the stronger the suck the closer it's to the center.
+    let adjustedPower = ((suckingDistance - distance) / suckingDistance) * suckingPower;
+    if (isBlow) adjustedPower *= -1;
+    if (ball.position.x > x) {
+      ball.velocity.vX -= adjustedPower;
+    } else if (ball.position.x < x) {
+      ball.velocity.vX += adjustedPower;
+    }
+
+    if (ball.position.y > y) {
+      ball.velocity.vY -= adjustedPower;
+    } else if ((ball.position.y < y)) {
+      ball.velocity.vY += adjustedPower;
     }
   }
 }
 
-function applySucking(ball: Ball) {
-  const distance = util.distanceBetween2Points(appProps.suckingPosition, ball.position)
-  if (appProps.currentSuckingDistance < appProps.maxSuckingDistance) {
-    appProps.currentSuckingDistance = Math.min(appProps.maxSuckingDistance, appProps.currentSuckingDistance + 0.8);
-
-  }
-  if (distance <= appProps.currentSuckingDistance) {
-    const suckingPower = 0.105;
-    if (ball.position.x > appProps.suckingPosition.x) {
-      ball.velocity.vX -= appProps.suckingPower;
-    } else if (ball.position.x < appProps.suckingPosition.x) {
-      ball.velocity.vX += appProps.suckingPower;
-    }
-
-    if (ball.position.y > appProps.suckingPosition.y) {
-      ball.velocity.vY -= appProps.suckingPower;
-    } else if ((ball.position.y < appProps.suckingPosition.y)) {
-      ball.velocity.vY += appProps.suckingPower;
-    }
-  }
+function applyAllSuck(ball: Ball) {
+  appProps.suckingArr.forEach((suck) => {
+    suction(ball, suck.pos.x, suck.pos.y, suck.curr, appProps.lesserSuckingPower, suck.isBlow);
+  })
 }
+
+function updateAllSuck() {
+  appProps.suckingArr.forEach(suck => {
+    suck.curr -= 0.1;
+  });
+
+  appProps.suckingArr = appProps.suckingArr.filter(suck => suck.curr >= 50);
+}
+
 /**
  * Adjust the position of the ball based on the nearest ball collission
  */
@@ -523,8 +564,8 @@ function party() {
 //randomise velocity for party balls.
 function partyBallVelocity(min: number = appProps.party.maxVelocity, max: number = appProps.party.minVelocity): Velocity {
   let signX = -1, signY = -1;
-  if (Math.random() > 0.5) signX = 1;
-  if (Math.random() > 0.5) signY = 1;
+  if (Math.random() < 0.5) signX = 1;
+  if (Math.random() < 0.5) signY = 1;
   return {
     vX: Math.max((Math.random() * max), min) * signX,
     vY: Math.max((Math.random() * max), min) * signY
@@ -571,6 +612,7 @@ function onMouseDown(evt: MouseEvent) {
     appProps.selectedPositions.reference = { x, y };
   } else {
     appProps.isSucking = true;
+    if (Math.random() < 0.5) appProps.isBlowing = true;
     [appProps.suckingPosition.x, appProps.suckingPosition.y] = [x, y];
   }
 }
@@ -625,8 +667,10 @@ function onMouseUp(evt: MouseEvent) {
     appProps.selectedBall.selected = false;
     appProps.selectedBall = null;
   }
-  appProps.isSucking = false;
-  appProps.currentSuckingDistance = appProps.radiusSizes.current;
+
+  if (appProps.isSucking) {
+    addSuckToArr();
+  }
 }
 
 function onMouseLeave(evt: MouseEvent) {
@@ -635,12 +679,21 @@ function onMouseLeave(evt: MouseEvent) {
     appProps.selectedBall.velocity = { vX: 0, vY: 0 };
     appProps.selectedBall = null;
   }
-  appProps.isSucking = false;
-  appProps.currentSuckingDistance = appProps.radiusSizes.current;
+  if (appProps.isSucking) {
+    addSuckToArr();
+  }
 }
 
 function handleContextMenu(evt: MouseEvent) {
   const [x, y] = getRelativeMousePos(evt);
   const index = appProps.balls.findIndex(ball => ball.containsPoint(x, y));
   if (index >= 0) deleteBall(index);
+}
+
+function addSuckToArr() {
+  const { suckingPosition, currentSuckingDistance } = appProps;
+  appProps.suckingArr.push({ pos: { ...suckingPosition }, curr: currentSuckingDistance, isBlow: appProps.isBlowing });
+  appProps.isSucking = false;
+  appProps.isBlowing = false;
+  appProps.currentSuckingDistance = appProps.radiusSizes.current;
 }
