@@ -238,6 +238,16 @@ body {
   background-color: green;
 }
 
+@keyframes anim-opacity {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 .instructions-container {
   padding-inline: 10px;
   position: absolute;
@@ -251,6 +261,7 @@ body {
   background-color: var(--balls-bg);
   pointer-events: none;
   user-select: none;
+  animation: anim-opacity 0.5s linear;
 }
 
 .instructions-container::after {
