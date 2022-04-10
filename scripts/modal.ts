@@ -115,7 +115,7 @@ export const addModal = () => {
     '<section class="img-file-display">' +
     '<input class="bounce-input" readonly type="text" name="fileName" placeholder="No file selected"' +
     'id="file-name">' +
-    '<button type="button" class="btn-file bounce-button" id="upload-button">Select Image</button>' +
+    '<button type="button" class="btn-file bounce-button" id="upload-button">Upload Image</button>' +
     '</section>' +
     '</section>' +
 

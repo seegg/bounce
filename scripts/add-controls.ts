@@ -30,11 +30,14 @@ const instructions =
   '<section class="instructions-container close">' +
   '<h3>With no image icons selected</h3>' +
   '<ul>' +
-  '<li>Click on a balla to select it.</li>' +
+  '<li>Click on a ball to select it.</li>' +
   '<li>Click and hold on the canvas to create zones that repel and attract.</li>' +
   '</ul><h3>With an image icon selected</h3><ul>' +
   '<li>Click and fling pointer on the canvas to create a new ball with the desired velocity.</li>' +
-  '</ul>' +
+  '</ul><h3>Buttons</h3><ul>' +
+  '<li>Upload and link your own images for balls</li>' +
+  '<li>Party(see the rainbow)</li>' +
+  '<li>Toggle gravity</li>' +
   '</section>' +
   '</section>'
 
