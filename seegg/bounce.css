@@ -246,6 +246,7 @@
 
 .instructions-container {
   padding-inline: 10px;
+  padding-block: 20px;
   position: absolute;
   top: 15px;
   right: 15px;
