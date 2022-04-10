@@ -87,7 +87,7 @@ const createBalls = () => {
 function addEventListeners(): void {
   window.onresize = () => {
     setSizes();
-    if (window.innerWidth < 570) {
+    if (window.innerWidth < 570 && document.querySelector('.intro')) {
       if (appProps.isRunningW) toggleStartW();
     } else {
       if (!appProps.isRunningW) toggleStartW();
