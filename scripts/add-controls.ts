@@ -27,7 +27,7 @@ const canvasHtml =
 const instructions =
   '<section class="canvas-instructions">' +
   '<span class="material-icons md-light">help</span>' +
-  '<section class="instructions-container close">' +
+  '<section class="instructions-container anim-fadein close">' +
   '<h3>With no image icons selected</h3>' +
   '<ul>' +
   '<li>Click on a ball to select it.</li>' +

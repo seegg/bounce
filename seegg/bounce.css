@@ -234,6 +234,7 @@
   background-color: green;
 }
 
+
 .instructions-container {
   padding-inline: 10px;
   padding-block: 10px;
@@ -248,6 +249,7 @@
   background-color: var(--balls-bg);
   pointer-events: none;
   user-select: none;
+  animation: fadein 0.5s linear;
 }
 
 .instructions-container::after {
@@ -262,6 +264,10 @@
   border-left: 20px solid transparent;
   border-bottom: 20px solid transparent;
   transform: rotate(135deg);
+}
+
+.instructions-container h3:not(:first-child) {
+  margin-top: 1rem;
 }
 
 .bounce-img-thumb {
