@@ -11,10 +11,10 @@ export const appProps = {
   isBlowing: false,
   suckingArr: <{ pos: { x: number, y: number }, curr: number, isBlow: boolean }[]>[],
   currentSuckingDistance: 50,
-  maxSuckingDistance: 300,
+  maxSuckingDistance: 500,
   suckingPosition: { x: 0, y: 0 },
-  suckingPower: 0.1,
-  lesserSuckingPower: 0.05,
+  suckingPower: 0.2,
+  lesserSuckingPower: 0.1,
   radiusSizes: { s: 40, m: 40, l: 50, current: 50 },
   screenBreakPoints: { l: 1280, m: 768 },
   gravity: { value: 0.01, isOn: false, btn: document.getElementById('gravity-btn') },
@@ -346,6 +346,10 @@ function suction(ball: Ball, x: number, y: number, suckingDistance: number, suck
   if (distance <= suckingDistance) {
     //the stronger the suck the closer it's to the center.
     let adjustedPower = ((suckingDistance - distance) / suckingDistance) * suckingPower;
+    if (distance < ball.radius / 2) {
+      ball.velocity.vX *= 0.95;
+      ball.velocity.vY *= 0.95;
+    }
     if (isBlow) adjustedPower *= -1;
     if (ball.position.x > x) {
       ball.velocity.vX -= adjustedPower;
