@@ -303,15 +303,15 @@ function draw() {
   updateAllSuck();
 }
 
-const drawCircle = (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, isBlow: boolean, width = 2, style = 'blanchedalmond',) => {
+const drawCircle = (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, isBlow: boolean, width = 2, style = 'rgba(255, 235, 205, 0.3)',) => {
   if (r <= 0) return;
-  if (isBlow) style = 'red';
+  if (isBlow) style = 'rgba(238, 35, 35, 0.3)';
   ctx.beginPath();
-  ctx.strokeStyle = style;
-  ctx.lineWidth = width;
+  ctx.fillStyle = style;
+  // ctx.lineWidth = width;
   ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.stroke();
-}
+  ctx.fill();
+};
 
 /**
  * update the ball's state after each frame.
