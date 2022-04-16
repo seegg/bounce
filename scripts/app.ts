@@ -269,11 +269,11 @@ function draw() {
       appProps.currentSuckingDistance = Math.min(appProps.maxSuckingDistance, appProps.currentSuckingDistance + 5);
 
     }
-    drawVibratingCircle(ctx, appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance - appProps.radiusSizes.current, appProps.isBlowing);
+    drawVibratingCircle(ctx, appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance - appProps.radiusSizes.current, appProps.isBlowing, appProps.party.isActive);
   }
 
   appProps.suckingArr.forEach(suck => {
-    drawVibratingCircle(ctx, suck.pos.x, suck.pos.y, suck.curr - appProps.radiusSizes.current, suck.isBlow);
+    drawVibratingCircle(ctx, suck.pos.x, suck.pos.y, suck.curr - appProps.radiusSizes.current, suck.isBlow, appProps.party.isActive);
   })
 
 
@@ -303,19 +303,23 @@ function draw() {
   updateAllSuck();
 };
 
-const drawVibratingCircle = (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, isBlow: boolean, width = 2, style = 'rgba(255, 235, 205, 0.3)') => {
-  const outerEdge = r * 0.05;
-  // drawCircle(ctx, x, y, r - outerEdge, isBlow);
-  drawCircle(ctx, x, y, r - outerEdge + (Math.random() * outerEdge), isBlow);
-}
+const drawVibratingCircle =
+  (ctx: CanvasRenderingContext2D,
+    x: number, y: number, r: number,
+    isBlow: boolean, isParty: boolean,
+    vibratingRatio = 0.05) => {
+    const outerEdge = r * vibratingRatio;
+    drawCircle(ctx, x, y, r - outerEdge + (Math.random() * outerEdge), isBlow, isParty);
+    drawCircle(ctx, x, y, r - outerEdge + (Math.random() * outerEdge), isBlow, isParty);
+  }
 
-const drawCircle = (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, isBlow: boolean, width = 2, style = 'rgba(255, 235, 205, 0.3)') => {
+const drawCircle = (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, isBlow: boolean, isParty: boolean, width = 2, style = 'rgba(255, 235, 205, 0.3)') => {
   if (r <= 0) return;
   if (isBlow) style = 'rgba(238, 35, 35, 0.3)';
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
-  if (appProps.party.isActive) {
-    ctx.lineWidth = 5;
+  if (isParty) {
+    ctx.lineWidth = width;
     ctx.strokeStyle = style;
     ctx.stroke();
   } else {
