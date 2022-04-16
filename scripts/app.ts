@@ -238,7 +238,7 @@ function draw() {
 
   //Check and update the party conditions.
   if (appProps.party.isActive) {
-    ctx.fillStyle = 'rgba(220, 219, 60, 0.4)';
+    ctx.fillStyle = 'rgba(1, 1, 1, 0.1)';
     ctx.fillRect(0, 0, appProps.canvas.width, appProps.canvas.height);
     const ellapsedPartyTime = new Date().getTime() - appProps.party.start;
     //party btn backgroup position as percentage value
