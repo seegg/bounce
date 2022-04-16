@@ -263,6 +263,10 @@ function draw() {
     ctx.clearRect(0, 0, appProps.canvas.width, appProps.canvas.height);
   }
 
+  appProps.suckingArr.forEach(suck => {
+    drawVibratingCircle(ctx, suck.pos.x, suck.pos.y, suck.curr - appProps.radiusSizes.current, suck.isBlow, appProps.party.isActive);
+  })
+
   if (appProps.isSucking) {
     // // ctx.strokeStyle = 'blanchedalmond';
     if (appProps.currentSuckingDistance < appProps.maxSuckingDistance) {
@@ -271,10 +275,6 @@ function draw() {
     }
     drawVibratingCircle(ctx, appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance - appProps.radiusSizes.current, appProps.isBlowing, appProps.party.isActive);
   }
-
-  appProps.suckingArr.forEach(suck => {
-    drawVibratingCircle(ctx, suck.pos.x, suck.pos.y, suck.curr - appProps.radiusSizes.current, suck.isBlow, appProps.party.isActive);
-  })
 
 
   //draw each of the balls and then update its position.
