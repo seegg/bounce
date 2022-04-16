@@ -63,14 +63,14 @@ export function init(): void {
       img, imageCache, 50)
     )
   ).then(_ => {
-    // createBalls();
+    createBalls(3, 6);
     appProps.currentTime = new Date().getTime();
     draw();
   });
 };
 
-const createBalls = () => {
-  const number = Math.ceil(Math.random() * 3) + 2;
+const createBalls = (min: number, max: number) => {
+  const number = Math.ceil(Math.random() * (max - min)) + min;
   for (let i = 0; i < number; i++) {
     const ball = new Ball(imageCache[Math.floor(Math.random() * imageCache.length)],
       Math.random() * appProps.canvas.width, Math.random() * appProps.canvas.height, appProps.radiusSizes.current
