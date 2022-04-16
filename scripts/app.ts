@@ -63,7 +63,7 @@ export function init(): void {
       img, imageCache, 50)
     )
   ).then(_ => {
-    createBalls();
+    // createBalls();
     appProps.currentTime = new Date().getTime();
     draw();
   });
@@ -276,6 +276,8 @@ function draw() {
     drawVibratingCircle(ctx, appProps.suckingPosition.x, appProps.suckingPosition.y, appProps.currentSuckingDistance - appProps.radiusSizes.current, appProps.isBlowing, appProps.party.isActive);
   }
 
+  updateAllSuck();
+
 
   //draw each of the balls and then update its position.
   appProps.balls.forEach(ball => {
@@ -292,6 +294,7 @@ function draw() {
       ball.rotation += calcBallRotation(ball);
     }
   })
+
   //draw selected ball last so it shows up on top.
   drawBall(ctx, appProps.selectedBall);
   if (appProps.isRunning && appProps.isRunningW) {
@@ -299,8 +302,6 @@ function draw() {
   } else {
     window.cancelAnimationFrame(appProps.latestFrame);
   }
-
-  updateAllSuck();
 };
 
 const drawVibratingCircle =
@@ -495,16 +496,17 @@ function sortBalls(balls: Ball[]): Ball[] {
  * handling wall and ball collisions
  */
 function fixBallOverlaps(balls: Ball[]) {
+  if (balls.length < 2) return;
   let sortedBallList = sortBalls(balls);
   sortedBallList.forEach(ball => {
     !ball.selected && sortedBallList.forEach(ball2 => {
-      if (ball2.selected) return;
+      if (ball2.selected || ball2.id === ball.id) return;
       const overlap = ball.getOverlap(ball2);
       if (overlap < appProps.overlapThreshold) return;
       const distanceOnYAxis = ball.position.y - ball2.position.y;
-      if (ball.id !== ball2.id && overlap > 0.03) {
+      if (overlap > 0.03) {
         const [x, y] = util.xyDiffBetweenPoints(ball.position, ball2.position);
-        const total = Math.abs(x) + Math.abs(y);
+        const total = (Math.abs(x) + Math.abs(y));
         const xRatio = (x / total) * overlap;
         const yRatio = (y / total) * overlap;
         if (distanceOnYAxis === 0) {
@@ -679,6 +681,14 @@ function onMouseUp(evt: MouseEvent) {
 
       appProps.selectedBall.velocity.vX = distX / ellapsedTime;
       appProps.selectedBall.velocity.vY = distY / ellapsedTime;
+      appProps.balls.forEach(ball => {
+        if (!ball.selected) {
+          if (ball.position.x === appProps.selectedBall?.position.x && ball.position.y === appProps.selectedBall?.position.y) {
+            appProps.selectedBall.position.y += Math.random() * Math.random() > 0.5 ? -1 : 1;
+            appProps.selectedBall.position.x += Math.random() * Math.random() > 0.5 ? -1 : 1;
+          }
+        }
+      })
     } catch (err) {
       appProps.selectedBall.position = { x: 50, y: 50 };
       console.error(err);
