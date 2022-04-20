@@ -684,8 +684,9 @@ function onMouseUp(evt: MouseEvent) {
       //amount of time the pointer has stop moving while having a ball selected.
       const timePaused = currentTime - appProps.pausedTime;
       //decrease the velocity for the time paused 150ms period. 50ms grace period. 
-      const pauseRatio = Math.min(150, Math.max((timePaused - 50), 0));
-      const pauseVelocityRatio = ((150 - pauseRatio) / 150);
+      const maxPausePeriod = 150;
+      const pausePeriod = Math.min(maxPausePeriod, Math.max((timePaused - 50), 0));
+      const pauseVelocityRatio = ((maxPausePeriod - pausePeriod) / maxPausePeriod);
 
       appProps.selectedBall.velocity.vX = distX / ellapsedTime * pauseVelocityRatio;
       appProps.selectedBall.velocity.vY = distY / ellapsedTime * pauseVelocityRatio;
