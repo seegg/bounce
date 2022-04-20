@@ -33,6 +33,7 @@ export const appProps = {
   wallModifiers: { left: 1, right: 1, top: 1, bottom: 1 },
   currentTime: 0,
   selectedTime: 0,
+  pausedTime: 0,
   deceleration: 0.995,
   canvas: <HTMLCanvasElement>document.getElementById('canvas'),
   canvasHorizontalGap: 5 * 2,
@@ -647,7 +648,7 @@ function onMouseMove(evt: MouseEvent) {
       appProps.selectedPositions.current = { x, y };
 
       const distance = util.distanceBetween2Points({ x, y }, appProps.selectedPositions.prev);
-
+      const currentTime = new Date().getTime();
       //if the angle between the 3 points is greater than a certain amount
       //assign the current position as the new reference point for velocity.
       if (distance > appProps.mouseMoveDistThreshold) {
@@ -655,10 +656,11 @@ function onMouseMove(evt: MouseEvent) {
         const angle = util.angleBetween3Points(reference, prev, current) || 0;
         if (angle > appProps.selectedAngleThreshold) {
           appProps.selectedPositions.reference = { x, y };
-          appProps.selectedTime = new Date().getTime();
+          appProps.selectedTime = currentTime;
         }
         appProps.selectedPositions.prev = { x, y };
       }
+      appProps.pausedTime = currentTime;
     }
 
     if (appProps.isSucking) {
@@ -677,10 +679,16 @@ function onMouseUp(evt: MouseEvent) {
       const [x, y] = getRelativeMousePos(evt);
       const [distX, distY] = util.xyDiffBetweenPoints(appProps.selectedPositions.reference, { x, y });
 
-      const ellapsedTime = new Date().getTime() - appProps.selectedTime;
+      const currentTime = new Date().getTime();
+      const ellapsedTime = currentTime - appProps.selectedTime;
+      //amount of time the pointer has stop moving while having a ball selected.
+      const timePaused = currentTime - appProps.pausedTime;
+      //decrease the velocity for the time paused 150ms period. 50ms grace period. 
+      const pauseRatio = Math.min(150, Math.max((timePaused - 50), 0));
+      const pauseVelocityRatio = ((150 - pauseRatio) / 150);
 
-      appProps.selectedBall.velocity.vX = distX / ellapsedTime;
-      appProps.selectedBall.velocity.vY = distY / ellapsedTime;
+      appProps.selectedBall.velocity.vX = distX / ellapsedTime * pauseVelocityRatio;
+      appProps.selectedBall.velocity.vY = distY / ellapsedTime * pauseVelocityRatio;
       appProps.balls.forEach(ball => {
         if (!ball.selected) {
           if (ball.position.x === appProps.selectedBall?.position.x && ball.position.y === appProps.selectedBall?.position.y) {
