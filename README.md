@@ -14,3 +14,5 @@
 ##### Hit the party button(gravity disabled during party mode).
 
 ##### the scripts are bundled into main.js using tsconfig, which means order is important.
+
+bounce.
